@@ -42,4 +42,17 @@ from twilio.rest import Client
 #         return JsonResponse({'status': 'fail'},safe=False)
 
 
-# Create your views here.
+# View to generate and send the OTP
+def send_otp(request):
+    try:
+        # Generate the OTP
+        otp = generate_otp()
+
+        # Send the OTP to the specified contact number
+        send_otp_via_sms(otp, '+918860509917')
+
+        # Return a success response
+        return JsonResponse({'status': 'success', 'otp': otp})
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False)
