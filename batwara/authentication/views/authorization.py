@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import uuid 
 from django.http import JsonResponse
 import random
 from twilio.rest import Client
@@ -43,16 +43,20 @@ from twilio.rest import Client
 
 
 # View to generate and send the OTP
-def send_otp(request):
+def user_register(request):
     try:
-        # Generate the OTP
-        otp = generate_otp()
+        user_request = json.loads(request.body)
+        if 'user_phone' in user_request or 'user_password' in user_request:
+            return JsonResponse({'data':'error'},safe=False)
 
-        # Send the OTP to the specified contact number
-        send_otp_via_sms(otp, '+918860509917')
-
+        save_user_register = Users(
+            user_id = uuid.uuid64(),
+            user_phone = user_request['user_phone'],
+            user_password = user_request['user_password']
+        )
+        save_user_register.save()
         # Return a success response
-        return JsonResponse({'status': 'success', 'otp': otp})
+        return JsonResponse({'data': 'success'},safe=False)
     except Exception as error:
         print(error)
-        return JsonResponse({'status': 'fail'},safe=False)
+        return JsonResponse({'data': 'error'},safe=False)
