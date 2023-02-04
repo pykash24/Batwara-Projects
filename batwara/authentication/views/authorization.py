@@ -39,7 +39,6 @@ def send_otp(request):
 
         # To check the phone is register or not
         is_user_present = Users.objects.filter(user_phone=user_phone).first()
-        print(is_user_present)
 
         if not is_user_present:
             return JsonResponse({'status': 'No Account Found, Please SignUp!'},safe=False)
@@ -50,13 +49,13 @@ def send_otp(request):
 
         # Send the OTP to the specified contact number
         send_otp_via_sms(otp, user_phone_with_country_prefix)
-        print(otp)
 
+        #To save the otp in local database
         user_id = is_user_present.user_id
         otp_id = uuid.uuid4()
         temp_save_opt = TempOtp(
             otp_id = otp_id,
-            user_id = user_id,
+            user_id = str(user_id),
             user_phone = user_phone,
             user_otp = otp
         )
