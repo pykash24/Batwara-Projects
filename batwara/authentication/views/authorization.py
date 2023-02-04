@@ -53,15 +53,17 @@ def send_otp(request):
         print(otp)
 
         user_id = is_user_present.user_id
+        otp_id = uuid.uuid4()
         temp_save_opt = TempOtp(
-            otp_id = user_id,
+            otp_id = otp_id,
+            user_id = user_id,
             user_phone = user_phone,
             user_otp = otp
         )
         temp_save_opt.save()
 
         # Return a success response
-        return JsonResponse({'status': 'success'},safe=False)
+        return JsonResponse({'status': 'success','otp_id':otp_id},safe=False)
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False)
@@ -98,19 +100,23 @@ def user_register(request):
 def opt_authentication(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_otp' in user_request):
+        if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_id' in user_request):
             return JsonResponse({'data':'request body error'},safe=False)
 
         user_phone = user_request['user_phone']
-        is_otp_generated = TempOtp.objects.filter(user_phone=user_phone).first()
+        otp_id = user_request['otp_id']
+
+        #To check the otp has been generated for respectivity phone or not.
+        is_otp_generated = TempOtp.objects.filter(user_phone=user_phone,otp_id=otp_id).first()
         if not is_otp_generated:
             return JsonResponse({'data': 'Please login re-again'},safe=False)
 
         sent_user_otp = is_otp_generated.user_otp
 
+        #To check the generated otp is same as user pass otp
         if not sent_user_otp == user_request['user_otp']:
             return JsonResponse({'data': 'Invalid OTP'},safe=False)
-        delete_otp_generated = TempOtp.objects.filter(user_phone=user_phone).delete()
+        delete_otp_generated = TempOtp.objects.filter(user_phone=user_phone,otp_id=otp_id).delete()
         return JsonResponse({'data': 'success','token':'temp_user_token'},safe=False)
     except Exception as error:
         print(error)
