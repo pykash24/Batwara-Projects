@@ -6,6 +6,7 @@ from twilio.rest import Client
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from configuration import constants
+
 # Function to generate a random OTP
 def generate_otp():
     return str(random.randint(1000, 9999))
@@ -67,7 +68,7 @@ def send_otp(request):
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
 # View to generate and send the OTP
 @csrf_exempt
 def user_register(request):
