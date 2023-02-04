@@ -35,26 +35,28 @@ def send_otp(request):
     try:
         user_request = json.loads(request.body)
         user_phone = user_request['user_phone']
-        user_phone = '+91' + user_phone
+        print(user_phone)
 
         # To check the phone is register or not
         is_user_present = Users.objects.filter(user_phone=user_phone).first()
+        print(is_user_present)
 
         if not is_user_present:
             return JsonResponse({'status': 'No Account Found, Please SignUp!'},safe=False)
 
         # Generate the OTP
         otp = generate_otp()
+        user_phone_with_country_prefix = '+91' + user_phone
 
         # Send the OTP to the specified contact number
-        send_otp_via_sms(otp, user_phone)
-        print(opt)
+        send_otp_via_sms(otp, user_phone_with_country_prefix)
+        print(otp)
 
         user_id = is_user_present.user_id
         temp_save_opt = TempOtp(
             otp_id = user_id,
             user_phone = user_phone,
-            user_opt = opt
+            user_otp = otp
         )
         temp_save_opt.save()
 
@@ -63,9 +65,8 @@ def send_otp(request):
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False)
-
-@csrf_exempt
 # View to generate and send the OTP
+@csrf_exempt
 def user_register(request):
     try:
         user_request = json.loads(request.body)
@@ -92,7 +93,7 @@ def user_register(request):
         print(error)
         return JsonResponse({'data': 'error'},safe=False)
 
-
+# User OTP authentication
 @csrf_exempt
 def opt_authentication(request):
     try:
@@ -100,15 +101,17 @@ def opt_authentication(request):
         if not ('user_phone' in user_request or 'user_otp' in user_request):
             return JsonResponse({'data':'request body error'},safe=False)
 
-        is_opt_generated = TempOtp.object.filter(user_phone=user_phone).first()
-        if not is_opt_generated:
+        user_phone = user_request['user_phone']
+        is_otp_generated = TempOtp.objects.filter(user_phone=user_phone).first()
+        if not is_otp_generated:
             return JsonResponse({'data': 'Please login re-again'},safe=False)
 
-        sent_user_opt = is_opt_generated.user_opt
+        sent_user_otp = is_otp_generated.user_otp
 
-        if not sent_user_opt == user_request['user_phone']:
+        if not sent_user_otp == user_request['user_otp']:
             return JsonResponse({'data': 'Invalid OTP'},safe=False)
-        return JsonResponse({'data': 'success','token':'temp_token'},safe=False)
+        delete_otp_generated = TempOtp.objects.filter(user_phone=user_phone).delete()
+        return JsonResponse({'data': 'success','token':'temp_user_token'},safe=False)
     except Exception as error:
         print(error)
         return JsonResponse({'data': 'error'},safe=False)
