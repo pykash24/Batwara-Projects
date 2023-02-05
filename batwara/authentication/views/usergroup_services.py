@@ -12,7 +12,7 @@ from configuration import constants
 def create_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('group_description' in user_request or 'group_name' in user_request or 'user_id' in user_request['user_id']):
+        if not ('group_description' in user_request and 'group_name' in user_request and 'user_id' in user_request['user_id']):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..
@@ -49,20 +49,19 @@ def create_group(request):
 def add_user_in_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_id' in user_request or 'group_id' in user_request or 'usergroup_id' in user_request['usergroup_id']):
+        if not ('user_id' in user_request and 'group_id' in user_request and 'usergroup_id' in user_request):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..
         user_id, group_id,usergroup_id = user_request['user_id'], user_request['group_id'], user_request['usergroup_id']
-        # user_data = Users.objects.filter(user_id=user_id)
-        # group_data = Group.objects.filter(group_id=group_id).first()
-        # usergroup_id = uuid.uuid4()
+        user_data = Users.objects.filter(user_id=user_id).first()
+        group_data = Group.objects.filter(group_id=group_id).first()
 
         #Create the foreign releation with User & Group tables.
         save_group = UserGroup(
             usergroup_id = usergroup_id,
-            user_id =user_id,
-            group_id = group_id
+            group_id = group_data,
+            user_id =user_data
         )
         save_group.save()
         return JsonResponse({'status':'success','usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
