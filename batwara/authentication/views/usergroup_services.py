@@ -12,19 +12,32 @@ from configuration import constants
 def create_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('group_description' in user_request or 'group_name' in user_request):
+        if not ('group_description' in user_request or 'group_name' in user_request or 'user_id' in user_request['user_id']):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..
-        group_name, group_description = user_request['group_name'], user_request['group_description']
+        group_name, group_description,user_id = user_request['group_name'], user_request['group_description'],user_request['user_id']
         group_id = uuid.uuid4()
+        usergroup_id = uuid.uuid4()
+
+        user_data = Users.objects.filter(user_id = user_id).first()
+
+        # Create the group
         save_group = Group(
             group_id = group_id,
             group_name = group_name,
             group_description = group_description,
         )
+        
+        # Add default memeber of group.
+        save_subgroup = UserGroup(
+            usergroup_id = usergroup_id,
+            user_id =user_data,
+            group_id = save_group
+        )
         save_group.save()
-        return JsonResponse({'status':'success','group_id':group_id},safe=False,status=constants.HTTP_201_CREATED)
+        save_subgroup.save()
+        return JsonResponse({'status':'success','group_id':group_id,'usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
         
     except Exception as error:
         print(error)
@@ -33,23 +46,23 @@ def create_group(request):
 
 # To create the group
 @csrf_exempt
-def user_group(request):
+def add_user_in_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_id' in user_request or 'group_id' in user_request):
+        if not ('user_id' in user_request or 'group_id' in user_request or 'usergroup_id' in user_request['usergroup_id']):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..
-        user_id, group_id = user_request['user_id'], user_request['group_id']
-        user_data = Users.objects.filter(user_id=user_id).first()
-        group_data = Group.objects.filter(group_id=group_id).first()
-        usergroup_id = uuid.uuid4()
+        user_id, group_id,usergroup_id = user_request['user_id'], user_request['group_id'], user_request['usergroup_id']
+        # user_data = Users.objects.filter(user_id=user_id)
+        # group_data = Group.objects.filter(group_id=group_id).first()
+        # usergroup_id = uuid.uuid4()
 
         #Create the foreign releation with User & Group tables.
         save_group = UserGroup(
             usergroup_id = usergroup_id,
-            user_id =user_data,
-            group_id = group_data
+            user_id =user_id,
+            group_id = group_id
         )
         save_group.save()
         return JsonResponse({'status':'success','usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
