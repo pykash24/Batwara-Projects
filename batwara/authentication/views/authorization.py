@@ -74,7 +74,7 @@ def send_otp(request):
 def user_register(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_password' in user_request):
+        if not ('user_phone' in user_request or 'user_password' in user_request or 'first_name' in user_request or 'last_name' in user_request or 'user_mail' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         user_phone = user_request['user_phone']
         user_password = user_request['user_password']
@@ -87,7 +87,10 @@ def user_register(request):
         save_user_register = Users(
             user_id = uuid.uuid4(),
             user_phone = user_request['user_phone'],
-            user_password = user_request['user_password']
+            user_password = user_request['user_password'],
+            first_name = user_request['first_name'],
+            last_name = user_request['last_name'],
+            user_mail = user_request['user_mail'],
         )
         save_user_register.save()
         print("registeration successfully")
