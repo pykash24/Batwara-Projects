@@ -26,12 +26,10 @@ SECRET_KEY = 'django-insecure-fciing)ghf!klfurr8thzo^cun4karre1i4ejn+@n(9vd&dse@
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'ef1a-115-98-233-30.in.ngrok.io',
+    'f5d1-115-98-232-168.in.ngrok.io',
 ]
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

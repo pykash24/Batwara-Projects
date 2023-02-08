@@ -6,7 +6,7 @@ from twilio.rest import Client
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from configuration import constants
-
+from datetime import datetime
 # To create the group
 @csrf_exempt
 def create_group(request):
@@ -17,6 +17,9 @@ def create_group(request):
 
         # To create the group..
         group_name, group_description,user_id = user_request['group_name'], user_request['group_description'],user_request['user_id']
+
+        #To check the group is already exist or not for group created user. - created by validation pending..
+        # is_group_present = Group.objects.filter(group_name=group_name).first()
         group_id = uuid.uuid4()
         usergroup_id = uuid.uuid4()
 
@@ -93,4 +96,38 @@ def get_group_member(request):
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@csrf_exempt
+def create_expense(request):
+    try:
+        user_request = json.loads(request.body)
+        if not user_request:
+            return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+
+        description, group_id, paid_by, amount = user_request['description'], user_request['group_id'], user_request['paid_by'], user_request['amount']
+        expenses_id = uuid.uuid4()
+        expense_created_date = datetime.now().date()
+
+        user_data = Users.objects.filter(user_id=paid_by).first()
+        group_data = Group.objects.filter(group_id=group_id).first()
+
+        save_expenses = Expenses(
+            expenses_id = expenses_id,
+            description= description,
+            amount = amount,
+            paid_by = user_data,
+            group_id = group_data,
+            date = expense_created_date
+        )
+        save_expenses.save()
+        return JsonResponse({'status':'success','data':expenses_id},safe=False,status=constants.HTTP_200_OK)
+
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
 

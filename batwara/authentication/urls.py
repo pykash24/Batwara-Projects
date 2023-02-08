@@ -7,5 +7,6 @@ urlpatterns = [
     path('opt_authentication/', views.opt_authentication, name='opt_authentication'),
     path('create_group/', views.create_group, name='create_group'),
     path('add_user_in_group/', views.add_user_in_group, name='add_user_in_group'),
-    path('get_group_member/', views.get_group_member, name='get_group_member')
+    path('get_group_member/', views.get_group_member, name='get_group_member'),
+    path('create_expense/', views.create_expense, name='create_expense')
 ]

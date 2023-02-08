@@ -40,6 +40,17 @@ class UserGroup(models.Model):
     class Meta:
         db_table = "user_group"
 
+class Expenses(models.Model):
+    expenses_id = models.CharField(max_length=256,null=True)
+    description = models.CharField(max_length=256,null=True)
+    amount = models.CharField(max_length=256,null=True)
+    paid_by = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+    group_id = models.ForeignKey(Group,on_delete=models.CASCADE,to_field='group_id')
+    date = models.DateField(null=True)
+
+    class Meta:
+        db_table = "expenses"
+
 
 
 
