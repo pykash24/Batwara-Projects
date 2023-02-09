@@ -97,7 +97,7 @@ def get_group_member(request):
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+# Create Expenses!
 @csrf_exempt
 def create_expense(request):
     try:
@@ -105,7 +105,7 @@ def create_expense(request):
         if not user_request:
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
-        description, group_id, paid_by, amount = user_request['description'], user_request['group_id'], user_request['paid_by'], user_request['amount']
+        description, group_id, paid_by, amount,user_ids = user_request['description'], user_request['group_id'], user_request['paid_by'], user_request['amount'], user_request['user_ids']
         expenses_id = uuid.uuid4()
         expense_created_date = datetime.now().date()
 
@@ -121,6 +121,22 @@ def create_expense(request):
             date = expense_created_date
         )
         save_expenses.save()
+
+        expenses_id_data = Expenses.objects.filter(expenses_id=expenses_id).first()
+        group_member_no = user_ids.length()
+        print(group_member_no)
+        for user_shares in user_ids:
+            user_shares_id = user_shares['user_id']
+            user_shares_data = Users.objects.filter(user_id=user_shares_id).first()
+
+            save_expenses_shares = ExpensesShares(
+                expenses_shares_id = uuid.uuid4(),
+                expenses_id = expenses_id_data,
+                user_id =user_shares_data,
+                amount = "200",
+            )
+            save_expenses_shares.save()
+
         return JsonResponse({'status':'success','data':expenses_id},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
