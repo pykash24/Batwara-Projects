@@ -6,6 +6,9 @@ from twilio.rest import Client
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from configuration import constants
+import jwt
+import datetime
+from datetime import timedelta
 
 # Function to generate a random OTP
 def generate_otp():
@@ -123,4 +126,26 @@ def opt_authentication(request):
     except Exception as error:
         print(error)
         return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+def generate_token(request):
+    try:
+        time = datetime.datetime.now()+timedelta(minutes=1)
+        # nexttime  =datetime.datetime.now() + 2
+        print(time)
+        # print(int(time)+2)
+        encoded_jwt = jwt.encode({"phone": "1234567890", "exp": time}, "secret", algorithm="HS256")
+        print(encoded_jwt)
+        decode_token=jwt.decode(encoded_jwt, 'secret', verify_exp=True, algorithms=['HS256'])
+        content = decode_token
+        print(content["phone"])
+    except jwt.exceptions.ExpiredSignatureError:
+        print("expired error")
+    except jwt.exceptions.InvalidSignatureError:
+        print("invalid signature")
+    except jwt.InvalidTokenError:
+        print("invalid token")
+    except Exception as error:
+        print(error)
+        return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
 

@@ -1,0 +1,12 @@
+import jwt
+import datetime
+from datetime import timedelta
+time = datetime.datetime.now()+timedelta(minutes=1)
+# nexttime  =datetime.datetime.now() + 2
+print(time)
+# print(int(time)+2)
+encoded_jwt = jwt.encode({"phone": "1234567890", "exp": time}, "secret", algorithm="HS256")
+print(encoded_jwt)
+decode_token=jwt.decode(encoded_jwt, 'secret', verify_exp=True, algorithms=['HS256'])
+content = decode_token
+print(content["phone"])
