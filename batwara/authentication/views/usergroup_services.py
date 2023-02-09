@@ -74,15 +74,15 @@ def add_user_in_group(request):
 
 # Get the group member
 @csrf_exempt
-def get_group_member(request):
+def get_user_group_member(request):
     try:
         user_request = json.loads(request.body)
         if not ('user_id' in user_request):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         user_id = user_request['user_id']
-        get_group_id = list(UserGroup.objects.filter(user_id=user_id).values_list())
-        print(get_group_id)
+        # get_group_id = list(UserGroup.objects.filter(user_id=user_id).values_list())
+        # print(get_group_id)
         get_group_id = list(UserGroup.objects.filter(user_id=user_id).values_list('group_id',flat=True))
         print(get_group_id)
 
@@ -93,6 +93,7 @@ def get_group_member(request):
         return JsonResponse({'status':'success','data':list(get_user_group_data)},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
+        
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -144,6 +145,7 @@ def create_expense(request):
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# @csrf_exempt
 
 
 
