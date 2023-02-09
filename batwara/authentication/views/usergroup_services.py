@@ -12,7 +12,7 @@ from datetime import datetime
 def create_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('group_description' in user_request and 'group_name' in user_request and 'user_id' in user_request['user_id']):
+        if not ('group_description' in user_request or  'group_name' in user_request or 'user_id' in user_request['user_id']):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..

@@ -7,6 +7,9 @@ class Users(models.Model):
     user_phone = models.CharField(max_length=256,null=True)
     user_password = models.CharField(max_length=256,null=True)
     user_created_on =  models.DateField(auto_now_add=True)
+    first_name = models.CharField(max_length=256,null=True)
+    last_name = models.CharField(max_length=256,null=True)
+    user_mail = models.CharField(max_length=256,null=True)
 
     class Meta:
         db_table = "users_tank"
@@ -41,7 +44,7 @@ class UserGroup(models.Model):
         db_table = "user_group"
 
 class Expenses(models.Model):
-    expenses_id = models.CharField(max_length=256,null=True)
+    expenses_id = models.CharField(max_length=256,unique=True,null=True)
     description = models.CharField(max_length=256,null=True)
     amount = models.CharField(max_length=256,null=True)
     paid_by = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
@@ -50,6 +53,18 @@ class Expenses(models.Model):
 
     class Meta:
         db_table = "expenses"
+
+class ExpensesShares(models.Model):
+    expenses_shares_id = models.CharField(max_length=256,null=True)
+    expenses_id = models.ForeignKey(Expenses,on_delete=models.CASCADE,to_field='expenses_id')
+    user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+    amount = models.DateField(null=True)
+    user_created_on =  models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "expenses_shares"
+
+
 
 
 
