@@ -46,7 +46,6 @@ def create_group(request):
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 # To create the group
 @csrf_exempt
 def add_user_in_group(request):
