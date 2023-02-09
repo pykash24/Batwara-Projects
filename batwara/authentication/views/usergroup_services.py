@@ -123,17 +123,19 @@ def create_expense(request):
         save_expenses.save()
 
         expenses_id_data = Expenses.objects.filter(expenses_id=expenses_id).first()
-        group_member_no = user_ids.length()
+        group_member_no = len(user_ids)
+        sharable_amount = amount/group_member_no
         print(group_member_no)
         for user_shares in user_ids:
             user_shares_id = user_shares['user_id']
+            print(user_shares_id)
             user_shares_data = Users.objects.filter(user_id=user_shares_id).first()
 
             save_expenses_shares = ExpensesShares(
                 expenses_shares_id = uuid.uuid4(),
                 expenses_id = expenses_id_data,
                 user_id =user_shares_data,
-                amount = "200",
+                amount = sharable_amount,
             )
             save_expenses_shares.save()
 

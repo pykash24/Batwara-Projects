@@ -46,7 +46,7 @@ class UserGroup(models.Model):
 class Expenses(models.Model):
     expenses_id = models.CharField(max_length=256,unique=True,null=True)
     description = models.CharField(max_length=256,null=True)
-    amount = models.CharField(max_length=256,null=True)
+    amount = models.FloatField()
     paid_by = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
     group_id = models.ForeignKey(Group,on_delete=models.CASCADE,to_field='group_id')
     date = models.DateField(null=True)
@@ -58,7 +58,7 @@ class ExpensesShares(models.Model):
     expenses_shares_id = models.CharField(max_length=256,null=True)
     expenses_id = models.ForeignKey(Expenses,on_delete=models.CASCADE,to_field='expenses_id')
     user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
-    amount = models.DateField(null=True)
+    amount = models.FloatField()
     user_created_on =  models.DateTimeField(auto_now_add=True)
 
     class Meta:
