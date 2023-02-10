@@ -128,7 +128,7 @@ def opt_authentication(request):
         user_token = generate_token(request)
         if not user_token:
             return JsonResponse({'data': 'Invalid OTP'},safe=False)
-            
+
         delete_otp_generated = TempOtp.objects.filter(user_phone=user_phone,otp_id=otp_id).delete()
         return JsonResponse({'data': 'success','token':user_token},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
@@ -139,9 +139,9 @@ def generate_token(request):
     try:
         user_request = json.loads(request.body)
         if user_request:
-            user_phone = user_request['user_phone']
+            secret_key = user_request['user_phone']
         expiry_time = datetime.datetime.now()+timedelta(minutes=constants.TOKEN_EXPIRY)
-        encoded_jwt = jwt.encode({"app_id": "batware", "exp": expiry_time}, user_phone, algorithm="HS256")
+        encoded_jwt = jwt.encode({"app_id": constants.APP_ID, "exp": expiry_time}, secret_key, algorithm="HS256")
         return encoded_jwt
     except Exception as error:
         print(error)
