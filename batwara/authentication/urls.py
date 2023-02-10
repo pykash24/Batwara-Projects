@@ -8,5 +8,6 @@ urlpatterns = [
     path('create_group/', views.create_group, name='create_group'),
     path('add_user_in_group/', views.add_user_in_group, name='add_user_in_group'),
     path('get_user_group_member/', views.get_user_group_member, name='get_user_group_member'),
-    path('create_expense/', views.create_expense, name='create_expense')
+    path('create_expense/', views.create_expense, name='create_expense'),
+    path('token_decode/', views.token_decode, name='token_decode')
 ]

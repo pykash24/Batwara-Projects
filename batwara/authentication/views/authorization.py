@@ -135,6 +135,7 @@ def opt_authentication(request):
         print(error)
         return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# User token generate...
 def generate_token(request):
     try:
         user_request = json.loads(request.body)
@@ -142,8 +143,25 @@ def generate_token(request):
             secret_key = user_request['user_phone']
         expiry_time = datetime.datetime.now()+timedelta(minutes=constants.TOKEN_EXPIRY)
         encoded_jwt = jwt.encode({"app_id": constants.APP_ID, "exp": expiry_time}, secret_key, algorithm="HS256")
-        return encoded_jwt
+        return JsonResponse({'data': 'success','token':encoded_jwt},safe=False,status=constants.HTTP_200_OK)
+
     except Exception as error:
         print(error)
         return False
+
+@csrf_exempt
+def token_decode(request):
+    try:
+        user_request = json.loads(request.body)
+        if user_request:
+            token = user_request['token']
+            secret = user_request['phone']
+        decode_token=jwt.decode(token, secret, verify_exp=True, algorithms=['HS256'])
+        return JsonResponse({'data': 'success','token':decode_token},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
