@@ -39,6 +39,7 @@ class UserGroup(models.Model):
     usergroup_id = models.CharField(max_length=256,null=True)
     user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
     group_id = models.ForeignKey(Group,on_delete=models.CASCADE,to_field='group_id')
+    is_delete = models.BooleanField(null=True,default=False)
 
     class Meta:
         db_table = "user_group"

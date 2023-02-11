@@ -36,7 +36,8 @@ def create_group(request):
         save_subgroup = UserGroup(
             usergroup_id = usergroup_id,
             user_id =user_data,
-            group_id = save_group
+            group_id = save_group,
+            is_delete= False
         )
         save_group.save()
         save_subgroup.save()
@@ -63,7 +64,8 @@ def add_user_in_group(request):
         save_group = UserGroup(
             usergroup_id = usergroup_id,
             group_id = group_data,
-            user_id =user_data
+            user_id =user_data,
+            is_delete= False
         )
         save_group.save()
         return JsonResponse({'status':'success','usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
@@ -72,18 +74,16 @@ def add_user_in_group(request):
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# Get the group member
+# Get the groups
 @csrf_exempt
-def get_user_group_member(request):
+def get_user_group(request):
     try:
         user_request = json.loads(request.body)
         if not ('user_id' in user_request):
             return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         user_id = user_request['user_id']
-        # get_group_id = list(UserGroup.objects.filter(user_id=user_id).values_list())
-        # print(get_group_id)
-        get_group_id = list(UserGroup.objects.filter(user_id=user_id).values_list('group_id',flat=True))
+        get_group_id = list(UserGroup.objects.filter(user_id=user_id,is_delete=False).values_list('group_id',flat=True))
         print(get_group_id)
 
         if not get_group_id:
@@ -145,7 +145,27 @@ def create_expense(request):
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# @csrf_exempt
+# Get the member of groups!
+@csrf_exempt
+def get_user_group_members(request):
+    try:
+        user_request = json.loads(request.body)
+        if not ('group_id' in user_request):
+            return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+
+        group_id = user_request['group_id']
+        get_user_id_of_group = list(UserGroup.objects.filter(group_id=group_id,is_delete=False).values_list('user_id',flat=True))
+
+        if not get_user_id_of_group:
+            get_user_id_of_group = []
+        
+        get_user_id_data = Users.objects.filter(user_id__in=get_user_id_of_group).values()
+        return JsonResponse({'status':'success','data':list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
+
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 
