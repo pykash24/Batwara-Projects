@@ -1,0 +1,1 @@
+INVALID_REQUEST_BODY_MESSAGE = "Invalid request body"

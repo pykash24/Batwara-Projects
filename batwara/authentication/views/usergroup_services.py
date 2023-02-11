@@ -5,7 +5,7 @@ import random,json
 from twilio.rest import Client
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
-from configuration import constants
+from configuration import constants,message
 from datetime import datetime
 # To create the group
 @csrf_exempt
@@ -53,7 +53,7 @@ def add_user_in_group(request):
     try:
         user_request = json.loads(request.body)
         if not ('phone' in user_request and 'group_id' in user_request and 'usergroup_id' in user_request):
-            return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+            return JsonResponse({'status': constants.FAIL,'message':message.INVALID_REQUEST_BODY_MESSAGE},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..
         phone, group_id,usergroup_id = user_request['phone'], user_request['group_id'], user_request['usergroup_id']
