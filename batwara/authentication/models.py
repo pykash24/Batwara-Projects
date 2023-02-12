@@ -30,6 +30,7 @@ class Group(models.Model):
     group_name = models.CharField(max_length=256,null=True)
     group_description = models.CharField(max_length=256,null=True)
     user_created_on =  models.DateTimeField(auto_now_add=True)
+    group_created_by = models.CharField(max_length=256,null=True)
     is_delete = models.BooleanField(null=True,default=False)
 
     class Meta:

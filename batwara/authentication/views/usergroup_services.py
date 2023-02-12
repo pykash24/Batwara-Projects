@@ -7,6 +7,7 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from configuration import constants,message
 from datetime import datetime
+
 # To create the group
 @csrf_exempt
 def create_group(request):
@@ -30,6 +31,7 @@ def create_group(request):
             group_id = group_id,
             group_name = group_name,
             group_description = group_description,
+            group_created_by = user_id
         )
         
         # Add default memeber of group.
@@ -183,6 +185,26 @@ def get_user_group_members(request):
         get_user_id_data = Users.objects.filter(user_id__in=get_user_id_of_group).values()
         return JsonResponse({'status':'success','data':list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
 
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#Set the group to delete status..
+@csrf_exempt    
+def group_set_to_delete(request):
+    try:
+        user_request = json.loads(request.body)
+        if not(user_request and 'group_id' in user_request or 'group_name' in user_request):
+            return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        group_id,group_name= user_request['group_id'], user_request['group_name']
+        set_to_delete_group = Group.objects.filter(group_id=group_id,group_name=group_name).first()
+
+        #Set the group to delete status..
+        if set_to_delete_group:
+            set_to_delete_group.is_delete = True
+            set_to_delete_group.save()
+            return JsonResponse({'status':'success','message':'Group Deleted'},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({'status':'fail','message':'Group not exist'},safe=False,status=constants.HTTP_403_FORBIDDED)
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)

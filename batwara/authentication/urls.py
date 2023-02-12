@@ -10,6 +10,7 @@ urlpatterns = [
     path('get_user_group/', views.get_user_group, name='get_user_group'),
     path('create_expense/', views.create_expense, name='create_expense'),
     path('token_decode/', views.token_decode, name='token_decode'),
-    path('get_user_group_members/', views.get_user_group_members, name='get_user_group_members')
+    path('get_user_group_members/', views.get_user_group_members, name='get_user_group_members'),
+    path('group_set_to_delete/', views.group_set_to_delete, name='group_set_to_delete')
     
 ]
