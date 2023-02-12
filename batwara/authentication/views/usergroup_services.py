@@ -209,6 +209,48 @@ def group_set_to_delete(request):
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#Update the expenses & share the expenses of group members
+@csrf_exempt
+def update_expenses(request):
+    try:
+        user_request = json.loads(request.body)
+        if not user_request:
+            return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+
+        expenses_id,amount,user_ids = user_request['expenses_id'], user_request['amount'], user_request['user_ids']
+        expenses_id_data = Expenses.objects.filter(expenses_id=expenses_id).first()
+        if not expenses_id_data:
+            return JsonResponse({'status': 'fail'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+
+        expenses_id_data.amount = amount
+        expenses_id_data.save()
+        group_member_no = len(user_ids)
+        sharable_amount = amount/group_member_no
+
+        #Reference of expenses sharses id
+        expenses_id_data = Expenses.objects.filter(expenses_id=expenses_id).first()
+        
+        #Delete the old 
+        delete_expenses_share = ExpensesShares.objects.filter(expenses_id=expenses_id)
+        if delete_expenses_share:
+            delete_expenses_share.delete()
+        
+        #Update the updated expenses shares to group member
+        for user_shares in user_ids:
+            user_shares_id = user_shares['user_id']
+            user_shares_data = Users.objects.filter(user_id=user_shares_id).first()
+            save_expenses_shares = ExpensesShares(
+                expenses_shares_id = uuid.uuid4(),
+                expenses_id = expenses_id_data,
+                user_id =user_shares_data,
+                amount = sharable_amount,
+            )
+            save_expenses_shares.save()        
+        updated_expenses_shares = ExpensesShares.objects.filter(expenses_id=expenses_id).values()
+        return JsonResponse({'status':'success','message':'Data updated successfully','data':list(updated_expenses_shares)},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

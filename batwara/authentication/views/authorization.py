@@ -37,6 +37,7 @@ def send_otp_via_sms(otp, to_number):
 @csrf_exempt
 def send_otp(request):
     try:
+        print("running")
         user_request = json.loads(request.body)
         if not ('user_phone' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
@@ -107,6 +108,7 @@ def user_register(request):
 @csrf_exempt
 def opt_authentication(request):
     try:
+        print("working")
         user_request = json.loads(request.body)
         if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_id' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
