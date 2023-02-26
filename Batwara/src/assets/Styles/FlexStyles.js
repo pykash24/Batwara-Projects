@@ -1,11 +1,28 @@
-import { StyleSheet, Dimensions, Platform } from "react-native";
-const { width, height } = Dimensions.get("window");
-
+import {StyleSheet, Dimensions, Platform} from 'react-native';
+const {width, height} = Dimensions.get('window');
 
 const FlexStyles = StyleSheet.create({
-    container: {
-        flex: 1
-      }
-})
+  flex1: {
+    flex: 1,
+  },
+  dflex: {
+    display: "flex"
+  },
+  flexDirectionrow: {
+    flexDirection: 'row'
+  },
+  flexDirectioncolumn : {
+    flexDirection: 'column'
+  },
+  justifyContainCenter : {
+    justifyContent:'center'
+  },
+  textAlignCenter: {
+    textAlign: 'center',
+  },
+  alignItems:{
+    alignItems: 'center',
+  }
+});
 
-export default FlexStyles
+export default FlexStyles;

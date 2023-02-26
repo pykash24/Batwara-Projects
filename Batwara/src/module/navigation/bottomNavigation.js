@@ -4,7 +4,7 @@ import {Image, View, Text, TouchableOpacity} from 'react-native';
 import Batwaralanding from '../screen/Home/batwaraLanding';
 import Accountlandingscreen from '../screen/Account/accountLandingScreen';
 import Groupslanding from '../screen/Groups/groupsLanding';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 
 export default function Bottomnavigationtabs() {
@@ -19,11 +19,12 @@ export default function Bottomnavigationtabs() {
         name="Batwaralanding"
         component={Batwaralanding}
         options={{
-          tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? 'blue' : 'gray' }}>Home</Text>
+          tabBarLabel: ({focused}) => (
+            <Text style={{color: focused ? 'blue' : 'gray'}}>Home</Text>
           ),
           tabBarIcon: ({focused, color, size}) => (
-            <TouchableOpacity onPress={() => navigation.navigate('Batwaralanding')}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Batwaralanding')}>
               <Image
                 source={require('../../assets/images/bottomImage/groupUnSelected.png')}
                 style={{width: size, height: size, tintColor: color}}

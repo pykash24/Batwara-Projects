@@ -4,14 +4,15 @@ const {width, height} = Dimensions.get('window');
 const CommonStyles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor:'#F5F5F5',
+      height:height
     },
     inner: {
-      padding: 24,
       flex: 1,
       justifyContent: 'space-around',
     },
     header: {
-      fontSize: 36,
+      fontSize: 20,
       marginBottom: 48,
     },
     textInput: {
@@ -22,7 +23,8 @@ const CommonStyles = StyleSheet.create({
     },
     btnContainer: {
       backgroundColor: 'white',
-      marginTop: 12,
+      // marginTop: 12,
     },
+    
   });
 export default CommonStyles;

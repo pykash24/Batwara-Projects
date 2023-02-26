@@ -12,12 +12,15 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import fetchApi from '../../shared/AxiosCall';
 import {SendOtp} from '../../shared/ConfigUrl';
 import CommonStyles from '../../../assets/Styles/CommonStyles.js';
 import CommonTextInput from '../../shared/CommonTextInput.js';
-// import FlexStyles from '../../../assets/FlexStyles';
+import FlexStyles from '../../../assets/Styles/FlexStyles';
+import CommonButton from '../../shared/CommonButton.js';
+import LoginStyles from './LoginStyles';
 
 class Login extends Component {
   constructor(props) {
@@ -25,21 +28,24 @@ class Login extends Component {
     this.state = {
       phoneNumber: '',
       otp: '',
-      isEmpExist: undefined,
     };
   }
 
   sendOtp = () => {
     let data = {
-      user_phone: '8668776095',
+      user_phone: this.state.phoneNumber,
+      // user_phone: '8668776095',
     };
-    fetchApi(SendOtp, data)
-      .then(res => {
-        console.log('sendOtp res:', res);
-      })
-      .catch(err => {
-        console.log('sendOtp err:', err);
-      });
+    console.log('sendOtp called:', data);
+    if (this.state.phoneNumber.length == 10) {
+      fetchApi(SendOtp, data)
+        .then(res => {
+          console.log('sendOtp res:', res);
+        })
+        .catch(err => {
+          console.log('sendOtp err:', err);
+        });
+    }
   };
 
   // sendOtp =()=>{
@@ -60,121 +66,37 @@ class Login extends Component {
   // }
 
   onChangeNumber = e => {
-    console.log('onChangeNumber: ', e);
-    this.setState(
-      {
-        phoneNumber: e,
-      },
-      () => this.state.phoneNumber.length === 10 && this.findEmpexist(),
-    );
-  };
-
-  findEmpexist = () => {
-    console.log('findEmpexist called..');
-    if (true) {
-      // this is for when emp not registered.
-      this.setState({
-        isEmpExist: false,
-      });
-    } else {
-      // this is for when emp already registered.
-      this.setState({
-        isEmpExist: true,
-      });
-    }
+    this.setState({
+      phoneNumber: e,
+    });
   };
 
   render() {
-    console.log('phoneNumber:', this.state.phoneNumber);
+    console.log('phoneNumber:', this.state.phoneNumber.length);
     console.log('otp:', this.state.otp);
-    console.log('this.state.isEmpExist:', this.state.isEmpExist);
     return (
-      <SafeAreaView>
-        <ScrollView>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={[CommonStyles.container]}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              {this.state.isEmpExist == false ? (
-                <View style={CommonStyles.inner}>
-                  <Text style={CommonStyles.header}>Registration form</Text>
-                  <CommonTextInput
-                    placeholder="Phone number"
-                    keyboardType="numeric"
-                    value={this.state.phoneNumber}
-                    onChangeText={e => this.onChangeNumber(e)}
-                    maxLength={10}
-                    secureTextEntry={false}
-                  />
-                  <CommonTextInput
-                    placeholder="first Name"
-                    keyboardType="numeric"
-                    value={this.state.phoneNumber}
-                    onChangeText={e => this.onChangeNumber(e)}
-                    maxLength={10}
-                    secureTextEntry={false}
-                  />
-                  <CommonTextInput
-                    placeholder="Last Name"
-                    keyboardType="numeric"
-                    value={this.state.phoneNumber}
-                    onChangeText={e => this.onChangeNumber(e)}
-                    maxLength={10}
-                    secureTextEntry={false}
-                  />
-                  <CommonTextInput
-                    placeholder="Enter mail"
-                    keyboardType="numeric"
-                    value={this.state.phoneNumber}
-                    onChangeText={e => this.onChangeNumber(e)}
-                    maxLength={10}
-                    secureTextEntry={false}
-                  />
-                  <View style={CommonStyles.btnContainer}>
-                    <Button
-                      title="Login"
-                      onPress={() =>
-                        this.setState({
-                          isEmpExist : false
-                        })
-                        // this.props.navigation.navigate('LandingStackNavigator')
-                      }
-                    />
-                  </View>
-                </View>
-              ) : (
-                <View style={CommonStyles.inner}>
-                  <Text style={CommonStyles.header}>Header</Text>
-                  <CommonTextInput
-                    placeholder="Phone number"
-                    keyboardType="numeric"
-                    value={this.state.phoneNumber}
-                    onChangeText={e => this.onChangeNumber(e)}
-                    maxLength={10}
-                    secureTextEntry={false}
-                  />
-                  {this.state.isEmpExist == true && (
-                    <CommonTextInput
-                      placeholder="Enter OTP"
-                      keyboardType="numeric"
-                      onChangeText={e => this.setState({otp: e})}
-                      value={this.state.otp}
-                      maxLength={4}
-                      secureTextEntry={true}
-                    />
-                  )}
-                  <View style={CommonStyles.btnContainer}>
-                    <Button
-                      title="Login"
-                      onPress={() =>
-                        this.props.navigation.navigate('LandingStackNavigator')
-                      }
-                    />
-                  </View>
-                </View>
-              )}
-              {/* <View style={CommonStyles.inner}>
-                <Text style={CommonStyles.header}>Header</Text>
+      // <SafeAreaView>
+      <ScrollView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={[CommonStyles.container]}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <View
+                style={[
+                  FlexStyles.flexDirectionrow,
+                  FlexStyles.justifyContainCenter,
+                ]}>
+                <Image
+                  source={require('../../../assets/images/logo/batwaralogo1.png')}
+                  style={[{width: 200, height: 200, resizeMode: 'contain'}]}
+                />
+              </View>
+              <View style={[LoginStyles.registrationCard]}>
+                <Text>Sign In Your Account</Text>
+                <Text>
+                  Please fill up mobile number and OTP to log in to your account
+                </Text>
                 <CommonTextInput
                   placeholder="Phone number"
                   keyboardType="numeric"
@@ -182,30 +104,53 @@ class Login extends Component {
                   onChangeText={e => this.onChangeNumber(e)}
                   maxLength={10}
                   secureTextEntry={false}
+                  rightButtonView={true}
+                  rightButtonLabel={'Send OTP'}
+                  onPress={this.sendOtp}
                 />
-                {this.state.isEmpExist == true && (
-                  <CommonTextInput
-                    placeholder="Enter OTP"
-                    keyboardType="numeric"
-                    onChangeText={e => this.setState({otp: e})}
-                    value={this.state.otp}
-                    maxLength={4}
-                    secureTextEntry={true}
-                  />
-                )}
-                <View style={CommonStyles.btnContainer}>
-                  <Button
+                <CommonTextInput
+                  placeholder="Enter OTP"
+                  keyboardType="numeric"
+                  onChangeText={e => this.setState({otp: e})}
+                  value={this.state.otp}
+                  maxLength={4}
+                  secureTextEntry={true}
+                />
+                <View style={[]}>
+                  <CommonButton
                     title="Login"
                     onPress={() =>
-                      this.props.navigation.navigate('LandingStackNavigator')
+                      this.props.navigation.navigate(
+                        // 'RegistrationScreen',
+                        'LandingStackNavigator',
+                      )
                     }
                   />
                 </View>
-              </View> */}
-            </TouchableWithoutFeedback>
-          </KeyboardAvoidingView>
-        </ScrollView>
-      </SafeAreaView>
+                {true && (
+                  <Text
+                    style={[
+                      FlexStyles.dflex,
+                      FlexStyles.flexDirectionrow,
+                      
+                    ]}>
+                    You are not registred yet. Please press on
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('RegistrationScreen')
+                      }
+                      style={[FlexStyles.alignItems]}>
+                      <Text>Register</Text>
+                    </TouchableOpacity>
+                  </Text>
+                )}
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </ScrollView>
+      // </SafeAreaView>
+
       // <View>
       //   <Button
       //     title="Go to Landing"
@@ -248,30 +193,5 @@ class Login extends Component {
     );
   }
 }
-
-// const CommonStyles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   inner: {
-//     padding: 24,
-//     flex: 1,
-//     justifyContent: 'space-around',
-//   },
-//   header: {
-//     fontSize: 36,
-//     marginBottom: 48,
-//   },
-//   textInput: {
-//     height: 40,
-//     borderColor: '#000000',
-//     borderBottomWidth: 1,
-//     marginBottom: 36,
-//   },
-//   btnContainer: {
-//     backgroundColor: 'white',
-//     marginTop: 12,
-//   },
-// });
 
 export default Login;
