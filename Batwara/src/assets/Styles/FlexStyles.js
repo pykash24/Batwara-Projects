@@ -6,23 +6,29 @@ const FlexStyles = StyleSheet.create({
     flex: 1,
   },
   dflex: {
-    display: "flex"
+    display: 'flex',
   },
   flexDirectionrow: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
-  flexDirectioncolumn : {
-    flexDirection: 'column'
+  flexDirectioncolumn: {
+    flexDirection: 'column',
   },
-  justifyContainCenter : {
-    justifyContent:'center'
+  justifyContainCenter: {
+    justifyContent: 'center',
   },
   textAlignCenter: {
     textAlign: 'center',
   },
-  alignItems:{
+  alignItems: {
     alignItems: 'center',
-  }
+  },
+  flexBetween: {
+    justifyContent: 'space-between',
+  },
+  flexarround: {
+    justifyContent: 'space-around',
+  },
 });
 
 export default FlexStyles;

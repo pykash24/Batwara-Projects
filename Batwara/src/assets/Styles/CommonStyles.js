@@ -23,7 +23,6 @@ const CommonStyles = StyleSheet.create({
     },
     btnContainer: {
       backgroundColor: 'white',
-      // marginTop: 12,
     },
     
   });
