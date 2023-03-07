@@ -12,21 +12,54 @@ export default function Bottomnavigationtabs() {
   return (
     <Tab.Navigator
       initialRouteName="Batwaralanding"
-      screenOptions={{
-        tabBarActiveTintColor: '#e91e63',
-      }}>
+      screenOptions={({route}) => ({
+        // headerShown: false,
+        tabBarActiveTintColor: '#ffff',
+        tabBarStyle: {
+          height: 60,
+          paddingHorizontal: 5,
+          paddingTop: 0,
+          backgroundColor: '#F17120',
+          position: 'absolute',
+          borderTopWidth: 0,
+        },
+      })}
+      // screenOptions={{
+      //   tabBarActiveTintColor: '#e91e63',
+      //   // tabBarOptions={{
+      //   //   style: {
+      //   //     backgroundColor: 'blue', // set the background color here
+      //   //   },
+      //   // }}
+      // }}
+    >
       <Tab.Screen
         name="Batwaralanding"
         component={Batwaralanding}
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style={{color: focused ? 'blue' : 'gray'}}>Home</Text>
+            <View>
+              <Text style={{color: focused ? '#ffff' : 'gray'}}>Home</Text>
+            </View>
           ),
           tabBarIcon: ({focused, color, size}) => (
             <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
               onPress={() => navigation.navigate('Batwaralanding')}>
+              <View
+                style={[
+                  {
+                    height: 0,
+                    borderTopWidth: focused ? 10 : 0,
+                    borderTopColor: 'white',
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    width: 40,
+                    marginBottom: 5,
+                  },
+                ]}></View>
               <Image
-                source={require('../../assets/images/bottomImage/groupUnSelected.png')}
+                source={require('../../assets/images/bottomImage/home.png')}
                 style={{width: size, height: size, tintColor: color}}
               />
             </TouchableOpacity>
@@ -37,23 +70,102 @@ export default function Bottomnavigationtabs() {
         name="Accountlandingscreen"
         component={Accountlandingscreen}
         options={{
-          tabBarLabel: 'Accountlandingscreen',
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="heart" color={color} size={size} />
+          tabBarLabel: ({focused}) => (
+            <View>
+              <Text style={{color: focused ? '#ffff' : 'gray'}}>
+                Friends
+              </Text>
+            </View>
           ),
-          tabBarBadge: 3,
+          tabBarIcon: ({focused, color, size}) => (
+            <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+              onPress={() => navigation.navigate('Accountlandingscreen')}>
+              <View
+                style={[
+                  {
+                    height: 0,
+                    borderTopWidth: focused ? 10 : 0,
+                    borderTopColor: 'white',
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    width: 40,
+                    marginBottom: 5,
+                  },
+                ]}></View>
+              <Image
+                source={require('../../assets/images/bottomImage/friends.png')}
+                style={{width: size, height: size, tintColor: color}}
+              />
+            </TouchableOpacity>
+          ),
+          // tabBarBadge: 3,
         }}
       />
       <Tab.Screen
         name="Groupslanding"
         component={Groupslanding}
         options={{
-          tabBarLabel: 'Groupslanding',
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="heart" color={color} size={size} />
+          tabBarLabel: ({focused}) => (
+            <View>
+              <Text style={{color: focused ? '#ffff' : 'gray'}}>
+                Analytics
+              </Text>
+            </View>
+          ),
+          tabBarIcon: ({focused, color, size}) => (
+            <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+              onPress={() => navigation.navigate('Batwaralanding')}>
+              <View
+                style={[
+                  {
+                    height: 0,
+                    borderTopWidth: focused ? 10 : 0,
+                    borderTopColor: 'white',
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    width: 40,
+                    marginBottom: 5,
+                  },
+                ]}></View>
+              <Image
+                source={require('../../assets/images/bottomImage/statistics.png')}
+                style={{width: size, height: size, tintColor: color}}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
+      {/* <Tab.Screen
+        name="Groupslanding"
+        component={Groupslanding}
+        options={{
+          tabBarLabel: 'Groupslanding',
+          tabBarIcon: ({focused, color, size}) => (
+            <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+              onPress={() => navigation.navigate('Batwaralanding')}>
+              <View
+                style={[
+                  {
+                    height: 0,
+                    borderTopWidth: focused ? 10 : 0,
+                    borderTopColor: 'white',
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    width: 40,
+                    marginBottom: 5,
+                  },
+                ]}></View>
+              <Image
+                source={require('../../assets/images/bottomImage/setting.png')}
+                style={{width: size, height: size, tintColor: color}}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      /> */}
     </Tab.Navigator>
   );
 }
