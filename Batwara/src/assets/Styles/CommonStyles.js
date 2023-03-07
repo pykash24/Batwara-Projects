@@ -24,6 +24,12 @@ const CommonStyles = StyleSheet.create({
     btnContainer: {
       backgroundColor: 'white',
     },
+    w90: {
+      width: width/1.5
+    },
+    w10: {
+      width: 10
+    }
     
   });
 export default CommonStyles;
