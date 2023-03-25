@@ -6,9 +6,6 @@ const App = () => (
 );
 
 export default App;
-
-
-// import React, {Component} from 'react';
 // import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 // import {NavigationContainer} from '@react-navigation/native';
 // import {createNativeStackNavigator} from '@react-navigation/native-stack';
