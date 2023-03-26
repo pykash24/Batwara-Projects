@@ -3,7 +3,10 @@ export const Colors={
     dark:'#000',
     primary:"#FC8415",
     gray:"#666",
-    bgColor:"#ffffff"
+    bgColor:"#ffffff",
     // primary:"#AD40AF",
-
+    orange:'#F17120',
+    grey:'#F5F5F5',
+    commonCardShadodow: '#CBD5E1',
+    commonShadodowBackground: '#F8FAFC',
 }
