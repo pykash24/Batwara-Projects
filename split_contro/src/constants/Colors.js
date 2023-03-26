@@ -9,4 +9,5 @@ export const Colors={
     grey:'#F5F5F5',
     commonCardShadodow: '#CBD5E1',
     commonShadodowBackground: '#F8FAFC',
+    commonBlack:'#1E293E'
 }

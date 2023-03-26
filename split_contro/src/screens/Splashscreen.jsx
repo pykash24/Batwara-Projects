@@ -98,7 +98,7 @@ class Splashscreen extends Component {
                 style={{
                   transform: [
                     {translateX: this.pan.x},
-                    {translateY: this.pan.y},
+                    // {translateY: this.pan.y},
                   ],
                 }}
                 {...this.panResponder.panHandlers}>

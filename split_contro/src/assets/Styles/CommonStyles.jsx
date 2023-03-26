@@ -36,6 +36,9 @@ const CommonStyles = StyleSheet.create({
   m5: {
     margin: 5,
   },
+  m10: {
+    margin:10
+  },
   p20: {
     padding: 20,
   },

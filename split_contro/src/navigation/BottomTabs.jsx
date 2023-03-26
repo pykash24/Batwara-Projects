@@ -46,6 +46,7 @@ export const TabNavigator = () => {
             <Tab.Screen
                 name="Overview"
                 component={HomeScreen}
+                onPress={() => console.log('Overview tab pressed')} // added onPress event handler
                 options={({ route }) => ({
                     tabBarItemStyle: {
                         // height:12
@@ -62,6 +63,7 @@ export const TabNavigator = () => {
             <Tab.Screen
                 name="Friends"
                 component={FriendScreen}
+                onPress={() => console.log('Friends tab pressed')} // added onPress event handler
                 options={({ route }) => ({
                     tabBarItemStyle: {
                         // height:0
@@ -77,6 +79,7 @@ export const TabNavigator = () => {
             <Tab.Screen
                 name="Add"
                 component={AddScreen}
+                onPress={() => console.log('add tab pressed')} // added onPress event handler
                 options={({ route }) => ({
                     tabBarItemStyle: {
                         height: 0
@@ -93,6 +96,7 @@ export const TabNavigator = () => {
             <Tab.Screen
                 name="Analytics"
                 component={Analytics}
+                onPress={() => console.log('Analytics tab pressed')} // added onPress event handler
                 options={({ route }) => ({
                     tabBarItemStyle: {
                         // height:0
