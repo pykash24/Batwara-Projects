@@ -1,24 +1,50 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, Button} from 'react-native';
-
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Button,
+  SafeAreaView,
+  Image,
+} from 'react-native';
+import FlexStyles from '../../../assets/Styles/FlexStyles';
+import LoginStyles from './LoginStyles';
+import CommonStyles from '../../../assets/Styles/CommonStyles';
 class Prelogin extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-      this.state={}
-    
+    this.state = {};
   }
   render() {
     return (
-      <View>
-        <Text>prelogin screen</Text>
-        <Button
-          title="Go to Login"
-          onPress={() => this.props.navigation.navigate('Login')}
-          // onPress={() =>
-          //   this.props.navigation.navigate('Details', { name: 'Custom Details header' })
-          // }
-        />
-      </View>
+      <SafeAreaView style={[FlexStyles.flex1]}>
+        <View
+          style={[
+            FlexStyles.flex1,
+            FlexStyles.flexDirectioncolumn,
+            FlexStyles.flexarround,
+            FlexStyles.alignItems,
+          ]}>
+          <View>
+            <Image
+              source={require('../../../assets/images/logo/batwaraPreLogin.png')}
+              style={[LoginStyles.logoStyle]}
+            />
+          </View>
+          <View>
+            <TouchableOpacity
+              style={[LoginStyles.loginArrow]}
+              onPress={() => this.props.navigation.navigate('Login')}
+            >
+              <Image
+                source={require('../../../assets/images/logo/Arrow1.png')}
+                style={[LoginStyles.loginArrowImg]}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
     );
   }
 }
