@@ -7,15 +7,41 @@ import {
   Button,
   SafeAreaView,
   Image,
+  Animated,
+  PanResponder,
+  Dimensions,
 } from 'react-native';
 import FlexStyles from '../../../assets/Styles/FlexStyles';
 import LoginStyles from './LoginStyles';
 import CommonStyles from '../../../assets/Styles/CommonStyles';
+const {width, height} = Dimensions.get('window');
 class Prelogin extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+  pan = new Animated.ValueXY();
+  panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderMove: Animated.event(
+      [null, {dx: this.pan.x, dy: this.pan.y}],
+      {useNativeDriver: false},
+    ),
+    onPanResponderRelease: () => {
+      Animated.spring(this.pan, {
+        toValue: {x: 0, y: 0},
+        useNativeDriver: true,
+      }).start();
+      console.log('onPanResponderRelease called');
+      console.log('this.pan.x:', this.pan.x._value);
+      console.log('width:', width);
+      if (this.pan.x._value > '170') {
+        this.props.navigation.navigate('Login');
+      } else {
+        console.log('move again');
+      }
+    },
+  });
   render() {
     return (
       <SafeAreaView style={[FlexStyles.flex1]}>
@@ -24,7 +50,7 @@ class Prelogin extends Component {
             FlexStyles.flex1,
             FlexStyles.flexDirectioncolumn,
             FlexStyles.flexarround,
-            FlexStyles.alignItems,
+            // FlexStyles.alignItems,
           ]}>
           <View>
             <Image
@@ -32,16 +58,32 @@ class Prelogin extends Component {
               style={[LoginStyles.logoStyle]}
             />
           </View>
-          <View>
-            <TouchableOpacity
-              style={[LoginStyles.loginArrow]}
-              onPress={() => this.props.navigation.navigate('Login')}
-            >
-              <Image
-                source={require('../../../assets/images/logo/Arrow1.png')}
-                style={[LoginStyles.loginArrowImg]}
-              />
-            </TouchableOpacity>
+          <View
+            style={[
+              LoginStyles.preloginCard,
+              CommonStyles.commonShadowCard,
+              FlexStyles.flex1,
+              FlexStyles.flexDirectioncolumn,
+              FlexStyles.flexBetween,
+              FlexStyles.alignItems,
+            ]}>
+            <View style={[CommonStyles.p20]}>
+              <Text style={[]}>Split bills made easy with Batwara!</Text>
+              <Text style={[CommonStyles.pt10]}>Say goodbye to the headache of splitting bills - with Batwara, it's as easy as pie and you can keep your cool!</Text>
+            </View>
+            <View
+              style={[LoginStyles.outerSlider, CommonStyles.commonShadowCard]}>
+              <Animated.View
+                style={{
+                  transform: [
+                    {translateX: this.pan.x},
+                    {translateY: this.pan.y},
+                  ],
+                }}
+                {...this.panResponder.panHandlers}>
+                <View style={[LoginStyles.loginArrow]}></View>
+              </Animated.View>
+            </View>
           </View>
         </View>
       </SafeAreaView>
