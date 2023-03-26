@@ -32,8 +32,8 @@ const LoginStyles = StyleSheet.create({
     marginTop: 12,
   },
   logoStyle: {
-    height: height / 2.5,
-    width: width - 50,
+    height: height / 1.8,
+    width: width ,
     resizeMode: 'center',
   },
   loginArrow: {

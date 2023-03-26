@@ -28,7 +28,7 @@ class Prelogin extends Component {
           ]}>
           <View>
             <Image
-              source={require('../../../assets/images/logo/batwaralogo1.png')}
+              source={require('../../../assets/images/logo/batwaraPreLogin.png')}
               style={[LoginStyles.logoStyle]}
             />
           </View>
@@ -36,9 +36,6 @@ class Prelogin extends Component {
             <TouchableOpacity
               style={[LoginStyles.loginArrow]}
               onPress={() => this.props.navigation.navigate('Login')}
-              // onPress={() =>
-              //   this.props.navigation.navigate('Details', { name: 'Custom Details header' })
-              // }
             >
               <Image
                 source={require('../../../assets/images/logo/Arrow1.png')}
