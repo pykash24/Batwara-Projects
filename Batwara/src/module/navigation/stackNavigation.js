@@ -14,7 +14,11 @@ const RegistrationStack = createStackNavigator();
 const StackNavigator = () => (
   <NavigationContainer>
     <Stack.Navigator screenOptions={{presentation: 'switch'}}>
-      <Stack.Screen name="Prelogin" component={Prelogin} />
+      <Stack.Screen 
+      name="Prelogin" 
+      component={Prelogin} 
+      options={{headerShown: false}}
+      />
       <Stack.Screen
         name="Login"
         component={Login}

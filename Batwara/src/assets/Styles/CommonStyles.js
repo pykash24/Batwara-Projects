@@ -29,7 +29,9 @@ const CommonStyles = StyleSheet.create({
     },
     w10: {
       width: 10
+    },
+    m5: {
+      margin:5
     }
-    
   });
 export default CommonStyles;

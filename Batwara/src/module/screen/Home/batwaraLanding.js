@@ -7,6 +7,8 @@ import {
   Button,
   SafeAreaView,
   Image,
+  FlatList,
+  ScrollView,
 } from 'react-native';
 import FlexStyles from '../../../assets/Styles/FlexStyles';
 import LandingStyles from './landinStyless';
@@ -43,14 +45,14 @@ class Batwaralanding extends Component {
             style={[
               FlexStyles.flexDirectionrow,
               FlexStyles.alignItems,
-              FlexStyles.flexarround
+              FlexStyles.flexarround,
             ]}>
             <View
               style={[
                 FlexStyles.flexDirectionrow,
                 LandingStyles.searchbar,
                 FlexStyles.alignItems,
-               FlexStyles.flexarround
+                FlexStyles.flexarround,
               ]}>
               <TextInput
                 style={LandingStyles.searchTextbar}
@@ -71,10 +73,12 @@ class Batwaralanding extends Component {
               />
             </View>
           </View>
-          <View>
+          <ScrollView>
             <CommonCard />
-            {/* <Text>common card</Text> */}
-          </View>
+            <CommonCard />
+            <CommonCard />
+            <CommonCard />
+          </ScrollView>
         </View>
       </>
     );
