@@ -17,6 +17,9 @@ const FlexStyles = StyleSheet.create({
   justifyContainCenter: {
     justifyContent: 'center',
   },
+  justifyContainend:{
+    justifyContent:'flex-end'
+  },
   textAlignCenter: {
     textAlign: 'center',
   },

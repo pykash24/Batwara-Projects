@@ -32,25 +32,49 @@ const LoginStyles = StyleSheet.create({
     marginTop: 12,
   },
   logoStyle: {
-    height: height / 1.8,
-    width: width ,
+    height: height / 2.5,
+    width: width,
     resizeMode: 'center',
   },
   loginArrow: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    // borderWidth: 1,
-    borderColor: 'black',
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    margin: 5,
+    borderWidth: 2,
+    borderColor: ColorStyles.orange,
     borderStyle: 'solid',
     justifyContent: 'center',
-    backgroundColor: ColorStyles.orange,
+    backgroundColor: 'white', //ColorStyles.orange,
   },
   loginArrowImg: {
     height: 17,
     width: 'auto',
     resizeMode: 'center',
   },
+  outerSlider: {
+    margin: 20,
+    width: width - 100,
+    height: 55,
+    borderRadius: 25,
+    // borderWidth: 1,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    justifyContent: 'center',
+    backgroundColor: ColorStyles.grey,
+  },
+  preloginCard: {
+    backgroundColor: 'white',
+    height: height / 2,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  preloginText: {
+    padding:20
+  },
+  preloginText1: {
+    paddingBottom:10
+  }
 });
 
 export default LoginStyles;
