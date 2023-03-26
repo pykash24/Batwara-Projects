@@ -42,7 +42,7 @@ class Prelogin extends Component {
             >
               <Image
                 source={require('../../../assets/images/logo/Arrow1.png')}
-                style={[LoginStyles.loginArrowImg, FlexStyles.textAlignCenter]}
+                style={[LoginStyles.loginArrowImg]}
               />
             </TouchableOpacity>
           </View>
