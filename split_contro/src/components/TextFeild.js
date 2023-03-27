@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../constants/Colors'
 
-const TextFeild = ({value=''}) => {
+const TextFeild = ({ value = '', color }) => {
   return (
     <View>
-        <Text style={{color: Colors.primary, fontWeight: '700'}}>{value}</Text>
+      <Text style={{ color: !!color ? color : Colors.primary, fontWeight: '700' }}>{value}</Text>
     </View>
   )
 }

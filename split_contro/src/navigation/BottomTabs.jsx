@@ -13,7 +13,8 @@ import { Colors } from '../constants/Colors';
 import AddScreen from '../screens/AddScreen';
 import AddButton from '../components/AddButton';
 import FriendScreen from '../screens/friends/FriendScreen';
-import { useTabMenu } from '../context/TabContext';
+import { TabContext, useTabMenu } from '../context/TabContext';
+import { useState } from 'react';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,9 +29,12 @@ const getTabBarVisibility = route => {
     return 'flex';
 };
 export const TabNavigator = () => {
-    const {opened, toggleOpened} = useTabMenu();
-    console.log('hh',opened);
-     return (
+    const [opened,setOpen]=useState(false)
+    console.log('hh', opened);
+    const toggleOpened=()=>{
+        setOpen(!opened)
+    }
+    return (
         <Tab.Navigator
             // initialRouteName='Home'
             screenOptions={{
@@ -84,7 +88,15 @@ export const TabNavigator = () => {
                     tabBarItemStyle: {
                         height: 0
                     },
-                    tabBarButton: () => <AddButton opened={opened} toggleOpened={toggleOpened} />,
+                    tabBarButton: () => 
+                    <View>
+                        <TabContext.Provider
+                            value={{ opened: opened, toggleOpened: toggleOpened }}
+                        >
+                            <AddButton/>
+                        </TabContext.Provider>
+                    </View>
+                    ,
                     tabBarIcon: ({ color, size, focused }) => (
                         <View style={[styles.tabIconContainer]}>
                             {!!focused && <View style={styles.tabActiveStrip} />}

@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import {View, StyleSheet, Animated} from "react-native";
 import { Colors } from "../constants/Colors";
-import {useTabMenu} from "../context/TabContext";
+import {TabContext, useTabMenu} from "../context/TabContext";
 
 const TabContainer = ({children}) => {
-  const opened= useTabMenu();
+  const {opened, toggleOpened} =useContext(TabContext) 
   console.log('ll',opened
   );
   const animation = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
     Animated.timing(animation, {
-      toValue: opened ? 1 : 0,
+      toValue: !!opened ? 1 : 0,
       duration: 300,
       friction: 2,
       useNativeDriver: false,
@@ -21,7 +21,6 @@ const TabContainer = ({children}) => {
   return (
     <View style={styles.container}>
       {children}
-      {/* {children}
       {opened && (
         <Animated.View
           style={[
@@ -34,7 +33,7 @@ const TabContainer = ({children}) => {
             },
           ]}
         />
-      )} */}
+      )}
     </View>
   );
 };

@@ -1,22 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View, Animated, TouchableWithoutFeedback } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Colors } from '../constants/Colors'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
-import { useTabMenu } from '../context/TabContext';
+import { TabContext, useTabMenu } from '../context/TabContext';
 import { transformer } from '../../metro.config';
-import InputField from './InputField';
 
 const AddButton = ({  }) => {
   const animation = useRef(new Animated.Value(0)).current;
- const [opened,setOpened]=useState(false)
-//  const {opened, toggleOpened} = useTabMenu();
+ const {opened, toggleOpened} =useContext(TabContext) 
 
 
  console.log('jj',opened);
- const toggleOpened=()=>{
-  setOpened(!opened)
- }
   useEffect(() => {
     Animated.timing(animation, {
       toValue: opened ? 1 : 0,
@@ -108,7 +103,7 @@ const AddButton = ({  }) => {
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={ ()=>{toggleOpened()}} style={styles.addButton}>
+        <TouchableWithoutFeedback onPress={ toggleOpened} style={styles.addButton}>
           {/* <View style={styles.addButtonInner}> */}
           <Animated.View
             style={[

@@ -16,6 +16,7 @@ import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
 import { Colors } from '../constants/Colors';
 import splash2 from '../assets/images/splash2.png'
+import TextFeild from '../components/TextFeild';
 
 const LoginScreen = ({ navigation }) => {
   return (
@@ -100,10 +101,11 @@ const LoginScreen = ({ navigation }) => {
             flexDirection: 'row',
             justifyContent: 'center',
             marginBottom: 30,
+            gap:20
           }}>
-          <Text>New to the app?</Text>
+          <TextFeild value={'New to the app?'} color={Colors.gray} />
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={{ color: Colors.primary, fontWeight: '700' }}> Register</Text>
+            <TextFeild value='Register'/> 
           </TouchableOpacity>
         </View>
       </View>
