@@ -4,7 +4,6 @@ import {
   ScrollView,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Image,
 } from 'react-native';
@@ -17,10 +16,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import register from '../assets/images/register.png'
 
-import RegistrationSVG from '../assets/images/misc/registration.svg';
-import GoogleSVG from '../assets/images/misc/google.svg';
-import FacebookSVG from '../assets/images/misc/facebook.svg';
-import TwitterSVG from '../assets/images/misc/twitter.svg';
 import CustomButton from '../components/CustomButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Colors } from '../constants/Colors';
