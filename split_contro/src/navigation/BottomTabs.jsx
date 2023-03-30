@@ -8,30 +8,27 @@ import Entypoicons from 'react-native-vector-icons/Entypo';
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
 import Analytics from '../screens/analytics/Analytics';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../constants/Colors';
 import AddScreen from '../screens/AddScreen';
 import AddButton from '../components/AddButton';
 import FriendScreen from '../screens/friends/FriendScreen';
 import { TabContext, useTabMenu } from '../context/TabContext';
 import { useState } from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Header from './Header';
 
 const Tab = createBottomTabNavigator();
-
-const getTabBarVisibility = route => {
-    console.log(route);
-    const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
-    console.log('12', routeName);
-
-    if (routeName == 'Home') {
-        return 'none';
-    }
-    return 'flex';
-};
+const commonHeaderStyles = {
+    color: Colors.white,
+    borderBottomEndRadius: 20,
+    borderBottomLeftRadius: 20,
+    backgroundColor: Colors.primary
+}
 export const TabNavigator = () => {
-    const [opened,setOpen]=useState(false)
+    const [opened, setOpen] = useState(false)
     console.log('hh', opened);
-    const toggleOpened=()=>{
+    const toggleOpened = () => {
         setOpen(!opened)
     }
     return (
@@ -41,7 +38,7 @@ export const TabNavigator = () => {
                 tabBarShowLabel: true,
                 headerShown: true,
                 tabBarStyle: styles.tabBar,
-                tabBarInactiveTintColor: Colors.gray,
+                tabBarInactiveTintColor: Colors.white,
                 tabBarActiveTintColor: Colors.white,
                 headerStyle: {
                     backgroundColor: Colors.primary,
@@ -50,11 +47,19 @@ export const TabNavigator = () => {
             <Tab.Screen
                 name="Overview"
                 component={HomeScreen}
+
                 onPress={() => console.log('Overview tab pressed')} // added onPress event handler
-                options={({ route }) => ({
-                    tabBarItemStyle: {
-                        // height:12
-                    },
+                options={({ navigation }) => ({
+
+                    headerTitle: () => <Header name={"Hello, Batwara"} />,
+                    headerRight: () => (
+                        <View style={styles.mr_15}>
+                            <TouchableOpacity>
+                                <MaterialCommunityIcons name="bell" color={Colors.white} size={25} />
+                            </TouchableOpacity>
+                        </View>
+                    ),
+                    headerStyle: commonHeaderStyles,
 
                     tabBarIcon: ({ color, size, focused }) => (
                         <View style={[styles.tabIconContainer]}>
@@ -68,34 +73,37 @@ export const TabNavigator = () => {
                 name="Friends"
                 component={FriendScreen}
                 onPress={() => console.log('Friends tab pressed')} // added onPress event handler
-                options={({ route }) => ({
-                    tabBarItemStyle: {
-                        // height:0
-                    },
-                    tabBarIcon: ({ color, size, focused }) => (
-                        <View style={[styles.tabIconContainer]}>
-                            {!!focused && <View style={styles.tabActiveStrip} />}
-                            <FontAwesomIcon name="user-friends" color={color} size={size} />
-                        </View>
-                    ),
-                })}
+
+                options={({ navigation }) => {
+                    return {
+                        headerTitle: () => <Header name={"Hello, Batwara"} navigation={navigation} />,
+                        tabBarIcon: ({ color, size, focused }) => (
+                            <View style={[styles.tabIconContainer]}>
+                                {!!focused && <View style={styles.tabActiveStrip} />}
+                                <FontAwesomIcon name="user-friends" color={color} size={size} />
+                            </View>
+                        ),
+                        headerStyle: commonHeaderStyles,
+                    };
+                }}
+
             />
             <Tab.Screen
                 name="Add"
                 component={AddScreen}
                 onPress={() => console.log('add tab pressed')} // added onPress event handler
-                options={({ route }) => ({
+                options={({ navigation }) => ({
                     tabBarItemStyle: {
                         height: 0
                     },
-                    tabBarButton: () => 
-                    <View>
-                        <TabContext.Provider
-                            value={{ opened: opened, toggleOpened: toggleOpened }}
-                        >
-                            <AddButton/>
-                        </TabContext.Provider>
-                    </View>
+                    tabBarButton: () =>
+                        <View>
+                            <TabContext.Provider
+                                value={{ opened: opened, toggleOpened: toggleOpened }}
+                            >
+                                <AddButton />
+                            </TabContext.Provider>
+                        </View>
                     ,
                     tabBarIcon: ({ color, size, focused }) => (
                         <View style={[styles.tabIconContainer]}>
@@ -109,31 +117,32 @@ export const TabNavigator = () => {
                 name="Analytics"
                 component={Analytics}
                 onPress={() => console.log('Analytics tab pressed')} // added onPress event handler
-                options={({ route }) => ({
-                    tabBarItemStyle: {
-                        // height:0
-                    },
+                options={({ navigation }) => ({
+                    headerTitle: () => <Header name={"Analytics"} />,
+
                     tabBarIcon: ({ color, size, focused }) => (
                         <View style={[styles.tabIconContainer]}>
                             {!!focused && <View style={styles.tabActiveStrip} />}
                             <Ionicons name="md-analytics-sharp" color={color} size={size} />
                         </View>
                     ),
+                    headerStyle: commonHeaderStyles,
+
                 })}
             />
             <Tab.Screen
                 name="Settings"
                 component={SettingScreen}
-                options={({ route }) => ({
-                    tabBarItemStyle: {
-                        // height:12
-                    },
+                options={({ navigation }) => ({
+                    headerTitle: () => <Header name={"Settings"} />,
+
                     tabBarIcon: ({ color, size, focused }) => (
                         <View style={[styles.tabIconContainer]}>
                             {!!focused && <View style={styles.tabActiveStrip} />}
                             <Ionicons name="settings" color={color} size={size} />
                         </View>
                     ),
+                    headerStyle: commonHeaderStyles,
                 })}
             />
 
@@ -143,11 +152,11 @@ export const TabNavigator = () => {
 
 const styles = StyleSheet.create({
     tabBar: {
-        position: 'absolute',
+        position: 'relative',
         paddingBottom: 3,
-        left: 16,
-        right: 16,
-        bottom: 32,
+        // left: 10,
+        // right: 10,
+        bottom: 0,
         height: 56,
         borderRadius: 16,
         backgroundColor: Colors.primary,
@@ -175,5 +184,8 @@ const styles = StyleSheet.create({
         top: 12,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    mr_15: {
+        marginRight: 15
     }
 })
