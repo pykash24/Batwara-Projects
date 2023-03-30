@@ -10,7 +10,7 @@ const Header = ({name,navigation}) => {
       >
       <Image  source={userAvatar} style={styles.image}/>
       </TouchableOpacity>
-      <Text style={styles.label}>{props.name}</Text>
+      <Text style={styles.label}>{name}</Text>
     </View>
   )
 }

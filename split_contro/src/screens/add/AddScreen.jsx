@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import TextFeild from '../components/TextFeild'
+import TextFeild from '../../components/TextFeild'
 
 const AddScreen = () => {
   return (

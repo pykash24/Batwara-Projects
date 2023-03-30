@@ -10,7 +10,7 @@ import Analytics from '../screens/analytics/Analytics';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../constants/Colors';
-import AddScreen from '../screens/AddScreen';
+import AddScreen from '../screens/add/AddScreen';
 import AddButton from '../components/AddButton';
 import FriendScreen from '../screens/friends/FriendScreen';
 import { TabContext, useTabMenu } from '../context/TabContext';
