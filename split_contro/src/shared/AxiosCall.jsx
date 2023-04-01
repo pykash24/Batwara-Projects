@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {BaseUrl} from '../shared/ConfigUrl'
 
-export default function fetchApi(endUrl, payload={}) {
+export default function fetchApi(endUrl, payload={},token='') {
+  console.log('token--',token);
   const headers = {
     'Content-Type': 'application/json',
   };

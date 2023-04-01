@@ -1,14 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {View, StyleSheet, Animated} from "react-native";
 import { Colors } from "../constants/Colors";
 import {TabContext, useTabMenu} from "../context/TabContext";
+import { useSelector } from "react-redux";
 
 const TabContainer = ({children}) => {
-  const {opened, toggleOpened} =useContext(TabContext) 
-  console.log('ll',opened
-  );
+
   const animation = React.useRef(new Animated.Value(0)).current;
 
+  const homeCtx = useSelector((state) => state.home);
+
+  const opened=homeCtx?.isAddTab
+  useEffect(()=>{
+    console.log('00000llaaaaaaa',homeCtx?.isAddTab,opened);
+  },[homeCtx?.isAddTab])
   React.useEffect(() => {
     Animated.timing(animation, {
       toValue: !!opened ? 1 : 0,

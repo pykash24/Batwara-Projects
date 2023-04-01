@@ -3,15 +3,13 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Colors } from '../constants/Colors'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
-import { TabContext, useTabMenu } from '../context/TabContext';
-import { transformer } from '../../metro.config';
+import { homeActions } from '../store/slice/HomeSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-const AddButton = ({  }) => {
+const AddButton = ({ }) => {
   const animation = useRef(new Animated.Value(0)).current;
- const {opened, toggleOpened} =useContext(TabContext) 
-
-
- console.log('jj',opened);
+  const [opened, setOpend] = useState(false)
+  const dispatch = useDispatch()
   useEffect(() => {
     Animated.timing(animation, {
       toValue: opened ? 1 : 0,
@@ -27,10 +25,15 @@ const AddButton = ({  }) => {
       outputRange: [0, 0, 1],
     }),
   };
+  const changeTab = () => {
+    console.log('999999tabch');
+    setOpend(!opened)
+    dispatch(homeActions.setIsTab(!opened));
+  }
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-          <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback>
           <Animated.View
             style={[
               styles.item,
@@ -103,7 +106,7 @@ const AddButton = ({  }) => {
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={ toggleOpened} style={styles.addButton}>
+        <TouchableWithoutFeedback onPress={() => changeTab()} style={styles.addButton}>
           {/* <View style={styles.addButtonInner}> */}
           <Animated.View
             style={[
@@ -154,9 +157,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    borderColor:Colors.primary,    
-    borderWidth:5,
-    elevation:3
+    borderColor: Colors.primary,
+    borderWidth: 5,
+    elevation: 3
   },
   addButton: {
     shadowColor: Colors.dark,
@@ -174,8 +177,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.white,
     borderRadius: 30,
-    borderColor:Colors.primary,
-    borderWidth:5,
-    elevation:3
+    borderColor: Colors.primary,
+    borderWidth: 5,
+    elevation: 3
   }
 })

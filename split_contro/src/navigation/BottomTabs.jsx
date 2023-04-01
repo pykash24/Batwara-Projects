@@ -7,14 +7,11 @@ import Entypoicons from 'react-native-vector-icons/Entypo';
 
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
 import Analytics from '../screens/analytics/Analytics';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../constants/Colors';
 import AddScreen from '../screens/add/AddScreen';
 import AddButton from '../components/AddButton';
 import FriendScreen from '../screens/friends/FriendScreen';
-import { TabContext, useTabMenu } from '../context/TabContext';
-import { useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from './Header';
 
@@ -26,11 +23,7 @@ const commonHeaderStyles = {
     backgroundColor: Colors.primary
 }
 export const TabNavigator = () => {
-    const [opened, setOpen] = useState(false)
-    console.log('hh', opened);
-    const toggleOpened = () => {
-        setOpen(!opened)
-    }
+
     return (
         <Tab.Navigator
             // initialRouteName='Home'
@@ -97,13 +90,7 @@ export const TabNavigator = () => {
                         height: 0
                     },
                     tabBarButton: () =>
-                        <View>
-                            <TabContext.Provider
-                                value={{ opened: opened, toggleOpened: toggleOpened }}
-                            >
-                                <AddButton />
-                            </TabContext.Provider>
-                        </View>
+                        <AddButton />
                     ,
                     tabBarIcon: ({ color, size, focused }) => (
                         <View style={[styles.tabIconContainer]}>
