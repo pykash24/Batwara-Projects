@@ -1,21 +1,25 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
 import {Colors} from '../constants/Colors.js';
 const {width, height} = Dimensions.get('window');
+
 const CommonCardStyles = StyleSheet.create({
   cardStyle: {
-    // borderWidth: 2,
-    // borderColor: 'red',
     margin: 10,
     borderRadius: 5,
+    backgroundColor: Colors.grey2,
+    // borderLeftWidth: 5,
+    // borderLeftColor:'blue',
+    // borderTopRightRadius: 5,
+    // borderBottomRightRadius: 5,
   },
   cardBorderStyle: {
     width: 3,
     backgroundColor: 'blue',
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
-    marginTop: 10,
-    marginBottom: 10,
-    // marginRight:10
+    // marginTop: 10,
+    // marginBottom: 10,
+    marginRight: 7,
   },
   cardImage: {
     width: 60,
@@ -55,8 +59,16 @@ const CommonCardStyles = StyleSheet.create({
   },
   searchTextbar: {
     width: width / 1.8,
-    // width:90
-    // borderWidth:1,
   },
+  grpPeople: {
+    height: 25,
+    width: 25,
+    resizeMode: 'center',
+  },
+  verticalBar:{
+    width: 3, 
+    height:30,
+    backgroundColor: 'black'
+  }
 });
 export default CommonCardStyles;

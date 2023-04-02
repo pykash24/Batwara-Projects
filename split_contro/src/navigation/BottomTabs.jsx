@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 const getTabBarVisibility = route => {
     console.log(route);
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
-    console.log('12', routeName);
+    console.log('routeName:', routeName);
 
     if (routeName == 'Home') {
         return 'none';
@@ -29,7 +29,7 @@ const getTabBarVisibility = route => {
 };
 export const TabNavigator = () => {
     const {opened, toggleOpened} = useTabMenu();
-    console.log('hh',opened);
+    console.log('opened:',opened);
      return (
         <Tab.Navigator
             // initialRouteName='Home'
@@ -82,7 +82,7 @@ export const TabNavigator = () => {
                 onPress={() => console.log('add tab pressed')} // added onPress event handler
                 options={({ route }) => ({
                     tabBarItemStyle: {
-                        height: 0
+                        // height: 0
                     },
                     tabBarButton: () => <AddButton opened={opened} toggleOpened={toggleOpened} />,
                     tabBarIcon: ({ color, size, focused }) => (
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         paddingBottom: 3,
         left: 16,
         right: 16,
-        bottom: 32,
+        bottom: 20,
         height: 56,
         borderRadius: 16,
         backgroundColor: Colors.primary,

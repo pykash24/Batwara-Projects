@@ -1,5 +1,12 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import TabContainer from '../../components/TabContainer';
 import {Colors} from '../../constants/Colors';
 
@@ -8,25 +15,50 @@ import LandingStyles from './LandinStyless';
 import CommonStyles from '../../assets/Styles/CommonStyles';
 import CommonCard from '../../shared/CommonCard';
 const HomeScreen = () => {
+  const [active, setActive] = useState('GE');
+  const changeTab = TabType => {
+    if (TabType === 'GE') {
+      setActive('GE');
+    } else {
+      setActive('PE');
+    }
+  };
   return (
     <TabContainer>
-      <View style={[FlexStyles.dflex, LandingStyles.card]}>
+      <View
+        style={[
+          FlexStyles.dflex,
+          LandingStyles.card,
+          LandingStyles.whiteCardHeight,
+        ]}>
         <View
           style={[
             FlexStyles.flexDirectionrow,
             FlexStyles.flexarround,
             FlexStyles.alignItems,
           ]}>
-          <View style={[LandingStyles.tabBackground]}>
+          <TouchableOpacity
+            onPress={() => changeTab('GE')}
+            style={
+              active === 'GE'
+                ? [LandingStyles.tabActiveBackground, LandingStyles.tabTop]
+                : [LandingStyles.tabInactiveBackground, LandingStyles.tabTop]
+            }>
             <Text style={[LandingStyles.tabStyles, LandingStyles.tabText]}>
               Group Expenses
             </Text>
-          </View>
-          <View>
+          </TouchableOpacity>
+          <TouchableOpacity
+           onPress={() => changeTab('PE')}
+            style={
+              active === 'PE'
+                ? [LandingStyles.tabActiveBackground, LandingStyles.tabTop]
+                : [LandingStyles.tabInactiveBackground, LandingStyles.tabTop]
+            }>
             <Text style={[LandingStyles.tabStyles, LandingStyles.tabText]}>
               Personal Expenses
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View
           style={[
