@@ -87,7 +87,7 @@ export const TabNavigator = () => {
                 onPress={() => console.log('add tab pressed')} // added onPress event handler
                 options={({ navigation }) => ({
                     tabBarItemStyle: {
-                        height: 0
+                        // height: 0
                     },
                     tabBarButton: () =>
                         <AddButton />

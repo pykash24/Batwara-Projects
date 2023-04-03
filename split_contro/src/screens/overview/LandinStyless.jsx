@@ -11,6 +11,12 @@ const LandingStyles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
+  whiteCardHeight: {
+    height: height - 180,
+  },
+  tabInactiveBackground:{
+    backgroundColor: Colors.grey1
+  },
   bottomWidth: {
     // borderWidth:10,
     borderBottomWidth: 6,
@@ -29,21 +35,22 @@ const LandingStyles = StyleSheet.create({
   tabText: {
     color: Colors.commonBlack,
   },
-  tabBackground: {
-    backgroundColor:  Colors.orange,
-    margin:10,
-    padding:5,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
-    borderBottomLeftRadius:10,
-    borderBottomRightRadius:10,
-
+  tabTop:{
+    margin: 10,
+    padding: 5,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  tabActiveBackground: {
+    backgroundColor: Colors.orange,
   },
   searchbar: {
     margin: 10,
     borderWidth: 2,
     borderRadius: 10,
-    borderColor:  Colors.orange,
+    borderColor: Colors.orange,
     padding: 5,
   },
   searchTextbar: {

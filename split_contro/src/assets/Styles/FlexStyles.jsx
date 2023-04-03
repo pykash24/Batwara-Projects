@@ -20,6 +20,9 @@ const FlexStyles = StyleSheet.create({
   justifyContainend:{
     justifyContent:'flex-end'
   },
+  justifyContainstart:{
+    justifyContent:'flex-start'
+  },
   textAlignCenter: {
     textAlign: 'center',
   },
