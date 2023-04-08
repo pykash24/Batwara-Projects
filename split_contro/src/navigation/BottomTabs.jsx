@@ -14,6 +14,10 @@ import AddButton from '../components/AddButton';
 import FriendScreen from '../screens/friends/FriendScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from './Header';
+import FriendsStack from './FriendsStack';
+import HomeStacks from './HomeStacks';
+import AnalyticsStack from './AnalyticsStack';
+import SettingsStack from './SettingsStack';
 
 const Tab = createBottomTabNavigator();
 const commonHeaderStyles = {
@@ -26,10 +30,9 @@ export const TabNavigator = () => {
 
     return (
         <Tab.Navigator
-            // initialRouteName='Home'
             screenOptions={{
                 tabBarShowLabel: true,
-                headerShown: true,
+                headerShown: false,
                 tabBarStyle: styles.tabBar,
                 tabBarInactiveTintColor: Colors.white,
                 tabBarActiveTintColor: Colors.white,
@@ -39,7 +42,7 @@ export const TabNavigator = () => {
             }}>
             <Tab.Screen
                 name="Overview"
-                component={HomeScreen}
+                component={HomeStacks}
 
                 onPress={() => console.log('Overview tab pressed')} // added onPress event handler
                 options={({ navigation }) => ({
@@ -64,9 +67,11 @@ export const TabNavigator = () => {
             />
             <Tab.Screen
                 name="Friends"
-                component={FriendScreen}
+                component={FriendsStack}
                 onPress={() => console.log('Friends tab pressed')} // added onPress event handler
-
+                screenOptions={{
+                    headerShown: false
+                }}
                 options={({ navigation }) => {
                     return {
                         headerTitle: () => <Header name={"Hello, Batwara"} navigation={navigation} />,
@@ -102,7 +107,7 @@ export const TabNavigator = () => {
             />
             <Tab.Screen
                 name="Analytics"
-                component={Analytics}
+                component={AnalyticsStack}
                 onPress={() => console.log('Analytics tab pressed')} // added onPress event handler
                 options={({ navigation }) => ({
                     headerTitle: () => <Header name={"Analytics"} />,
@@ -119,7 +124,7 @@ export const TabNavigator = () => {
             />
             <Tab.Screen
                 name="Settings"
-                component={SettingScreen}
+                component={SettingsStack}
                 options={({ navigation }) => ({
                     headerTitle: () => <Header name={"Settings"} />,
 

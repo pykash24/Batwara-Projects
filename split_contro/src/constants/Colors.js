@@ -4,6 +4,7 @@ export const Colors={
     primary:"#FC8415",
     gray:"#666",
     bgColor:"#ffffff",
+    purple:"#AD40AF",
     // primary:"#AD40AF",
     orange:'#F17120',
     grey:'#F5F5F5',
