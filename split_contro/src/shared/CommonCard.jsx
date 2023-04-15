@@ -38,130 +38,135 @@ const HalfCircle = ({size, color, rotation, top, left, zIndex}) => {
   return <View style={styles.halfCircle} />;
 };
 
-const CommonCard = () => {
+const CommonCard = props => {
   const groupPeople = [
     {id: 1, src: require('../assets/images/homescreen/male.png')},
     {id: 2, src: require('../assets/images/homescreen/female.png')},
   ];
+  console.log('props:', props.data);
   return (
-    <View style={[CommonCardStyles.cardStyle]}>
-      <View
-        style={[
-          FlexStyles.flexDirectioncolumn,
-          FlexStyles.dflex,
-          FlexStyles.alignItems,
-        ]}>
-        <View
-          style={[
-            FlexStyles.flexDirectionrow,
-            FlexStyles.dflex,
-            {height: 100},
-          ]}>
-          <View style={[CommonCardStyles.cardBorderStyle]}></View>
-          {/* <View>
-            <HalfCircle size={40} color="red" rotation={90} zIndex={10} left={-20} top={70} />
-          </View> */}
-          <View style={[{padding: 7}]}>
-            <Image
-              source={require('../assets/images/homescreen/roundtable.png')}
-              style={[{width: 50, height: 50, resizeMode: 'center'}]}
-            />
-          </View>
-
-          <View style={[FlexStyles.flexDirectioncolumn]}>
-            <View style={[FlexStyles.flexDirectionrow]}>
-              <View style={[{width: width / 2.09, height: 60}]}>
-                <Text>Lonavla Trakking</Text>
-              </View>
-              <View>
-                <Text>Sat 20-March</Text>
-              </View>
-            </View>
+    <>
+      {props.data.map((item, idx) => (
+        <View style={[CommonCardStyles.cardStyle]} key={idx}>
+          <View
+            style={[
+              FlexStyles.flexDirectioncolumn,
+              FlexStyles.dflex,
+            ]}>
             <View
               style={[
                 FlexStyles.flexDirectionrow,
-                FlexStyles.flex1,
-                FlexStyles.flexarround,
+                FlexStyles.dflex,
+                // {height: 100},
               ]}>
-              <View style={[FlexStyles.dflex, FlexStyles.flexDirectionrow]}>
+              <View style={[CommonCardStyles.cardBorderStyle]}></View>
+              <View style={[{padding: 7}]}>
                 <Image
-                  source={require('../assets/images/homescreen/userAvatar.png')}
-                  style={[{width: 20, height: 20, resizeMode: 'center'}]}
+                  source={require('../assets/images/homescreen/roundtable.png')}
+                  style={[{width: 50, height: 50, resizeMode: 'center'}]}
                 />
-                <Text>Mahesh Shendage</Text>
               </View>
-              <View style={[FlexStyles.dflex, FlexStyles.flexDirectionrow]}>
-                <Image
-                  source={require('../assets/images/homescreen/group.png')}
-                  style={[{width: 20, height: 20, resizeMode: 'center'}]}
-                />
-                <Text>5</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={[{borderWidth: 1, width: width - 70}]}></View>
-        <View
-          style={[FlexStyles.dflex, FlexStyles.flexDirectionrow, {height: 80}]}>
-          <View style={[CommonCardStyles.cardBorderStyle]}></View>
-          <View>
-            <HalfCircle
-              size={40}
-              color="#ffff"
-              rotation={90}
-              zIndex={10}
-              left={-20}
-              top={-10}
-            />
-          </View>
-          <View>
-            <HalfCircle
-              size={40}
-              color="#ffff"
-              rotation={270}
-              zIndex={10}
-              left={290}
-              top={-10}
-            />
-          </View>
-          <View
-            style={[
-              FlexStyles.flexDirectionrow,
-              FlexStyles.flexarround,
-              FlexStyles.flex1,
-              FlexStyles.alignItems,
-              // {width: width / 3, padding: 15, backgroundColor:'red'},
-            ]}>
-            <View style={[FlexStyles.flexDirectionrow]}>
-              {groupPeople.map((image, id) => (
-                <Image
-                  source={image.src}
-                  key={id}
-                  style={[CommonCardStyles.grpPeople]}
-                />
-              ))}
-            </View>
-            <View style={[CommonCardStyles.verticalBar]}></View>
-            <View style={[FlexStyles.flexDirectionrow]}>
-              <Image
-                source={require('../assets/images/homescreen/sendSplit.png')}
-                style={[CommonCardStyles.grpPeople]}
-              />
-              <Text>SEND SPLIT</Text>
-            </View>
-            <View style={[CommonCardStyles.verticalBar]}></View>
 
-            <View style={[FlexStyles.flexDirectionrow]}>
-              <Image
-                source={require('../assets/images/homescreen/rupee.png')}
-                style={[CommonCardStyles.grpPeople]}
-              />
-              <Text>5000</Text>
+              <View style={[FlexStyles.flexDirectioncolumn]}>
+                <View style={[FlexStyles.flexDirectionrow]}>
+                  <View style={[{width: width / 2.09, height: 60}]}>
+                    <Text>{item.title}</Text>
+                  </View>
+                  <View>
+                    <Text>{item.date}</Text>
+                  </View>
+                </View>
+                <View
+                  style={[
+                    FlexStyles.flexDirectionrow,
+                    FlexStyles.flex1,
+                    FlexStyles.flexarround,
+                  ]}>
+                  <View style={[FlexStyles.dflex, FlexStyles.flexDirectionrow]}>
+                    <Image
+                      source={require('../assets/images/homescreen/userAvatar.png')}
+                      style={[{width: 20, height: 20, resizeMode: 'center'}]}
+                    />
+                    <Text>{item.name}</Text>
+                  </View>
+                  <View style={[FlexStyles.dflex, FlexStyles.flexDirectionrow]}>
+                    <Image
+                      source={require('../assets/images/homescreen/group.png')}
+                      style={[{width: 20, height: 20, resizeMode: 'center'}]}
+                    />
+                    <Text>{item.totalPerson}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={[{borderWidth: 1, width: width - 70}]}></View>
+            <View
+              style={[
+                FlexStyles.dflex,
+                FlexStyles.flexDirectionrow,
+                {height: 80},
+              ]}>
+              <View style={[CommonCardStyles.cardBorderStyle]}></View>
+              <View>
+                <HalfCircle
+                  size={40}
+                  color="#ffff"
+                  rotation={90}
+                  zIndex={10}
+                  left={-20}
+                  top={-10}
+                />
+              </View>
+              <View>
+                <HalfCircle
+                  size={40}
+                  color="#ffff"
+                  rotation={270}
+                  zIndex={10}
+                  left={290}
+                  top={-10}
+                />
+              </View>
+              <View
+                style={[
+                  FlexStyles.flexDirectionrow,
+                  FlexStyles.flexarround,
+                  FlexStyles.flex1,
+                  FlexStyles.alignItems,
+                  // {width: width / 3, padding: 15, backgroundColor:'red'},
+                ]}>
+                <View style={[FlexStyles.flexDirectionrow]}>
+                  {groupPeople.map((image, id) => (
+                    <Image
+                      source={image.src}
+                      key={id}
+                      style={[CommonCardStyles.grpPeople]}
+                    />
+                  ))}
+                </View>
+                <View style={[CommonCardStyles.verticalBar]}></View>
+                <View style={[FlexStyles.flexDirectionrow]}>
+                  <Image
+                    source={require('../assets/images/homescreen/sendSplit.png')}
+                    style={[CommonCardStyles.grpPeople]}
+                  />
+                  <Text>SEND SPLIT</Text>
+                </View>
+                <View style={[CommonCardStyles.verticalBar]}></View>
+
+                <View style={[FlexStyles.flexDirectionrow]}>
+                  <Image
+                    source={require('../assets/images/homescreen/rupee.png')}
+                    style={[CommonCardStyles.grpPeople]}
+                  />
+                  <Text>{item.totalCost}</Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </View>
+      ))}
+    </>
   );
 };
 // class CommonCard extends Component {

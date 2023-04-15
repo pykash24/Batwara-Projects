@@ -23,6 +23,11 @@ const HomeScreen = () => {
       setActive('PE');
     }
   };
+  const data = [
+    {title: 'Lonavala Trekking', date: 'sat-20-2022', name: 'Mahesh Shendage', totalPerson: '5', totalCost: '5000'},
+    {title: 'Pagoda Temple', date: 'sat-20-2022', name: 'Nishant Nandeshwar', totalPerson: '2', totalCost: '10000'},
+    {title: 'Goa', date: 'sat-29-2023', name: 'Vikas Tomar', totalPerson: '3', totalCost: '30000'},
+  ];
   return (
     <TabContainer>
       <View
@@ -49,7 +54,7 @@ const HomeScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-           onPress={() => changeTab('PE')}
+            onPress={() => changeTab('PE')}
             style={
               active === 'PE'
                 ? [LandingStyles.tabActiveBackground, LandingStyles.tabTop]
@@ -78,15 +83,15 @@ const HomeScreen = () => {
           </View>
         </View>
         <ScrollView>
+          <CommonCard data= {data}/>
+          {/* <CommonCard />
           <CommonCard />
           <CommonCard />
           <CommonCard />
           <CommonCard />
           <CommonCard />
           <CommonCard />
-          <CommonCard />
-          <CommonCard />
-          <CommonCard />
+          <CommonCard /> */}
         </ScrollView>
       </View>
     </TabContainer>
