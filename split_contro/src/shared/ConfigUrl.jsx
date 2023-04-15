@@ -1,2 +1,2 @@
-export const BaseUrl = "https://7137-115-98-234-221.in.ngrok.io";
+export const BaseUrl = "https://db92-60-254-0-234.ngrok-free.app";
 export const SendOtp = "/authentication/send-otp/"

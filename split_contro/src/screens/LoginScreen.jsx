@@ -17,8 +17,28 @@ import InputField from '../components/InputField';
 import { Colors } from '../constants/Colors';
 import splash2 from '../assets/images/splash2.png'
 import TextFeild from '../components/TextFeild';
+import fetchApi from '../shared/AxiosCall'
+import {SendOtp} from '../shared/ConfigUrl';
 
 const LoginScreen = ({ navigation }) => {
+
+ const sendOtp = () => {
+    let data = {
+      user_phone: this.state.phoneNumber,
+      // user_phone: '8668776095',
+    };
+    console.log('sendOtp called:', data);
+    if (this.state.phoneNumber.length == 10) {
+      fetchApi(SendOtp, data)
+        .then(res => {
+          console.log('sendOtp res:', res);
+        })
+        .catch(err => {
+          console.log('sendOtp err:', err);
+        });
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
       <View style={{ paddingHorizontal: 25 }}>
