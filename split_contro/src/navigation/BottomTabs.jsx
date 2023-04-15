@@ -87,10 +87,11 @@ export const TabNavigator = () => {
 
             />
             <Tab.Screen
-                name="Add"
+                name="add"
                 component={AddScreen}
                 onPress={() => console.log('add tab pressed')} // added onPress event handler
                 options={({ navigation }) => ({
+                    headerShown:false,
                     tabBarItemStyle: {
                         // height: 0
                     },

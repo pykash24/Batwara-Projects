@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import TabContainer from "../../components/TabContainer";
 import { Colors } from "../../constants/Colors";
 import { Friends } from "../../data/friends/Friends";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from "@react-navigation/native";
 
-const FriendScreen = ({navigation}) => {
+const FriendScreen = () => {
 
+  const navigation=useNavigation();
+
+  useEffect(()=>{
+    navigation.setOptions({
+      headerLargeTitle:true,
+      headerTitle:"Friends",
+      headerRight:()=>(
+        <TouchableOpacity>
+          <Text></Text>
+        </TouchableOpacity>
+      )
+    })
+
+  },[navigation])
   const Item = ({ name, nickname, gender }) => (
     <View style={styles.flexBetween}>
       <View style={styles.flexRow}>
