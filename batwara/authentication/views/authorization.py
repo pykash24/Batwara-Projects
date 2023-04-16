@@ -81,7 +81,7 @@ def user_register(request):
 
 """ User OTP authentication """ 
 @csrf_exempt
-def sign_in_otp_authentication(request):
+def sign_in_otp_verification(request):
     try:
         user_request = json.loads(request.body)
         if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request):
@@ -296,9 +296,9 @@ def generate_totp(secret_key):
 def sign_in_send_otp(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'nation' in user_request):
+        if not ('user_phone' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        user_phone,nation= user_request['user_phone'],user_request['nation']
+        user_phone= user_request['user_phone']
 
         # To check the phone is register or not
         is_user_present = Users.objects.filter(user_phone=user_phone).first()
@@ -307,6 +307,7 @@ def sign_in_send_otp(request):
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_DOES_NOT_EXIST_DO_SIGN_UP},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         user_id = str(is_user_present.user_id)
+        nation = str(is_user_present.nation)
 
         # Generate a TOTP and send it to the user
         secret_key,otp_unique_id = generate_secret_key(user_id)
