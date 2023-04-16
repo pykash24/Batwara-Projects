@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Rootnavigation from './src/navigation/Rootnavigation';
 import { store } from './src/store/store'
 import { Provider } from 'react-redux'
+import { Provider as PaperProvider } from 'react-native-paper';
 
 const App = () => {
   useEffect(() => {
@@ -11,7 +12,9 @@ const App = () => {
   }, [])
   return (
     <Provider store={store}>
-      <Rootnavigation />
+      <PaperProvider>
+        <Rootnavigation />
+      </PaperProvider>
     </Provider>
 
   )
