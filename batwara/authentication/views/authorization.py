@@ -118,7 +118,7 @@ def sign_in_otp_authentication(request):
 
 """ """ 
 @csrf_exempt
-def sign_in_registration(request):
+def sign_up_otp_verification(request):
     try:
         user_request = json.loads(request.body)
         if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request or 'full_name' in request or 'nation' in user_request):
