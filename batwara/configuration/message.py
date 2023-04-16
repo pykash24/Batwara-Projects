@@ -12,5 +12,6 @@ APP_ID_MESSAGE = "app_id"
 GROUP_DELETED_MESSAGE ="Group deleted"
 GROUP_NOT_EXIST_MESSAGE = "Group not exist"
 USER_DELETE_FROM_GROUP_MESSAGE = "User deleted successfully"
+ACCOUNT_DOES_NOT_EXIST_DO_SIGN_UP= "No Account Found, Please SignUp!"
 
 

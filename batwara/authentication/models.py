@@ -15,10 +15,9 @@ class Users(models.Model):
         db_table = "users_tank"
 
 class TempOtp(models.Model):
-    otp_id = models.CharField(max_length=256,null=True)
+    otp_unique_id = models.CharField(max_length=256,null=True)
     user_id = models.CharField(max_length=256,null=True)
-    user_phone = models.CharField(max_length=256,null=True)
-    user_otp = models.CharField(max_length=256,null=True)
+    secret_key = models.CharField(max_length=256,null=True)
     user_created_on =  models.DateTimeField(auto_now_add=True)
 
     class Meta:

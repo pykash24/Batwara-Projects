@@ -6,7 +6,7 @@ from twilio.rest import Client
 from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from configuration import constants
-import jwt
+import jwt,time
 import datetime
 from datetime import timedelta
 import hashlib
@@ -19,9 +19,11 @@ from io import BytesIO, StringIO
 from xhtml2pdf import pisa
 from django.core.mail import send_mail
 from configuration import templates
-# Function to generate a random OTP
-def generate_otp():
-    return str(random.randint(1000, 9999))
+from django.db.models import Q
+import threading
+import pyotp
+import secrets
+
 
 # Function to send the OTP via SMS
 def send_otp_via_sms(otp, to_number):
@@ -30,54 +32,12 @@ def send_otp_via_sms(otp, to_number):
         account_sid = 'AC713f0910e5644de5d33deb336a21d8e8'
         auth_token = '1f2a443035e3b8084abb315cce60ac5f'
         client = Client(account_sid, auth_token)
-
         message = client.messages.create(
             to=to_number,
             from_='+14698296521',
             body='Your OTP is: ' + otp
         )
         print(message.sid)
-    except Exception as error:
-        print(error)
-        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#h-3RNImuTqfVTSawZoHrV-0dUO0W45EgPZg_kiDV
-# View to generate and send the OTP
-@csrf_exempt
-def send_otp(request):
-    try:
-        print("running")
-        user_request = json.loads(request.body)
-        if not ('user_phone' in user_request):
-            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        user_phone = user_request['user_phone']
-
-        # To check the phone is register or not
-        is_user_present = Users.objects.filter(user_phone=user_phone).first()
-
-        if not is_user_present:
-            return JsonResponse({'status': 'No Account Found, Please SignUp!'},safe=False,status=constants.HTTP_204_NO_CONTENT)
-
-        # Generate the OTP
-        otp = generate_otp()
-        user_phone_with_country_prefix = '+91' + user_phone
-
-        # Send the OTP to the specified contact number
-        send_otp_via_sms(otp, user_phone_with_country_prefix)
-
-        #To save the otp in local database
-        user_id = is_user_present.user_id
-        otp_id = uuid.uuid4()
-        temp_save_opt = TempOtp(
-            otp_id = otp_id,
-            user_id = str(user_id),
-            user_phone = user_phone,
-            user_otp = otp
-        )
-        temp_save_opt.save()
-
-        # Return a success response
-        return JsonResponse({'status': 'success','otp_id':otp_id},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -91,17 +51,16 @@ def user_register(request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         user_phone = user_request['user_phone']
         user_password = user_request['user_password']
-        print(user_phone)
-        is_user_present = Users.objects.filter(user_phone=user_phone)
-        print(is_user_present)
+        user_mail = user_request['user_mail']
+        is_user_present = Users.objects.filter(Q(user_phone=user_phone) | Q(user_mail=user_mail))
         if bool(is_user_present):
-            return JsonResponse({'data':'Already present'},safe=False)
+            return JsonResponse({'data':'Already present'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
         # convert into hash password values
         sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
-
+        user_id = str(uuid.uuid4())
         save_user_register = Users(
-            user_id = uuid.uuid4(),
+            user_id = str(user_id),
             user_phone = user_request['user_phone'],
             user_password = sha256_hash_pasword,
             first_name = user_request['first_name'],
@@ -109,47 +68,56 @@ def user_register(request):
             user_mail = user_request['user_mail'],
         )
         save_user_register.save()
-        mail_inviation = new_member_mail_inviation(request)
-        print(mail_inviation)
-        # Return a success response
-        return JsonResponse({'data': 'success'},safe=False,status=constants.HTTP_200_OK)
+
+        #calling mail invaition function parallel
+        thread1 = threading.Thread(target=new_member_mail_inviation, args=(request,))
+
+        # Start threads
+        thread1.start()
+
+        # # Wait for threads to finish
+        # thread1.join()
+
+        data = {"user_id":user_id}
+        return JsonResponse({constants.STATUS: 'success',"data":data},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
-        return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse({constants.STATUS: 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# User OTP authentication
+""" User OTP authentication """ 
 @csrf_exempt
 def opt_authentication(request):
     try:
         print("working")
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_id' in user_request):
+        if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         user_phone = user_request['user_phone']
-        otp_id = user_request['otp_id']
+        otp_unique_id = user_request['otp_unique_id']
+        user_otp = user_request['user_otp']
 
         #To check the otp has been generated for respectivity phone or not.
-        is_otp_generated = TempOtp.objects.filter(user_phone=user_phone,otp_id=otp_id).first()
+        is_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).first()
         if not is_otp_generated:
-            return JsonResponse({'data': 'Please login re-again'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({constants.STATUS: 'error',constants.MESSAGE:"please re-sent otp"},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        sent_user_otp = is_otp_generated.user_otp
+        user_id = is_otp_generated.user_id
+        is_valid = validate_totp(user_id, user_otp)
 
         #To check the generated otp is same as user pass otp
-        if not sent_user_otp == user_request['user_otp']:
-            return JsonResponse({'data': 'Invalid OTP'},safe=False)
+        if not is_valid:
+            return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
         user_token = generate_token(request)
         if not user_token:
-            return JsonResponse({'data': 'Invalid OTP'},safe=False)
+            return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
-        delete_otp_generated = TempOtp.objects.filter(user_phone=user_phone,otp_id=otp_id).delete()
-        print("working")
-        return JsonResponse({'data': 'success','token':user_token},safe=False,status=constants.HTTP_200_OK)
+        delete_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).delete()
+        return JsonResponse({constants.STATUS: "success",'token':user_token},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
-        return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse({constants.STATUS: 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # User OTP authentication
@@ -272,6 +240,99 @@ def new_member_mail_inviation(request):
     except Exception as error:
         print(error)
         return JsonResponse({"status_code": "500", "message": "Internal server error"}, safe=False)
-    
 
+# Generate a TOTP
+def generate_totp(secret_key):
+    totp = pyotp.TOTP(secret_key, interval=60, digits=6)
+    # Get the current TOTP code
+    otp = totp.now()
+    # Get the expiry time of the current TOTP code
+    otp_expiry_time = totp.interval - (int(time.time()) % totp.interval)
+    # Return the TOTP code and expiry time
+    return otp,otp_expiry_time
+
+
+"""
+    METHOD: generate_secret_key
+    DESCRIPTION: 
+    AUTHOR: Vikas Tomar
+    Date: 16/04/2023
+"""
+@csrf_exempt
+def send_otp(request):
+    try:
+        user_request = json.loads(request.body)
+        if not ('user_phone' in user_request or 'nation' in user_request):
+            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+        user_phone,nation= user_request['user_phone'],user_request['nation']
+
+        # To check the phone is register or not
+        is_user_present = Users.objects.filter(user_phone=user_phone).first()
+
+        if not is_user_present:
+            return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_DOES_NOT_EXIST_DO_SIGN_UP},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+
+        user_id = str(is_user_present.user_id)
+
+        # Generate a TOTP and send it to the user
+        secret_key,otp_unique_id = generate_secret_key(user_id)
+        otp,otp_expiry_time= generate_totp(secret_key)
+
+        user_phone_with_country_prefix = nation + user_phone
+
+        # Send the OTP to the specified contact number
+        send_otp_via_sms(otp, user_phone_with_country_prefix)
+        return JsonResponse({'status': 'success','otp_unique_id':otp_unique_id},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+"""
+    METHOD: generate_secret_key
+    DESCRIPTION: 
+    AUTHOR: Vikas Tomar
+    Date: 16/04/2023
+"""
+def generate_secret_key(user_id):
+
+    #Generate a random 32-character string
+    secret_key = pyotp.random_base32()
+
+    #To save the otp in local database
+    user_id = user_id
+    
+    # Save the secret key to the database for the user
+    is_user_secret_key_exist = TempOtp.objects.filter(user_id=user_id).first()
+    if is_user_secret_key_exist:
+        otp_unique_id=str(is_user_secret_key_exist.otp_unique_id)
+        is_user_secret_key_exist.secret_key = secret_key
+        is_user_secret_key_exist.save()
+    else:
+        otp_unique_id = str(uuid.uuid4())
+        temp_save_opt = TempOtp(
+            otp_unique_id = otp_unique_id,
+            user_id = str(user_id),
+            secret_key=secret_key
+        )
+        temp_save_opt.save()
+    return secret_key,otp_unique_id
+
+# Function to validate a TOTP code for a given user
+def validate_totp(user_id, otp):
+    # Save the secret key to the database for the user
+    is_user_secret_key_exist = TempOtp.objects.filter(user_id=user_id).first()
+    if is_user_secret_key_exist:
+        # Get the user's secret key
+        secret_key =is_user_secret_key_exist.secret_key
+        # Create a TOTP object with a 60 second interval and 6 digits
+        totp = pyotp.TOTP(secret_key, interval=60, digits=6)
+        # Get the current time
+        current_time = int(time.time())
+        # Check if the code is valid within a 3-minute window (1 minute before and 1 minute after the current time)
+        for offset in [-1, 0, 1]:
+            if totp.at(current_time + offset*60) == otp:
+                return True
+    return False
 
