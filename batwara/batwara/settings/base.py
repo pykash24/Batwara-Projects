@@ -36,7 +36,7 @@ X_FRAME_OPTION = 'DENY'
 
 CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = [
-    '7137-115-98-234-221.in.ngrok.io'
+    'aaf2-60-254-0-234.ngrok-free.app'
 ]
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'corsheaders',
     'authentication',
 ]
 
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'batwara.permissions.UserAccessPermission',
 ]
 
@@ -122,5 +124,13 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'batwaraapp@gmail.com'
+EMAIL_HOST_PASSWORD = 'hgqxfjqgtzubzguy'
+DEFAULT_FROM_EMAIL = 'batwaraapp'

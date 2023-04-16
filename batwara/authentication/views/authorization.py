@@ -9,7 +9,16 @@ from configuration import constants
 import jwt
 import datetime
 from datetime import timedelta
-
+import hashlib
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from configuration import message
+from django.template import Context, Template
+from io import BytesIO, StringIO
+from xhtml2pdf import pisa
+from django.core.mail import send_mail
+from configuration import templates
 # Function to generate a random OTP
 def generate_otp():
     return str(random.randint(1000, 9999))
@@ -47,7 +56,7 @@ def send_otp(request):
         is_user_present = Users.objects.filter(user_phone=user_phone).first()
 
         if not is_user_present:
-            return JsonResponse({'status': 'No Account Found, Please SignUp!'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({'status': 'No Account Found, Please SignUp!'},safe=False,status=constants.HTTP_204_NO_CONTENT)
 
         # Generate the OTP
         otp = generate_otp()
@@ -87,17 +96,21 @@ def user_register(request):
         print(is_user_present)
         if bool(is_user_present):
             return JsonResponse({'data':'Already present'},safe=False)
+        
+        # convert into hash password values
+        sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
 
         save_user_register = Users(
             user_id = uuid.uuid4(),
             user_phone = user_request['user_phone'],
-            user_password = user_request['user_password'],
+            user_password = sha256_hash_pasword,
             first_name = user_request['first_name'],
             last_name = user_request['last_name'],
             user_mail = user_request['user_mail'],
         )
         save_user_register.save()
-        print("registeration successfully")
+        mail_inviation = new_member_mail_inviation(request)
+        print(mail_inviation)
         # Return a success response
         return JsonResponse({'data': 'success'},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
@@ -132,6 +145,32 @@ def opt_authentication(request):
             return JsonResponse({'data': 'Invalid OTP'},safe=False)
 
         delete_otp_generated = TempOtp.objects.filter(user_phone=user_phone,otp_id=otp_id).delete()
+        print("working")
+        return JsonResponse({'data': 'success','token':user_token},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# User OTP authentication
+@csrf_exempt
+def user_authenticaton(request):
+    try:
+        user_request = json.loads(request.body)
+        if not ('user_mail' in user_request or 'user_password' in user_request):
+            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+        
+        user_password,user_mail= user_request['user_password'],user_request['user_mail']
+
+        """ convert into hash password values """
+        sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
+
+        """ To check is user is valid or not"""
+        is_user_valid =Users.objects.filter(user_password=sha256_hash_pasword,user_mail=user_mail).first()
+        if not is_user_valid:
+            return JsonResponse({constants.STATUS:"error",constants.MESSAGE:"Invalid Creditinals"},safe=False,status=constants.HTTP_401_UNAUTHORIZED)
+        
+        user_token = generate_token(request)
         return JsonResponse({'data': 'success','token':user_token},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
@@ -140,30 +179,99 @@ def opt_authentication(request):
 # User token generate...
 def generate_token(request):
     try:
-        user_request = json.loads(request.body)
-        if user_request:
-            secret_key = user_request['user_phone']
         expiry_time = datetime.datetime.now()+timedelta(minutes=constants.TOKEN_EXPIRY)
-        encoded_jwt = jwt.encode({"app_id": constants.APP_ID, "exp": expiry_time}, secret_key, algorithm="HS256")
-        return JsonResponse({'data': 'success','token':encoded_jwt},safe=False,status=constants.HTTP_200_OK)
-
+        encoded_jwt = jwt.encode({"app_id": constants.APP_ID, "exp": expiry_time}, constants.SECRET_KEY, algorithm="HS256")
+        return encoded_jwt
+        # return JsonResponse({'data': 'success','token':encoded_jwt},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return False
 
+# @csrf_exempt
+# def token_decode(request):
+#     try:
+#         user_request = json.loads(request.body)
+#         if user_request:
+#             token = user_request['token']
+#             secret = user_request['phone']
+#         decode_token=jwt.decode(token, secret, verify_exp=True, algorithms=['HS256'])
+#         return JsonResponse({'data': 'success','token':decode_token},safe=False,status=constants.HTTP_200_OK)
+#     except Exception as error:
+        # print(error)
+        # return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @csrf_exempt
-def token_decode(request):
+def mail_sent(request):
     try:
-        user_request = json.loads(request.body)
-        if user_request:
-            token = user_request['token']
-            secret = user_request['phone']
-        decode_token=jwt.decode(token, secret, verify_exp=True, algorithms=['HS256'])
-        return JsonResponse({'data': 'success','token':decode_token},safe=False,status=constants.HTTP_200_OK)
+        if type(request) is dict:
+            user_request = request
+        else:
+            user_request = json.loads(request.body)
+
+        #Mail sending details
+        sender_email = constants.MAIL_SENDER 
+        # receiver_email = sankey_email #commnent for testing perspective
+        receiver_email = "vikastomar2409@outlook.com"
+
+        #Changes the subject the user request of payslip.
+        mail_subject = "Testing" 
+
+        #Changes the mail body according the user requirments
+        mail_body ="Body"
+       
+        #mail sending after render html to pdf
+        msg = EmailMultiAlternatives(mail_subject, mail_body, sender_email, [receiver_email])
+        # pdf = render_to_pdf(html_text)
+        # msg.attach(attached_file_name, pdf)
+        msg.send()
+        pass
     except Exception as error:
         print(error)
-        return JsonResponse({'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse({"status_code": str(constants.HTTP_500_INTERNAL_SERVER_ERROR),'data': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+"""
+    METHOD: render_to_pdf
+    DESCRIPTION: To convert the html template to pdf format values.
+    AUTHOR: Vikas Tomar
+    Date: 06/04/2023
+"""
+@csrf_exempt
+def render_to_pdf(employee_template: str):
+    try:
+        context_dict = {}
+        template = Template(employee_template)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+        if not pdf.err:
+            return result.getvalue()
+        return None
+    except Exception as error:
+        print(error)
+        return JsonResponse({"status_code": "500", "message": "Internal server error"}, safe=False)
+    
+
+@csrf_exempt
+def new_member_mail_inviation(request):
+    try:
+        user_request = json.loads(request.body)
+        if not ('user_phone' in user_request or 'user_password' in user_request or 'first_name' in user_request or 'last_name' in user_request or 'user_mail' in user_request):
+            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST) 
+        user_mail = user_request['user_mail']
+
+        subject = templates.NEW_MEMBER_MAIL_INVIATION_SUBJECT
+        message = templates.NEW_MEMBER_MAIL_INVIATION_BODY
+        message = message.replace('first_name',user_request['first_name'])
+        from_email = constants.MAIL_SENDER
+        recipient_list = [user_mail]
+        send_mail(subject, message, from_email, recipient_list)
+        return JsonResponse({'data': 'success'},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({"status_code": "500", "message": "Internal server error"}, safe=False)
+    
 
 
