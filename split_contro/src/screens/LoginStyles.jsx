@@ -75,6 +75,11 @@ const LoginStyles = StyleSheet.create({
   },
   preloginText1: {
     paddingBottom:10
+  },
+  loginwithlogoStyle: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
   }
 });
 
