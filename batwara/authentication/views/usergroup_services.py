@@ -292,7 +292,7 @@ def get_user_details(request):
         if not ('user_id' in user_request):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         user_id = user_request['user_id']
-        user_details_json = Users.objects.filter(user_id=user_id).values('user_mail','last_name','first_name','user_phone')
+        user_details_json = Users.objects.filter(user_id=user_id).values()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:list(user_details_json)},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)

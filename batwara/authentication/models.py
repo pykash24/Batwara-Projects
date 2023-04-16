@@ -6,9 +6,9 @@ class Users(models.Model):
     user_id = models.CharField(max_length=256,unique=True)
     user_phone = models.CharField(max_length=256,null=True)
     user_created_on =  models.DateField(auto_now_add=True)
-    full_name = models.CharField(max_length=256,null=True),
-    nation = models.CharField(max_length=256,null=True),
-    is_deleted= models.BooleanField(default=False)
+    full_name = models.CharField(max_length=256,null=True)
+    nation = models.CharField(max_length=256,null=True)
+    is_deleted= models.BooleanField(default=False,null=True)
 
     class Meta:
         db_table = "users_tank"

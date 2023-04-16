@@ -2,11 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('sign_in_send_otp/', views.sign_in_send_otp, name='sign_in_send_otp'),
     path('sign_up_send_otp/', views.sign_up_send_otp, name='sign_up_send_otp'),
-    path('user_register/', views.user_register, name='user_register'),
-    path('sign_in_otp_verification/', views.sign_in_otp_verification,name='sign_in_otp_verification'),
     path('sign_up_otp_verification/', views.sign_up_otp_verification,name='sign_up_otp_verification'),
+    path('sign_in_send_otp/', views.sign_in_send_otp, name='sign_in_send_otp'),
+    path('sign_in_otp_verification/', views.sign_in_otp_verification,name='sign_in_otp_verification'),
+    path('user_register/', views.user_register, name='user_register'),
     path('user_authenticaton/', views.user_authenticaton,name='user_authenticaton'),
     path('create_group/', views.create_group, name='create_group'),
     path('add_user_in_group/', views.add_user_in_group, name='add_user_in_group'),

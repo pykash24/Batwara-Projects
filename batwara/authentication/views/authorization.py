@@ -50,13 +50,12 @@ def user_register(request):
         if not ('user_phone' in user_request or 'full_name' in user_request or 'nation' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
+        print(user_request)
         user_phone,nation,full_name= user_request['user_phone'],user_request['nation'],user_request['full_name']
         is_user_present = Users.objects.filter(user_phone=user_phone)
         if bool(is_user_present):
             return JsonResponse({'data':'Already present'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        
-        # # convert into hash password values
-        # sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
+
         user_id = str(uuid.uuid4())
         save_user_register = Users(
             user_id = str(user_id),
@@ -68,11 +67,11 @@ def user_register(request):
         )
         save_user_register.save()
 
-        #calling mail invaition function parallel
-        thread1 = threading.Thread(target=new_member_mail_inviation, args=(request,))
+        # #calling mail invaition function parallel
+        # thread1 = threading.Thread(target=new_member_mail_inviation, args=(request,))
 
-        # Start threads
-        thread1.start()
+        # # Start threads
+        # thread1.start()
         data = {"user_id":user_id}
         return JsonResponse({constants.STATUS: 'success',"data":data},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
