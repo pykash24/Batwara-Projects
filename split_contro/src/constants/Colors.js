@@ -17,5 +17,6 @@ export const Colors={
     gray3:"#EBEBEB",
 
     darkGrey:"#777777",
-    red:"red"
+    red:"red",
+    white1:"#fafaf6"
 }

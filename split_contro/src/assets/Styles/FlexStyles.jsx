@@ -35,6 +35,9 @@ const FlexStyles = StyleSheet.create({
   flexarround: {
     justifyContent: 'space-around',
   },
+  gap10:{
+    gap:10
+  }
 });
 
 export default FlexStyles;
