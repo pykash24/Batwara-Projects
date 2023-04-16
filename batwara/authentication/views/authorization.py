@@ -47,25 +47,24 @@ def send_otp_via_sms(otp, to_number):
 def user_register(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_password' in user_request or 'first_name' in user_request or 'last_name' in user_request or 'user_mail' in user_request):
+        if not ('user_phone' in user_request or 'full_name' in user_request or 'nation' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        user_phone = user_request['user_phone']
-        user_password = user_request['user_password']
-        user_mail = user_request['user_mail']
-        is_user_present = Users.objects.filter(Q(user_phone=user_phone) | Q(user_mail=user_mail))
+        
+        user_phone,nation,full_name= user_request['user_phone'],user_request['nation'],user_request['full_name']
+        is_user_present = Users.objects.filter(user_phone=user_phone)
         if bool(is_user_present):
             return JsonResponse({'data':'Already present'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
-        # convert into hash password values
-        sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
+        # # convert into hash password values
+        # sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
         user_id = str(uuid.uuid4())
         save_user_register = Users(
             user_id = str(user_id),
-            user_phone = user_request['user_phone'],
-            user_password = sha256_hash_pasword,
-            first_name = user_request['first_name'],
-            last_name = user_request['last_name'],
-            user_mail = user_request['user_mail'],
+            user_phone = user_phone,
+            full_name = full_name,
+            nation=nation,
+            is_deleted = False
+
         )
         save_user_register.save()
 
@@ -74,10 +73,6 @@ def user_register(request):
 
         # Start threads
         thread1.start()
-
-        # # Wait for threads to finish
-        # thread1.join()
-
         data = {"user_id":user_id}
         return JsonResponse({constants.STATUS: 'success',"data":data},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
@@ -86,9 +81,8 @@ def user_register(request):
 
 """ User OTP authentication """ 
 @csrf_exempt
-def opt_authentication(request):
+def sign_in_otp_authentication(request):
     try:
-        print("working")
         user_request = json.loads(request.body)
         if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
@@ -109,6 +103,46 @@ def opt_authentication(request):
         if not is_valid:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
+        # save_user_details = user_register(request)
+        # print(save_user_details)
+        user_token = generate_token(request)
+        if not user_token:
+            return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+
+        delete_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).delete()
+        return JsonResponse({constants.STATUS: "success",'token':user_token},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({constants.STATUS: 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+""" """ 
+@csrf_exempt
+def sign_in_registration(request):
+    try:
+        user_request = json.loads(request.body)
+        if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request or 'full_name' in request or 'nation' in user_request):
+            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+
+        user_phone = user_request['user_phone']
+        otp_unique_id = user_request['otp_unique_id']
+        user_otp = user_request['user_otp']
+        full_name = user_request['full_name']
+
+        #To check the otp has been generated for respectivity phone or not.
+        is_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).first()
+        if not is_otp_generated:
+            return JsonResponse({constants.STATUS: 'error',constants.MESSAGE:"please re-sent otp"},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        user_id = is_otp_generated.user_id
+        is_valid = validate_totp(user_id, user_otp)
+
+        #To check the generated otp is same as user pass otp
+        if not is_valid:
+            return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+        
+        save_user_details = user_register(request)
+        print(save_user_details)
         user_token = generate_token(request)
         if not user_token:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
@@ -253,13 +287,13 @@ def generate_totp(secret_key):
 
 
 """
-    METHOD: generate_secret_key
+    METHOD: sign_in_send_otp
     DESCRIPTION: 
     AUTHOR: Vikas Tomar
     Date: 16/04/2023
 """
 @csrf_exempt
-def send_otp(request):
+def sign_in_send_otp(request):
     try:
         user_request = json.loads(request.body)
         if not ('user_phone' in user_request or 'nation' in user_request):
@@ -273,6 +307,43 @@ def send_otp(request):
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_DOES_NOT_EXIST_DO_SIGN_UP},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         user_id = str(is_user_present.user_id)
+
+        # Generate a TOTP and send it to the user
+        secret_key,otp_unique_id = generate_secret_key(user_id)
+        otp,otp_expiry_time= generate_totp(secret_key)
+
+        user_phone_with_country_prefix = nation + user_phone
+
+        # Send the OTP to the specified contact number
+        send_otp_via_sms(otp, user_phone_with_country_prefix)
+        return JsonResponse({'status': 'success','otp_unique_id':otp_unique_id},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+"""
+    METHOD: sign_up_send_otp
+    DESCRIPTION: 
+    AUTHOR: Vikas Tomar
+    Date: 16/04/2023
+"""
+@csrf_exempt
+def sign_up_send_otp(request):
+    try:
+        user_request = json.loads(request.body)
+        if not ('user_phone' in user_request or 'nation' in user_request,):
+            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+        user_phone,nation= user_request['user_phone'],user_request['nation']
+
+        # To check the phone is register or not
+        is_user_present = Users.objects.filter(user_phone=user_phone).first()
+
+        if is_user_present:
+            return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_ALREADY_EXIST_DO_SIGN_IN},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+        
+        user_id = str(uuid.uuid4())
 
         # Generate a TOTP and send it to the user
         secret_key,otp_unique_id = generate_secret_key(user_id)

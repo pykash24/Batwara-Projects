@@ -5,11 +5,10 @@ from django.db import models
 class Users(models.Model):
     user_id = models.CharField(max_length=256,unique=True)
     user_phone = models.CharField(max_length=256,null=True)
-    user_password = models.CharField(max_length=256,null=True)
     user_created_on =  models.DateField(auto_now_add=True)
-    first_name = models.CharField(max_length=256,null=True)
-    last_name = models.CharField(max_length=256,null=True)
-    user_mail = models.CharField(max_length=256,null=True)
+    full_name = models.CharField(max_length=256,null=True),
+    nation = models.CharField(max_length=256,null=True),
+    is_deleted= models.BooleanField(default=False)
 
     class Meta:
         db_table = "users_tank"
