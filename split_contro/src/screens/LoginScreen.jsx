@@ -12,11 +12,7 @@ import {
 import NewInputField from '../components/NewInputField';
 import phonecall from '../assets/images/inputBox/phonecall.png';
 import fetchApi from '../shared/AxiosCall';
-import {
-  SendOtp,
-  user_authenticaton,
-  opt_authentication,
-} from '../shared/ConfigUrl';
+import {sign_in_send_otp, sign_in_otp_verification} from '../shared/ConfigUrl';
 import OtpInputBox from '../components/OtpInputBox.js';
 import facebook from '../assets/images/login/facebook.png';
 import google from '../assets/images/login/google.png';
@@ -35,9 +31,8 @@ import TextFeild from '../components/TextFeild';
 const LoginScreen = ({navigation}) => {
   const [number, setnumber] = useState(false);
   const [Otp, setOtp] = useState('');
-  const [otp_id, setotp_id] = useState('');
-  const [mailId, setid] = useState('');
-  const [password, setpassword] = useState('');
+  const [otp_unique_id, setotp_unique_id] = useState('');
+
   const [loginType, setloginType] = useState('otp');
 
   const getOtp = otp => {
@@ -48,6 +43,11 @@ const LoginScreen = ({navigation}) => {
     setnumber(number);
     console.log('number', number);
   };
+  // const getotp_unique_id = otp_unique_id => {
+  //   setotp_unique_id(otp_unique_id);
+  //   console.log('otp_unique_id', otp_unique_id);
+  // };
+
   const getid = mailId => {
     setid(mailId);
     console.log('mailId', mailId);
@@ -64,10 +64,10 @@ const LoginScreen = ({navigation}) => {
     };
     console.log('sendOtp called:', data);
     if (number.length == 10) {
-      fetchApi(SendOtp, data)
+      fetchApi(sign_in_send_otp, data)
         .then(res => {
           if (res.status == 200) {
-            setotp_id(res.data.otp_id);
+            setotp_unique_id(res.data.otp_unique_id);
             console.log('sendOtp res:', res);
           }
         })
@@ -88,28 +88,26 @@ const LoginScreen = ({navigation}) => {
   };
 
   const login = loginType => {
-    if (loginType == 'otp') {
-      let data = {
-        user_phone: number,
-        user_otp: Otp,
-        otp_id: otp_id,
-      };
-      let endPoint = opt_authentication;
-    } else if (loginType == 'idpass') {
-      let data = {
-        user_mail: mailId,
-        user_password: password,
-      };
-      let endPoint = user_authenticaton;
-    }
-    fetchApi(endPoint, data)
+    let data = {
+      user_phone: number,
+      user_otp: Otp,
+      otp_unique_id: otp_unique_id,
+    };
+    console.log('login data:', data);
+    fetchApi(sign_in_otp_verification, data)
       .then(res => {
         if (res.status == 200) {
+          if (res.data.status === 'success') {
+            navigation.navigate('Main');
+          }
           console.log('login res:', res);
         }
       })
       .catch(err => {
         console.log('login err:', err);
+        if (err.response.status == 500) {
+          console.log('err.response.data.message:',err.response.data.message);
+        }
       });
   };
 
@@ -156,7 +154,7 @@ const LoginScreen = ({navigation}) => {
             Please fill up mobile number and OTP to log in to your account
           </Text>
 
-          <View
+          {/* <View
             style={[
               FlexStyles.flexDirectionrow,
               CommonStyles.mb30,
@@ -210,7 +208,7 @@ const LoginScreen = ({navigation}) => {
               }>
               <TextFeild value="User ID & Password" />
             </TouchableOpacity>
-          </View>
+          </View> */}
           {loginType == 'otp' && (
             <>
               <NewInputField

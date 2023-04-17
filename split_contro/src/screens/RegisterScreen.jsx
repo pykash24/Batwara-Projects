@@ -24,57 +24,68 @@ import phonecall from '../assets/images/inputBox/phonecall.png';
 import user from '../assets/images/inputBox/user.png';
 import OtpInputBox from '../components/OtpInputBox.js';
 import fetchApi from '../shared/AxiosCall';
-import {user_register,SendOtp} from '../shared/ConfigUrl';
+import {sign_up_otp_verification, sign_up_send_otp} from '../shared/ConfigUrl';
 
 const RegisterScreen = ({navigation}) => {
   const [number, setnumber] = useState('');
-  const [password, setpassword] = useState('');
-  const [confiremPassword, setConfirempassword] = useState('');
-  const [first_name, setfirst_name] = useState('');
-  const [last_name, setlast_name] = useState('');
-  const [user_mail, setuser_mail] = useState('');
-
   const [Otp, setOtp] = useState('');
-  const [dobLabel, setDobLabel] = useState('Date of Birth');
+  const [otp_unique_id, setotp_unique_id] = useState('');
+  const [full_name, setfull_name] = useState('');
+  const [nationCode, setnationCode] = useState('+91');
 
-  const getfirstName = first_name => {
-    setfirst_name(first_name);
-    console.log('first_name', first_name);
-  };
-  const getlastName = last_name => {
-    setlast_name(last_name);
-    console.log('last_name', last_name);
-  };
   const getNumber = number => {
     setnumber(number);
     console.log('number', number);
   };
-  const getOtp = otp => {
-    setOtp(otp);
-    console.log('otp', otp);
-  };
-  const getmail = user_mail => {
-    setuser_mail(user_mail);
-    console.log('user_mail', user_mail);
-  };
-  const getpass = password => {
-    setpassword(password);
-    console.log('password', password);
-  };
-  const getconfirmpass = confiremPassword => {
-    setConfirempassword(confiremPassword);
-    console.log('password', confiremPassword);
+
+  const getfullName = full_name => {
+    setfull_name(full_name);
+    console.log('full_name', full_name);
   };
 
+  const getnation = nationCode => {
+    setnationCode(nationCode);
+    console.log('nationCode', nationCode);
+  };
+
+  const varifySendOTP = () => {
+    if (number === '') {
+      console.log('enter the mobile no');
+    } else {
+      sendOtp();
+    }
+  };
+  const setOTP = otp => {
+    setOtp(otp);
+  };
+  const varifyRegistration = otp => {
+    if (number === '') {
+      console.log('enter the mobile no');
+    } else if (Otp === '') {
+      console.log('enter the otp');
+    } else if (otp_unique_id === '') {
+      console.log('enter the otp');
+    } else if (full_name === '') {
+      console.log('enter the full name');
+    } else if (nationCode === '') {
+      console.log('enter the nation code');
+    } else {
+      registration();
+    }
+  };
   const sendOtp = () => {
     let data = {
-      user_phone: number,
+      user_phone: number ? number : '',
+      nation: '+91',
     };
     console.log('sendOtp called:', data);
     if (number.length == 10) {
-      fetchApi(SendOtp, data)
+      fetchApi(sign_up_send_otp, data)
         .then(res => {
-          console.log('sendOtp res:', res);
+          if (res.status == 200) {
+            setotp_unique_id(res.data.otp_unique_id);
+            console.log('sendOtp res:', res);
+          }
         })
         .catch(err => {
           console.log('sendOtp err:', err);
@@ -84,20 +95,22 @@ const RegisterScreen = ({navigation}) => {
   const registration = () => {
     let data = {
       user_phone: number,
-      user_password: password,
-      first_name: first_name,
-      last_name: last_name,
-      user_mail: user_mail,
+      user_otp: Otp,
+      otp_unique_id: otp_unique_id,
+      full_name: full_name,
+      nation: nationCode,
     };
     console.log('registration data:', data);
 
-    fetchApi(user_register, data)
+    fetchApi(sign_up_otp_verification, data)
       .then(res => {
-        navigation.navigate('Main');
-        console.log('sendOtp res:', res);
+        if (res.status == 200) {
+          navigation.navigate('Login');
+          console.log('sendOtp res:', res);
+        }
       })
       .catch(err => {
-        console.log('sendOtp err:', err);
+        console.log('sendOtp err:', err, err.message);
       });
   };
 
@@ -135,21 +148,11 @@ const RegisterScreen = ({navigation}) => {
           Please fill up all inputs to create a new account.
         </Text>
         <NewInputField
-          label={'First Name'}
+          label={'Full Name'}
           icon={user}
-          setNumber={getfirstName}
+          setNumber={getfullName}
           keyboardType="default"
           maxLength={256}
-          sideButton={false}
-          secureTextEntry={false}
-        />
-        <NewInputField
-          label={'Last Name'}
-          icon={user}
-          setNumber={getlastName}
-          keyboardType="default"
-          maxLength={256}
-          // onPress={sendOtp}
           sideButton={false}
           secureTextEntry={false}
         />
@@ -163,34 +166,7 @@ const RegisterScreen = ({navigation}) => {
           sideButton={true}
           secureTextEntry={false}
         />
-        <OtpInputBox onComplete={getOtp} />
-        <NewInputField
-          label={'Enter your mail ID'}
-          icon={phonecall}
-          setNumber={getmail}
-          maxLength={256}
-          keyboardType="email-address"
-          sideButton={false}
-          secureTextEntry={false}
-        />
-        <NewInputField
-          label={'Set Password'}
-          icon={phonecall}
-          setNumber={getpass}
-          keyboardType="default"
-          maxLength={256}
-          sideButton={false}
-          secureTextEntry={true}
-        />
-        <NewInputField
-          label={'Set confirm Password'}
-          icon={phonecall}
-          setNumber={getpass}
-          keyboardType="default"
-          maxLength={256}
-          sideButton={false}
-          secureTextEntry={true}
-        />
+        <OtpInputBox onComplete={setOTP} />
         <CustomButton
           label={'Register'}
           onPress={() => {
