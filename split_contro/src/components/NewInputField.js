@@ -22,6 +22,7 @@ const NewInputField = ({
   Text,
   onPress,
   sideButton,
+  secureTextEntry
 }) => {
   const [text, setText] = useState('');
   const placeholderAnim = useRef(new Animated.Value(0)).current;
@@ -70,6 +71,7 @@ const setno =(number) => {
   setText(number)
   setNumber(number)
 } 
+// console.log("secureTextEntry:",secureTextEntry)
   return (
     <Animated.View style={styles.container}>
       <TouchableOpacity onPress={() => inputRef.current.focus()}>
@@ -91,6 +93,7 @@ const setno =(number) => {
         placeholder=""
         keyboardType={keyboardType}
         maxLength={maxLength}
+        secureTextEntry={secureTextEntry}
       />
       {sideButton == true && (
         <Animated.Text
@@ -143,8 +146,8 @@ const styles = StyleSheet.create({
     color: '#000',
     paddingVertical: 10,
     paddingLeft: 32,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderWidth: 2,
+    borderColor: "rgba(233,239,246,1)",
     borderRadius: 5,
     flex: 1,
   },

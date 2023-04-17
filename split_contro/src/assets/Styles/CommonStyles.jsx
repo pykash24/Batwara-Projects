@@ -48,6 +48,18 @@ const CommonStyles = StyleSheet.create({
   pt10: {
     paddingTop: 10,
   },
+  mb30: {
+    marginBottom: 30
+  },
+  mv20:{
+    marginVertical: 20,
+  },
+  gap10: {
+    gap: 10
+  },
+  gap20: {
+    gap: 20
+  },
 
   commonShadowCard: {
     backgroundColor: Colors.commonShadodowBackground,
