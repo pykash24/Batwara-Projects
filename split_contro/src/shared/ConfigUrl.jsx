@@ -3,3 +3,6 @@ export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_authenticaton = "/authentication/user_authenticaton/"
 export const user_register = "/authentication/user_register/"
+
+export const GetUserDetails = "/authentication/get_user_details/"
+

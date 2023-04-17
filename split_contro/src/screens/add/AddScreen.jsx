@@ -1,5 +1,5 @@
 import { Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import TextFeild from '../../components/TextFeild'
 import { Colors } from '../../constants/Colors'
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
@@ -12,103 +12,111 @@ import camera from '../../assets/images/commonImage/camera.png'
 import amount from '../../assets/images/commonImage/amount.png'
 import bill from '../../assets/images/commonImage/bill.png'
 import splitEqual from '../../assets/images/commonImage/splitEqual.png'
+import BottomSheet from '../../components/bottomSheet/BottomSheet';
 
 const AddScreen = () => {
+  const [showBottom, setShowBottom] = useState(false)
   const navigation = useNavigation();
-
+  const handlechangeInput = (text) => {
+    console.log('hhhh', text);
+    setShowBottom(true)
+  }
   return (
     <SafeAreaView>
-    <View style={styles.container}>
-      <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
-        <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
-          <TouchableOpacity style={[FlexStyles.flexDirectionrow, styles.gap15,]} onPress={() => navigation.goBack()}>
-            <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
+      <View style={styles.container}>
+        <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
+          <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
+            <TouchableOpacity style={[FlexStyles.flexDirectionrow, styles.gap15,]} onPress={() => navigation.goBack()}>
+              <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
+              <TextFeild
+                type={"heading"} color={Colors.white}
+                value={"Add Expense"} />
+            </TouchableOpacity>
+            <TouchableOpacity >
+              <Image source={checked} style={styles.checked} />
+            </TouchableOpacity>
+          </View>
+          
+        </View>
+        <KeyboardAvoidingView style={[styles.mainView, FlexStyles.flexDirectioncolumn]}>
+          {/* <View > */}
+          <View style={[styles.round1]}>
+            <View style={[styles.whiteRound]} />
+          </View>
+          <View style={[styles.round2]}>
+            <View style={[styles.whiteRound]} />
+          </View>
+          <View style={[styles.round3]}>
+            <View style={[styles.whiteRound]} />
+          </View>
+          <View style={[styles.round4]}>
+            <View style={[styles.whiteRound]} />
+          </View>
+
+
+          <View style={styles.mainViewChild1}>
+            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
+              <Image source={camera} style={styles.camera} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.mainViewChild2}>
+            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
+                <Image source={bill} style={styles.footerIcon} />
+              </TouchableOpacity>
+              <View style={[styles.searchOuterView, styles.pl10]}>
+                <TextInput placeholder='Enter bill or item name'
+                  style={[styles.searchInput, styles.width100]} />
+              </View>
+            </View>
+            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
+                <Image source={amount} style={styles.footerIcon} />
+              </TouchableOpacity>
+              <View style={[styles.searchOuterView, styles.pl10]}>
+                <TextInput placeholder='0.00'
+                  style={[styles.searchInput, styles.width100]} />
+              </View>
+            </View>
+            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
+                <Image source={splitEqual} style={styles.footerIcon} />
+              </TouchableOpacity>
+              <View style={[styles.searchOuterView, styles.pl10]}>
+                <TextInput placeholder='Split by equality'
+                  style={[styles.searchInput, styles.width100]} />
+              </View>
+            </View>
+          </View>
+          {/* </View> */}
+        </KeyboardAvoidingView>
+
+        <View style={styles.footer}>
+          <View style={[FlexStyles.flexDirectioncolumn]}>
+            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => setShowBottom(!showBottom)}>
+              <Image source={group} style={styles.footerIcon} />
+            </TouchableOpacity>
             <TextFeild
-              type={"heading"} color={Colors.white}
-              value={"Add Expense"} />
-          </TouchableOpacity>
-          <TouchableOpacity >
-            <Image source={checked} style={styles.checked} />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.searchOuterView, styles.mt20, styles.pl20]}>
-          <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
-          <TextInput placeholder='search by group name'
-            style={[styles.searchInput]} />
-        </View>
-      </View>
-      <KeyboardAvoidingView style={[styles.mainView, FlexStyles.flexDirectioncolumn]}>
-      {/* <View > */}
-        <View style={[styles.round1]}>
-          <View style={[styles.whiteRound]} />
-        </View>
-        <View style={[styles.round2]}>
-          <View style={[styles.whiteRound]} />
-        </View>
-        <View style={[styles.round3]}>
-          <View style={[styles.whiteRound]} />
-        </View>
-        <View style={[styles.round4]}>
-          <View style={[styles.whiteRound]} />
-        </View>
-
-
-        <View style={styles.mainViewChild1}>
-          <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-            <Image source={camera} style={styles.camera} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.mainViewChild2}>
-          <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
-            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-              <Image source={bill} style={styles.footerIcon} />
-            </TouchableOpacity>
-            <View style={[styles.searchOuterView, styles.pl10]}>
-              <TextInput placeholder='Enter bill or item name'
-                style={[styles.searchInput, styles.width100]} />
-            </View>
+              color={Colors.white}
+              value={"Choose Group"} />
           </View>
-          <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
-            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-              <Image source={amount} style={styles.footerIcon} />
+          <View tyle={[FlexStyles.flexDirectioncolumn,]}>
+            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
+              <Image source={calendar} style={styles.footerIcon} />
             </TouchableOpacity>
-            <View style={[styles.searchOuterView, styles.pl10]}>
-              <TextInput placeholder='0.00'
-                style={[styles.searchInput, styles.width100]} />
-            </View>
-          </View>
-          <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
-            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-              <Image source={splitEqual} style={styles.footerIcon} />
-            </TouchableOpacity>
-            <View style={[styles.searchOuterView, styles.pl10]}>
-              <TextInput placeholder='Split by equality'
-                style={[styles.searchInput, styles.width100]} />
-            </View>
+            <TextFeild
+              color={Colors.white}
+              value={"Choose Date"} />
           </View>
         </View>
-      {/* </View> */}
-      </KeyboardAvoidingView>
-
-      <View style={styles.footer}>
-        <View style={[FlexStyles.flexDirectioncolumn]}>
-          <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-            <Image source={group} style={styles.footerIcon} />
-          </TouchableOpacity>
+        {showBottom && <BottomSheet>
+          <View>
           <TextFeild
-            color={Colors.white}
-            value={"Choose Group"} />
-        </View>
-        <View tyle={[FlexStyles.flexDirectioncolumn,]}>
-          <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-            <Image source={calendar} style={styles.footerIcon} />
-          </TouchableOpacity>
-          <TextFeild
-            color={Colors.white}
-            value={"Choose Group"} />
-        </View>
-      </View>
-    </View >
+              color={Colors.black}
+              value={"Choose Date"} />
+          </View>
+        </BottomSheet>}
+      </View >
     </SafeAreaView>
   )
 }
@@ -117,14 +125,14 @@ export default AddScreen
 
 const styles = StyleSheet.create({
   container: {
-    position:'relative',
+    position: 'relative',
     display: 'flex',
     color: 'black',
     height: '100%',
     position: "relative",
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor:Colors.white
+    backgroundColor: Colors.white
   },
   header: {
     padding: 15,
@@ -162,7 +170,7 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     marginTop: '20%',
     gap: 12,
-    paddingLeft:10
+    paddingLeft: 10
   },
   whiteCircle: {
     width: 50,
@@ -226,30 +234,30 @@ const styles = StyleSheet.create({
   whiteRound: {
     width: 50,
     height: 50,
-    borderRadius:100,
-    zIndex:-90,
+    borderRadius: 100,
+    zIndex: -90,
     backgroundColor: Colors.white,
   },
   round1: {
     position: 'absolute',
     top: '15%',
-    left:-20
+    left: -20
 
   },
   round2: {
     position: 'absolute',
     top: '15%',
-    right:-20
+    right: -20
   },
   round3: {
     position: 'absolute',
     bottom: '15%',
-    left:-20
+    left: -20
   },
   round4: {
     position: 'absolute',
     bottom: '15%',
-    right:-20
+    right: -20
 
   }
 

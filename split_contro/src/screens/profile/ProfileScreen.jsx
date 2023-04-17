@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import {
     Avatar,
@@ -22,24 +22,48 @@ import { Colors } from '../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
+import fetchApi from '../../shared/AxiosCall'
+import { GetUserDetails } from '../../shared/ConfigUrl';
+import { useDispatch } from 'react-redux';
+import { getUserDetails } from '../../store/thunks/UserDetailThunk';
 
-const userData = {
-    name: "Anupama Borkar",
-    contact: "9011459254",
-    address: "405, Rehant appartment, kalyan road, bhiwandi 421302",
-    email: "borkaranupama@gmail.com",
-    expenseRemain: "50",
-    totalGroups: "2"
-}
 const ProfileScreen = () => {
+    const dispatch = useDispatch()
     const navigation = useNavigation();
-    useEffect(() => {
+    const [userData, setUserData] = useState({})
+    const getUserData = () => {
+        let payload = {
+            user_id: "73e59de5-934f-46c5-bafa-1dfe2ce385c6",
+        };
+        console.log('GetUserDetails called:', payload);
+        fetchApi(GetUserDetails, payload)
+            .then(res => {
+                if (res?.data?.status == "success") {
+                    setUserData(res?.data?.data?.[0])
+                    // dispatch(homeActions.setIsTab(false));
 
+                }
+                console.log('GetUserDetails res:', res?.data?.data?.[0]);
+            })
+            .catch(err => {
+                console.log('GetUserDetails err:', err);
+            });
+    };
+    useEffect(() => {
+        let payload = {
+            user_id: "73e59de5-934f-46c5-bafa-1dfe2ce385c6",
+        };
+        getUserData();
+        dispatch(getUserDetails(payload)).then((res)=>{
+            console.log('resfffffff',res);
+        })
+    }, [])
+    useEffect(() => {
         navigation.setOptions({
             headerLargeTitle: true,
             headerTitle: "Profile",
             headerLeft: () => (
-                <TouchableOpacity style={{marginRight:10}} onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.goBack()}>
                     <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
                 </TouchableOpacity>
             ),
@@ -48,7 +72,7 @@ const ProfileScreen = () => {
                     <Material name="account-edit" color={Colors.white} size={30} />
                 </TouchableOpacity>
             ),
-            styles:{color:Colors.white}
+            styles: { color: Colors.white }
         })
 
     }, [navigation])
@@ -81,8 +105,8 @@ const ProfileScreen = () => {
                         <Title style={[styles.title, {
                             marginTop: 15,
                             marginBottom: 5,
-                        }]}>{userData.name}</Title>
-                        <Caption style={styles.caption}>Kavi</Caption>
+                        }]}>{userData?.first_name} {userData?.last_name}</Title>
+                        <Caption style={styles.caption}>{'Kavi'}</Caption>
                     </View>
                 </View>
             </View>
@@ -90,15 +114,15 @@ const ProfileScreen = () => {
             <View style={styles.userInfoSection}>
                 <View style={styles.row}>
                     <Icon name="map-marker-radius" color={Colors.darkGrey} size={20} />
-                    <Text style={{ color: Colors.darkGrey, marginLeft: 20 }}>{userData.address}</Text>
+                    <Text style={{ color: Colors.darkGrey, marginLeft: 20 }}>{userData?.address ? userData?.address : "..."}</Text>
                 </View>
                 <View style={styles.row}>
                     <Icon name="phone" color={Colors.darkGrey} size={20} />
-                    <Text style={{ color: Colors.darkGrey, marginLeft: 20 }}>{userData.contact}</Text>
+                    <Text style={{ color: Colors.darkGrey, marginLeft: 20 }}>{userData?.user_phone ? userData?.user_phone : "..."}</Text>
                 </View>
                 <View style={styles.row}>
                     <Icon name="email" color={Colors.darkGrey} size={20} />
-                    <Text style={{ color: Colors.darkGrey, marginLeft: 20 }}>{userData.email}</Text>
+                    <Text style={{ color: Colors.darkGrey, marginLeft: 20 }}>{userData?.user_mail ? userData?.user_mail : "..."}</Text>
                 </View>
             </View>
 
@@ -107,11 +131,11 @@ const ProfileScreen = () => {
                     borderRightColor: '#dddddd',
                     borderRightWidth: 1
                 }]}>
-                    <Title>{userData.expenseRemain}</Title>
+                    <Title>{userData?.expenseRemain ? userData.expenseRemain : "0"}</Title>
                     <Caption>Wallet</Caption>
                 </View>
                 <View style={styles.infoBox}>
-                    <Title>{userData.totalGroups}</Title>
+                    <Title>{userData?.totalGroups ? userData?.totalGroups : "0"}</Title>
                     <Caption>Groups</Caption>
                 </View>
             </View>
