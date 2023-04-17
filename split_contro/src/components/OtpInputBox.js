@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-
+import FlexStyles from '../assets/Styles/FlexStyles.jsx'
+import CommonStyles from '../assets/Styles/CommonStyles.jsx'
 const OtpInputBox = ({ onComplete }) => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
@@ -31,7 +32,7 @@ const OtpInputBox = ({ onComplete }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[ FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexarround, CommonStyles.mv20]}>
       {otp.map((value, index) => (
         <TextInput
           key={index}
@@ -60,21 +61,15 @@ const OtpInputBox = ({ onComplete }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
   input: {
-    borderWidth: 1,
-    borderColor: 'gray',
+    borderWidth: 2,
+    borderColor: 'rgba(233,239,246,1)',
     borderRadius: 5,
     textAlign: 'center',
     fontSize: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    width: '20%',
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    width: '15%',
   },
 });
 
