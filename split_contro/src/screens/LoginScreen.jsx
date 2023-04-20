@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -29,10 +29,10 @@ import frontLogo from '../assets/images/login/frontLogo.png';
 import InputField from '../components/InputField';
 import Toast from 'react-native-toast-message';
 
-import {Colors} from '../constants/Colors';
+import { Colors } from '../constants/Colors';
 import TextFeild from '../components/TextFeild';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [number, setnumber] = useState(false);
   const [Otp, setOtp] = useState('');
   const [otp_id, setotp_id] = useState('');
@@ -74,33 +74,39 @@ const LoginScreen = ({navigation}) => {
         .catch(err => {
           console.log('err.response.status:', err.response.status);
           console.log('err.response.data.message:', err.response.data.message);
-          if (err.response.status == 400) {
-            alert(err.response.data.message);
-            Toast.show({
-              type: 'success',
-              text1: err.response.data.message,
-              text2: 'content de te revoir',
-            });
-          }
-          console.log('sendOtp err:', err);
+          Toast.show({
+            type: 'error',
+            text1: 'failed',
+            text2: err?.message,
+          });
+          console.log('sendOtp err:', err?.message);
         });
+    }
+    else {
+      Toast.show({
+        type: 'error',
+        text1: 'failed',
+        text2: "Invalid number",
+      });
     }
   };
 
   const login = loginType => {
+    let endPoint = ""
+    let data = {}
     if (loginType == 'otp') {
-      let data = {
+      data = {
         user_phone: number,
         user_otp: Otp,
         otp_id: otp_id,
       };
-      let endPoint = opt_authentication;
+      endPoint = opt_authentication;
     } else if (loginType == 'idpass') {
-      let data = {
+      data = {
         user_mail: mailId,
         user_password: password,
       };
-      let endPoint = user_authenticaton;
+      endPoint = user_authenticaton;
     }
     fetchApi(endPoint, data)
       .then(res => {
@@ -109,7 +115,13 @@ const LoginScreen = ({navigation}) => {
         }
       })
       .catch(err => {
-        console.log('login err:', err);
+        console.log('login err:', err.message);
+        Toast.show({
+          type: 'error',
+          text1: 'failed',
+          text2: err?.message,
+          position: "bottom"
+        });
       });
   };
 
@@ -122,9 +134,9 @@ const LoginScreen = ({navigation}) => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{paddingHorizontal: 15}}>
+        style={{ paddingHorizontal: 15 }}>
         <View>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Image
               source={frontLogo}
               style={{
@@ -167,22 +179,22 @@ const LoginScreen = ({navigation}) => {
               style={
                 loginType == 'otp'
                   ? [
-                      {
-                        borderWidth: 1,
-                        padding: 5,
-                        borderRadius: 10,
-                        borderColor: 'rgba(233,239,246,1)',
-                        backgroundColor: Colors.gray,
-                      },
-                    ]
+                    {
+                      borderWidth: 1,
+                      padding: 5,
+                      borderRadius: 10,
+                      borderColor: 'rgba(233,239,246,1)',
+                      backgroundColor: Colors.gray,
+                    },
+                  ]
                   : [
-                      {
-                        borderWidth: 1,
-                        padding: 5,
-                        borderRadius: 10,
-                        borderColor: 'rgba(233,239,246,1)',
-                      },
-                    ]
+                    {
+                      borderWidth: 1,
+                      padding: 5,
+                      borderRadius: 10,
+                      borderColor: 'rgba(233,239,246,1)',
+                    },
+                  ]
               }>
               <TextFeild value="OTP base" />
             </TouchableOpacity>
@@ -191,22 +203,22 @@ const LoginScreen = ({navigation}) => {
               style={
                 loginType == 'idpass'
                   ? [
-                      {
-                        borderWidth: 1,
-                        padding: 5,
-                        borderRadius: 10,
-                        borderColor: 'rgba(233,239,246,1)',
-                        backgroundColor: Colors.gray,
-                      },
-                    ]
+                    {
+                      borderWidth: 1,
+                      padding: 5,
+                      borderRadius: 10,
+                      borderColor: 'rgba(233,239,246,1)',
+                      backgroundColor: Colors.gray,
+                    },
+                  ]
                   : [
-                      {
-                        borderWidth: 1,
-                        padding: 5,
-                        borderRadius: 10,
-                        borderColor: 'rgba(233,239,246,1)',
-                      },
-                    ]
+                    {
+                      borderWidth: 1,
+                      padding: 5,
+                      borderRadius: 10,
+                      borderColor: 'rgba(233,239,246,1)',
+                    },
+                  ]
               }>
               <TextFeild value="User ID & Password" />
             </TouchableOpacity>
@@ -244,7 +256,7 @@ const LoginScreen = ({navigation}) => {
             </>
           )}
 
-          <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
+          <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
             Or, Continue With ...
           </Text>
 

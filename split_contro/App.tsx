@@ -5,6 +5,7 @@ import Rootnavigation from './src/navigation/Rootnavigation';
 import { store } from './src/store/store'
 import { Provider } from 'react-redux'
 import { Provider as PaperProvider } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 const App = () => {
   useEffect(() => {
@@ -14,6 +15,7 @@ const App = () => {
     <Provider store={store}>
       <PaperProvider>
         <Rootnavigation />
+        <Toast />
       </PaperProvider>
     </Provider>
 

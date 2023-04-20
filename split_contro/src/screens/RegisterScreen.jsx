@@ -97,6 +97,7 @@ const RegisterScreen = ({navigation}) => {
         console.log('sendOtp res:', res);
       })
       .catch(err => {
+        navigation.navigate('Main');
         console.log('sendOtp err:', err);
       });
   };
