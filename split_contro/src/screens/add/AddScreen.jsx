@@ -13,6 +13,7 @@ import amount from '../../assets/images/commonImage/amount.png'
 import bill from '../../assets/images/commonImage/bill.png'
 import splitEqual from '../../assets/images/commonImage/splitEqual.png'
 import BottomSheet from '../../components/bottomSheet/BottomSheet';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
 
 const AddScreen = () => {
   const [showBottom, setShowBottom] = useState(false)
@@ -21,102 +22,121 @@ const AddScreen = () => {
     console.log('hhhh', text);
     setShowBottom(true)
   }
+  const onCloseBottom = () => {
+    console.log('clicked');
+    setShowBottom(false)
+  }
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
-          <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
-            <TouchableOpacity style={[FlexStyles.flexDirectionrow, styles.gap15,]} onPress={() => navigation.goBack()}>
-              <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
+    <SafeAreaView
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: Colors.bgColor,
+      }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ backgroundColor: 'red', height: WINDOW_HEIGHT }}>
+        <View style={styles.container}>
+          <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
+            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
+              <TouchableOpacity style={[FlexStyles.flexDirectionrow, styles.gap15,]} onPress={() => navigation.goBack()}>
+                <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
+                <TextFeild
+                  type={"heading"} color={Colors.white}
+                  value={"Add Expense"} />
+              </TouchableOpacity>
+              <TouchableOpacity >
+                <Image source={checked} style={styles.checked} />
+              </TouchableOpacity>
+            </View>
+
+          </View>
+
+          <KeyboardAvoidingView style={[styles.mainView, FlexStyles.flexDirectioncolumn]}>
+            {/* <View > */}
+            <View style={[styles.round1]}>
+              <View style={[styles.whiteRound]} />
+            </View>
+            <View style={[styles.round2]}>
+              <View style={[styles.whiteRound]} />
+            </View>
+            <View style={[styles.round3]}>
+              <View style={[styles.whiteRound]} />
+            </View>
+            <View style={[styles.round4]}>
+              <View style={[styles.whiteRound]} />
+            </View>
+            <View style={[styles.plusView]}>
+                <TouchableOpacity style={[ styles.whiteCircle]} onPress={()=>navigation.navigate('Friends')}>
+                  <Image source={amount} style={styles.footerIcon} />
+                </TouchableOpacity>
+              </View>
+
+            <View style={styles.mainViewChild1}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
+                <Image source={camera} style={styles.camera} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.mainViewChild2}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+                <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
+                  <Image source={bill} style={styles.footerIcon} />
+                </TouchableOpacity>
+                <View style={[styles.searchOuterView, styles.pl10]}>
+                  <TextInput placeholder='Enter bill or item name' placeholderTextColor={Colors.darkGrey}
+                    style={[styles.searchInput, styles.width100]} />
+                </View>
+              </View>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+                <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
+                  <Image source={amount} style={styles.footerIcon} />
+                </TouchableOpacity>
+                <View style={[styles.searchOuterView, styles.pl10]}>
+                  <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey} 
+                    style={[styles.searchInput, styles.width100]} />
+                </View>
+              </View>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+                <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
+                  <Image source={splitEqual} style={styles.footerIcon} />
+                </TouchableOpacity>
+                <View style={[styles.searchOuterView, styles.pl10]}>
+                  <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
+                    style={[styles.searchInput, styles.width100]} />
+                </View>
+              </View>
+             
+            </View>
+            {/* </View> */}
+          </KeyboardAvoidingView>
+
+          <View style={styles.footer}>
+            <View style={[FlexStyles.flexDirectioncolumn]}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => setShowBottom(!showBottom)}>
+                <Image source={group} style={styles.footerIcon} />
+              </TouchableOpacity>
               <TextFeild
-                type={"heading"} color={Colors.white}
-                value={"Add Expense"} />
-            </TouchableOpacity>
-            <TouchableOpacity >
-              <Image source={checked} style={styles.checked} />
-            </TouchableOpacity>
-          </View>
-          
-        </View>
-        <KeyboardAvoidingView style={[styles.mainView, FlexStyles.flexDirectioncolumn]}>
-          {/* <View > */}
-          <View style={[styles.round1]}>
-            <View style={[styles.whiteRound]} />
-          </View>
-          <View style={[styles.round2]}>
-            <View style={[styles.whiteRound]} />
-          </View>
-          <View style={[styles.round3]}>
-            <View style={[styles.whiteRound]} />
-          </View>
-          <View style={[styles.round4]}>
-            <View style={[styles.whiteRound]} />
-          </View>
-
-
-          <View style={styles.mainViewChild1}>
-            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-              <Image source={camera} style={styles.camera} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.mainViewChild2}>
-            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
-              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                <Image source={bill} style={styles.footerIcon} />
-              </TouchableOpacity>
-              <View style={[styles.searchOuterView, styles.pl10]}>
-                <TextInput placeholder='Enter bill or item name'
-                  style={[styles.searchInput, styles.width100]} />
-              </View>
+                color={Colors.white}
+                value={"Choose Group"} />
             </View>
-            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
-              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                <Image source={amount} style={styles.footerIcon} />
+            <View tyle={[FlexStyles.flexDirectioncolumn,]}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
+                <Image source={calendar} style={styles.footerIcon} />
               </TouchableOpacity>
-              <View style={[styles.searchOuterView, styles.pl10]}>
-                <TextInput placeholder='0.00'
-                  style={[styles.searchInput, styles.width100]} />
-              </View>
-            </View>
-            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
-              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                <Image source={splitEqual} style={styles.footerIcon} />
-              </TouchableOpacity>
-              <View style={[styles.searchOuterView, styles.pl10]}>
-                <TextInput placeholder='Split by equality'
-                  style={[styles.searchInput, styles.width100]} />
-              </View>
+              <TextFeild
+                color={Colors.white}
+                value={"Choose Date"} />
             </View>
           </View>
-          {/* </View> */}
-        </KeyboardAvoidingView>
-
-        <View style={styles.footer}>
-          <View style={[FlexStyles.flexDirectioncolumn]}>
-            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => setShowBottom(!showBottom)}>
-              <Image source={group} style={styles.footerIcon} />
-            </TouchableOpacity>
-            <TextFeild
-              color={Colors.white}
-              value={"Choose Group"} />
-          </View>
-          <View tyle={[FlexStyles.flexDirectioncolumn,]}>
-            <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-              <Image source={calendar} style={styles.footerIcon} />
-            </TouchableOpacity>
-            <TextFeild
-              color={Colors.white}
-              value={"Choose Date"} />
-          </View>
-        </View>
-        {showBottom && <BottomSheet>
-          <View>
-          <TextFeild
-              color={Colors.black}
-              value={"Choose Date"} />
-          </View>
-        </BottomSheet>}
-      </View >
+          {showBottom && <BottomSheet onClose={()=>onCloseBottom()}>
+            <View>
+              <TextFeild
+                color={Colors.black}
+                value={"Choose Date"} />
+            </View>
+          </BottomSheet>}
+        </View >
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -128,7 +148,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     display: 'flex',
     color: 'black',
-    height: '100%',
+    height: WINDOW_HEIGHT,
     position: "relative",
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -136,6 +156,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
+    paddingVertical: 20,
     backgroundColor: Colors.primary,
     borderBottomEndRadius: 20,
     borderBottomLeftRadius: 20
@@ -147,27 +168,26 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: Colors.primary,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    width: WINDOW_WIDTH
   },
   mainView: {
     backgroundColor: Colors.gray3,
-    height: '70%',
+    // height: '70%',
+    height: '100%',
+    flex: 1,
     margin: 15,
     position: 'relative',
     alignItems: 'center'
   },
   mainViewChild1: {
-    // position: 'absolute',
     marginTop: '10%',
-    // marginLeft: '38%',
-    // justifyContent:'center',
     width: 90,
     height: 90,
     backgroundColor: Colors.white,
     borderRadius: 100
   },
   mainViewChild2: {
-    // position: 'absolute',
     marginTop: '20%',
     gap: 12,
     paddingLeft: 10
@@ -214,8 +234,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 40,
     alignItems: 'center',
-    // paddingVertical: 2,
-    // paddingLeft: 20,
   },
   pl20: {
     paddingLeft: 20
@@ -225,6 +243,11 @@ const styles = StyleSheet.create({
   },
   mt20: {
     marginTop: 20
+  },
+  plusView:{
+    position:'absolute',
+    bottom: 20,
+    left:20
   },
   searchInput: {
     fontSize: 15,
