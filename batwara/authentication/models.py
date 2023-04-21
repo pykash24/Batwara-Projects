@@ -8,10 +8,23 @@ class Users(models.Model):
     user_created_on =  models.DateField(auto_now_add=True)
     full_name = models.CharField(max_length=256,null=True)
     nation = models.CharField(max_length=256,null=True)
+    password = models.CharField(max_length=256,null=True)
     is_deleted= models.BooleanField(default=False,null=True)
 
     class Meta:
         db_table = "users_tank"
+
+# class UserDetails(models.Model):
+#     unique_id = models.CharField(max_length=256,null=True)
+#     user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+#     address_details = models.CharField(max_length=256,null=True)
+#     city = models.CharField(max_length=256,null=True)
+#     state = models.CharField(max_length=256,null=True)
+#     country = models.CharField(max_length=256,null=True)
+#     is_deleted= models.BooleanField(default=False,null=True)
+
+#     class Meta:
+#         db_table = "user_details"
 
 class TempOtp(models.Model):
     otp_unique_id = models.CharField(max_length=256,null=True)

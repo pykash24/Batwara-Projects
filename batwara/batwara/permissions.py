@@ -19,8 +19,8 @@ class UserAccessPermission:
     def process_view(self, request,view_func, view_args, view_kargs):
         try:
             print(request.path)
-            if (request.path == '/authentication/user_register/' or request.path =='/authentication/send-otp/' or request.path =='/authentication/opt_authentication/'):
-                return None
+            # if (request.path == '/authentication/user_register/' or request.path =='/authentication/send-otp/' or request.path =='/authentication/opt_authentication/'):
+            #     return None
 
             # authorization_header = request.headers.get('Authorization')
             # if authorization_header:

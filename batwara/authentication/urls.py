@@ -7,6 +7,7 @@ urlpatterns = [
     path('sign_in_send_otp/', views.sign_in_send_otp, name='sign_in_send_otp'),
     path('sign_in_otp_verification/', views.sign_in_otp_verification,name='sign_in_otp_verification'),
     path('user_register/', views.user_register, name='user_register'),
+    # path('set_up_profile/', views.set_up_profile, name='set_up_profile'),
     path('user_authenticaton/', views.user_authenticaton,name='user_authenticaton'),
     path('create_group/', views.create_group, name='create_group'),
     path('add_user_in_group/', views.add_user_in_group, name='add_user_in_group'),

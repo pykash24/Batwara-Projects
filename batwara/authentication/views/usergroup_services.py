@@ -298,4 +298,3 @@ def get_user_details(request):
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
-

@@ -37,7 +37,8 @@ def send_otp_via_sms(otp, to_number):
             from_='+14698296521',
             body='Your OTP is: ' + otp
         )
-        print(message.sid)
+        # print(message.sid)
+        return JsonResponse({'status': 'success'},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -50,11 +51,13 @@ def user_register(request):
         if not ('user_phone' in user_request or 'full_name' in user_request or 'nation' in user_request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
-        print(user_request)
-        user_phone,nation,full_name= user_request['user_phone'],user_request['nation'],user_request['full_name']
+        user_phone,nation,full_name,password = user_request['user_phone'],user_request['nation'],user_request['full_name'],user_request['password']
         is_user_present = Users.objects.filter(user_phone=user_phone)
         if bool(is_user_present):
             return JsonResponse({'data':'Already present'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+
+        """ convert into hash password values """
+        sha256_hash_pasword = hashlib.sha256(password.encode()).hexdigest()
 
         user_id = str(uuid.uuid4())
         save_user_register = Users(
@@ -62,12 +65,12 @@ def user_register(request):
             user_phone = user_phone,
             full_name = full_name,
             nation=nation,
+            password=sha256_hash_pasword,
             is_deleted = False
-
         )
         save_user_register.save()
 
-        # #calling mail invaition function parallel
+        # calling mail invaition function parallel
         # thread1 = threading.Thread(target=new_member_mail_inviation, args=(request,))
 
         # # Start threads
@@ -276,7 +279,7 @@ def new_member_mail_inviation(request):
 
 # Generate a TOTP
 def generate_totp(secret_key):
-    totp = pyotp.TOTP(secret_key, interval=60, digits=6)
+    totp = pyotp.TOTP(secret_key, interval=60, digits=4)
     # Get the current TOTP code
     otp = totp.now()
     # Get the expiry time of the current TOTP code
@@ -315,11 +318,13 @@ def sign_in_send_otp(request):
         user_phone_with_country_prefix = nation + user_phone
 
         # Send the OTP to the specified contact number
-        send_otp_via_sms(otp, user_phone_with_country_prefix)
-        return JsonResponse({'status': 'success','otp_unique_id':otp_unique_id},safe=False,status=constants.HTTP_200_OK)
+        otp_response = send_otp_via_sms(otp, user_phone_with_country_prefix)
+        if (otp_response.status_code==constants.HTTP_200_OK):
+            return JsonResponse({'status': 'success','otp_unique_id':otp_unique_id},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({'status': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as error:
         print(error)
-        return JsonResponse({'status': 'fail'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse({'status': 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -398,7 +403,7 @@ def validate_totp(user_id, otp):
         # Get the user's secret key
         secret_key =is_user_secret_key_exist.secret_key
         # Create a TOTP object with a 60 second interval and 6 digits
-        totp = pyotp.TOTP(secret_key, interval=60, digits=6)
+        totp = pyotp.TOTP(secret_key, interval=60, digits=4)
         # Get the current time
         current_time = int(time.time())
         # Check if the code is valid within a 3-minute window (1 minute before and 1 minute after the current time)
