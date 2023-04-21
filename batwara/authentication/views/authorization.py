@@ -52,7 +52,7 @@ def user_register(request):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
         user_phone,nation,full_name,password = user_request['user_phone'],user_request['nation'],user_request['full_name'],user_request['password']
-        is_user_present = Users.objects.filter(user_phone=user_phone)
+        is_user_present = UsersID.objects.filter(user_phone=user_phone)
         if bool(is_user_present):
             return JsonResponse({'data':'Already present'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
@@ -60,7 +60,7 @@ def user_register(request):
         sha256_hash_pasword = hashlib.sha256(password.encode()).hexdigest()
 
         user_id = str(uuid.uuid4())
-        save_user_register = Users(
+        save_user_register = UsersID(
             user_id = str(user_id),
             user_phone = user_phone,
             full_name = full_name,
@@ -170,7 +170,7 @@ def user_authenticaton(request):
         sha256_hash_pasword = hashlib.sha256(user_password.encode()).hexdigest()
 
         """ To check is user is valid or not"""
-        is_user_valid =Users.objects.filter(user_password=sha256_hash_pasword,user_mail=user_mail).first()
+        is_user_valid =UsersID.objects.filter(user_password=sha256_hash_pasword,user_mail=user_mail).first()
         if not is_user_valid:
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE:"Invalid Creditinals"},safe=False,status=constants.HTTP_401_UNAUTHORIZED)
         
@@ -303,7 +303,7 @@ def sign_in_send_otp(request):
         user_phone= user_request['user_phone']
 
         # To check the phone is register or not
-        is_user_present = Users.objects.filter(user_phone=user_phone).first()
+        is_user_present = UsersID.objects.filter(user_phone=user_phone).first()
 
         if not is_user_present:
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_DOES_NOT_EXIST_DO_SIGN_UP},safe=False,status=constants.HTTP_400_BAD_REQUEST)
@@ -343,7 +343,7 @@ def sign_up_send_otp(request):
         user_phone,nation= user_request['user_phone'],user_request['nation']
 
         # To check the phone is register or not
-        is_user_present = Users.objects.filter(user_phone=user_phone).first()
+        is_user_present = UsersID.objects.filter(user_phone=user_phone).first()
 
         if is_user_present:
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_ALREADY_EXIST_DO_SIGN_IN},safe=False,status=constants.HTTP_400_BAD_REQUEST)

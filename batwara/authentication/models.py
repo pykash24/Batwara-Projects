@@ -2,21 +2,21 @@ from django.db import models
 
 # Create your models here.
  
-class Users(models.Model):
-    user_id = models.CharField(max_length=256,unique=True)
+class UsersID(models.Model):
+    user_id = models.CharField(max_length=512,unique=True)
     user_phone = models.CharField(max_length=256,null=True)
     user_created_on =  models.DateField(auto_now_add=True)
-    full_name = models.CharField(max_length=256,null=True)
+    full_name = models.CharField(max_length=512,null=True)
     nation = models.CharField(max_length=256,null=True)
-    password = models.CharField(max_length=256,null=True)
+    password = models.CharField(max_length=1024,null=True)
     is_deleted= models.BooleanField(default=False,null=True)
 
     class Meta:
-        db_table = "users_tank"
+        db_table = "users_ids"
 
 # class UserDetails(models.Model):
 #     unique_id = models.CharField(max_length=256,null=True)
-#     user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+#     user_id = models.ForeignKey(UsersID,on_delete=models.CASCADE,to_field='user_id')
 #     address_details = models.CharField(max_length=256,null=True)
 #     city = models.CharField(max_length=256,null=True)
 #     state = models.CharField(max_length=256,null=True)
@@ -49,7 +49,7 @@ class Group(models.Model):
 
 class UserGroup(models.Model):
     usergroup_id = models.CharField(max_length=256,null=True)
-    user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+    user_id = models.ForeignKey(UsersID,on_delete=models.CASCADE,to_field='user_id')
     group_id = models.ForeignKey(Group,on_delete=models.CASCADE,to_field='group_id')
     is_delete = models.BooleanField(null=True,default=False)
 
@@ -60,7 +60,7 @@ class Expenses(models.Model):
     expenses_id = models.CharField(max_length=256,unique=True,null=True)
     description = models.CharField(max_length=256,null=True)
     amount = models.FloatField()
-    paid_by = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+    paid_by = models.ForeignKey(UsersID,on_delete=models.CASCADE,to_field='user_id')
     group_id = models.ForeignKey(Group,on_delete=models.CASCADE,to_field='group_id')
     date = models.DateField(null=True)
 
@@ -70,7 +70,7 @@ class Expenses(models.Model):
 class ExpensesShares(models.Model):
     expenses_shares_id = models.CharField(max_length=256,null=True)
     expenses_id = models.ForeignKey(Expenses,on_delete=models.CASCADE,to_field='expenses_id')
-    user_id = models.ForeignKey(Users,on_delete=models.CASCADE,to_field='user_id')
+    user_id = models.ForeignKey(UsersID,on_delete=models.CASCADE,to_field='user_id')
     amount = models.FloatField()
     user_created_on =  models.DateTimeField(auto_now_add=True)
 
