@@ -1,12 +1,18 @@
-import { StyleSheet, Text, TouchableOpacity, View, Animated, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Animated, TouchableWithoutFeedback, Image } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Colors } from '../constants/Colors'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import { homeActions } from '../store/slice/HomeSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import wallet from '../assets/images/bottomImage/wallet.png'
+import record from '../assets/images/bottomImage/record.png'
+import addGroup from '../assets/images/bottomImage/add-group.png'
+import { useNavigation } from '@react-navigation/native';
 
 const AddButton = ({ }) => {
+  const navigation=useNavigation();
+
   const animation = useRef(new Animated.Value(0)).current;
   const [opened, setOpend] = useState(false)
   const dispatch = useDispatch()
@@ -55,7 +61,8 @@ const AddButton = ({ }) => {
                 ],
               },
             ]}>
-            <AntIcons name="form" color={Colors.primary} size={20} />
+            {/* <AntIcons name="form" color={Colors.primary} size={20} /> */}
+            <Image source={record} style={styles.image} />
 
           </Animated.View>
         </TouchableWithoutFeedback>
@@ -75,11 +82,13 @@ const AddButton = ({ }) => {
                 ],
               },
             ]}>
-            <Ionicons name="mail" color={Colors.primary} size={20} />
+            <Image source={wallet} style={styles.image} />
+
+            {/* <Ionicons name="mail" color={Colors.primary} size={20} /> */}
 
           </Animated.View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={()=>navigation.navigate('AddExpense')}>
           <Animated.View
             style={[
               styles.item,
@@ -101,7 +110,8 @@ const AddButton = ({ }) => {
                 ],
               },
             ]}>
-            <Ionicons name="download" color={Colors.primary} size={20} />
+            {/* <Ionicons name="download" color={Colors.primary} size={20} /> */}
+            <Image source={addGroup} style={styles.image} />
 
           </Animated.View>
         </TouchableWithoutFeedback>
@@ -140,6 +150,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 0,
 
+  },
+  image: {
+    width: 25,
+    height: 25,
+    // borderRadius:10,
+    // marginRight:5
   },
   box: {
     position: 'relative',

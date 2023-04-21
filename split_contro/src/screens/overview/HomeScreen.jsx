@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,11 @@ import FlexStyles from '../../assets/Styles/FlexStyles';
 import LandingStyles from './LandinStyless';
 import CommonStyles from '../../assets/Styles/CommonStyles';
 import CommonCard from '../../shared/CommonCard';
+import { homeActions } from '../../store/slice/HomeSlice';
+import { useDispatch } from 'react-redux';
 const HomeScreen = () => {
   const [active, setActive] = useState('GE');
+  const dispatch=useDispatch()
   const changeTab = TabType => {
     if (TabType === 'GE') {
       setActive('GE');
@@ -23,6 +26,9 @@ const HomeScreen = () => {
       setActive('PE');
     }
   };
+  useEffect(()=>{
+    dispatch(homeActions.setIsTab(false));
+  },[])
   const data = [
     {title: 'Lonavala Trekking', date: 'sat-20-2022', name: 'Mahesh Shendage', totalPerson: '5', totalCost: '5000'},
     {title: 'Pagoda Temple', date: 'sat-20-2022', name: 'Nishant Nandeshwar', totalPerson: '2', totalCost: '10000'},

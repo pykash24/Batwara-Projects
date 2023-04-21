@@ -2,13 +2,18 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../constants/Colors'
 import userAvatar from '../assets/images/homescreen/userAvatar.png'
-const Header = ({name,navigation}) => {
+import { useNavigation } from '@react-navigation/native'
+import woman from '../assets/images/commonImage/woman.png'
+
+const Header = ({name}) => {
+  const navigation = useNavigation();
+
   return (
     <View style={[styles.ml_10,styles.fd_row,styles.container]}>
       <TouchableOpacity
-      // onPress={()=>navigation.openDrawer()}
+      onPress={()=>navigation.navigate('profile')}
       >
-      <Image  source={userAvatar} style={styles.image}/>
+      <Image  source={woman} style={styles.image}/>
       </TouchableOpacity>
       <Text style={styles.label}>{name}</Text>
     </View>
