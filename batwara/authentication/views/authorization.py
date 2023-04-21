@@ -132,7 +132,7 @@ def sign_up_otp_verification(request):
         full_name = user_request['full_name']
 
         #To check the otp has been generated for respectivity phone or not.
-        is_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).first()
+        is_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id,user_phone=user_phone).first()
         if not is_otp_generated:
             return JsonResponse({constants.STATUS: 'error',constants.MESSAGE:"please re-sent otp"},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -349,9 +349,10 @@ def sign_up_send_otp(request):
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_ALREADY_EXIST_DO_SIGN_IN},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         
         user_id = str(uuid.uuid4())
+        
 
         # Generate a TOTP and send it to the user
-        secret_key,otp_unique_id = generate_secret_key(user_id)
+        secret_key,otp_unique_id = generate_secret_key(user_id,user_phone)
         otp,otp_expiry_time= generate_totp(secret_key)
 
         user_phone_with_country_prefix = nation + user_phone
@@ -371,25 +372,27 @@ def sign_up_send_otp(request):
     AUTHOR: Vikas Tomar
     Date: 16/04/2023
 """
-def generate_secret_key(user_id):
+def generate_secret_key(user_id,user_phone):
 
     #Generate a random 32-character string
     secret_key = pyotp.random_base32()
 
     #To save the otp in local database
-    user_id = user_id
+    user_id,user_phone= user_id,user_phone
     
     # Save the secret key to the database for the user
     is_user_secret_key_exist = TempOtp.objects.filter(user_id=user_id).first()
     if is_user_secret_key_exist:
         otp_unique_id=str(is_user_secret_key_exist.otp_unique_id)
         is_user_secret_key_exist.secret_key = secret_key
+        is_user_secret_key_exist.user_phone = user_phone
         is_user_secret_key_exist.save()
     else:
         otp_unique_id = str(uuid.uuid4())
         temp_save_opt = TempOtp(
             otp_unique_id = otp_unique_id,
             user_id = str(user_id),
+            user_phone=user_phone,
             secret_key=secret_key
         )
         temp_save_opt.save()
