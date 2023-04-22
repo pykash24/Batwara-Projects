@@ -6,6 +6,7 @@ import NewGroupScreen from '../screens/friends/NewGroupScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from './Header';
 import { Colors } from '../constants/Colors';
+import ContactGet from '../screens/friends/ContactGet';
 
 const FriendsStack = () => {
     const Stack = createNativeStackNavigator();
@@ -32,6 +33,9 @@ const FriendsStack = () => {
                 options={({ navigation }) => (headerd)}
             />
             <Stack.Screen name="newGroup" component={NewGroupScreen}
+                options={({ navigation }) => (headerd)}
+            />
+            <Stack.Screen name="AddFriend" component={ContactGet}
                 options={({ navigation }) => (headerd)}
             />
         </Stack.Navigator>

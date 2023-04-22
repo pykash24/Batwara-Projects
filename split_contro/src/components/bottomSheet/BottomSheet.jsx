@@ -107,12 +107,12 @@ const BottomSheet = ({ onClose }) => {
         </View>
     );
     const ItemFD = ({ name, nickname, gender }) => (
-        <TouchableOpacity style={{paddingTop:8}}
+        <TouchableOpacity style={{ paddingTop: 8 }}
             onPress={() => { }}
         >
-            <View style={[ FlexStyles.flexDirectioncolumn, FlexStyles.alignItems]}>
+            <View style={[FlexStyles.flexDirectioncolumn, FlexStyles.alignItems]}>
                 <View style={[styles.imgView]}>
-                    <Image source={gender=="F"?woman:men} style={styles.image} />
+                    <Image source={gender == "F" ? woman : men} style={styles.image} />
                 </View>
                 <Text style={styles.imgText}>{name}</Text>
             </View>
@@ -153,17 +153,15 @@ const BottomSheet = ({ onClose }) => {
                             </View>
                         </View>
                     </ScrollView>
-                    <View style={{}}>
-                        <View style={[styles.childView2,FlexStyles.justifyContainstart]}>
+                    <View style={[styles.childView2, FlexStyles.justifyContainstart]}>
                         <Text style={styles.imgText}>{'All'}</Text>
-                            <FlatList
-                                data={Friends}
-                                horizontal={true}
-                                style={{width:'100%' }}
-                                renderItem={({ item }) => <ItemFD name={item.name} nickname={item.nickname} gender={item.gender} />}
-                                keyExtractor={item => item.id}
-                            />
-                        </View>
+                        <FlatList
+                            data={Friends}
+                            horizontal={true}
+                            style={{ width: '100%' }}
+                            renderItem={({ item }) => <ItemFD name={item.name} nickname={item.nickname} gender={item.gender} />}
+                            keyExtractor={item => item.id}
+                        />
                     </View>
 
                 </Animated.View>
@@ -185,9 +183,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:Colors.primary
+        backgroundColor: Colors.primary
     },
-   
+
     dragarea: {
         width: 132,
         height: 32,
@@ -238,7 +236,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: WINDOW_WIDTH * 0.05,
     },
-     image: {
+    image: {
         width: 30,
         height: 30,
         borderRadius: 10,
@@ -247,7 +245,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: Colors.dark,
         paddingHorizontal: 8,
-        marginTop:5
+        marginTop: 5
     },
     bottomSheet: {
         position: 'absolute',

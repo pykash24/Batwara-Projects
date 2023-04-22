@@ -6,8 +6,9 @@ import { store } from './src/store/store'
 import { Provider } from 'react-redux'
 import { Provider as PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
-
+import Contacts from 'react-native-contacts';
 const App = () => {
+  
   useEffect(() => {
     LogBox.ignoreAllLogs();
   }, [])

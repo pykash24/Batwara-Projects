@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import TextFeild from '../../components/TextFeild'
 import { Colors } from '../../constants/Colors'
@@ -10,14 +10,20 @@ import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
 import camera from '../../assets/images/commonImage/camera.png'
 import amount from '../../assets/images/commonImage/amount.png'
+import addUser from '../../assets/images/commonImage/addUser.png'
+
 import bill from '../../assets/images/commonImage/bill.png'
 import splitEqual from '../../assets/images/commonImage/splitEqual.png'
 import BottomSheet from '../../components/bottomSheet/BottomSheet';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
+import { Friends } from '../../data/friends/Friends';
+import woman from '../../assets/images/commonImage/woman.png'
+import men from '../../assets/images/commonImage/men.png'
 
 const AddScreen = () => {
   const [showBottom, setShowBottom] = useState(false)
   const navigation = useNavigation();
+
   const handlechangeInput = (text) => {
     console.log('hhhh', text);
     setShowBottom(true)
@@ -26,6 +32,29 @@ const AddScreen = () => {
     console.log('clicked');
     setShowBottom(false)
   }
+  const onClickAdd=(navigation,id)=>{
+    console.log('iddd2', id)
+
+    if(id==0){
+      navigation.navigate('Contacts')
+      // navigation.navigate("addFriend")
+    }
+
+  }
+  const ItemFD = ({ name, gender, id }) => (
+    console.log('iddd', id),
+    <TouchableOpacity style={{ padding: 2 }}
+      onPress={() => onClickAdd(navigation,id)}
+    >
+      <View style={[FlexStyles.flexDirectioncolumn, FlexStyles.alignItems, FlexStyles.justifyContainCenter]}>
+        <View style={[styles.imgView]}>
+          <Image source={id == 0 ? addUser : gender == "F" ? woman : men} style={styles.image} />
+        </View>
+        <Text ellipsizeMode='tail' numberOfLines={1} style={styles.imgText}>{name}</Text>
+      </View>
+    </TouchableOpacity>
+
+  );
   return (
     <SafeAreaView
       style={{
@@ -67,10 +96,19 @@ const AddScreen = () => {
               <View style={[styles.whiteRound]} />
             </View>
             <View style={[styles.plusView]}>
-                <TouchableOpacity style={[ styles.whiteCircle]} onPress={()=>navigation.navigate('Friends')}>
-                  <Image source={amount} style={styles.footerIcon} />
-                </TouchableOpacity>
+              <View style={[FlexStyles.justifyContainstart]}>
+                <ScrollView style={{ marginRight: 40 }}>
+                  <FlatList
+                    data={Friends}
+                    horizontal={true}
+                    style={{ width: '100%' }}
+                    renderItem={({ item }) => <ItemFD id={item.id} name={item.name} gender={item.gender} />}
+                    keyExtractor={item => item.id}
+                  />
+                </ScrollView>
+
               </View>
+            </View>
 
             <View style={styles.mainViewChild1}>
               <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
@@ -92,7 +130,7 @@ const AddScreen = () => {
                   <Image source={amount} style={styles.footerIcon} />
                 </TouchableOpacity>
                 <View style={[styles.searchOuterView, styles.pl10]}>
-                  <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey} 
+                  <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey}
                     style={[styles.searchInput, styles.width100]} />
                 </View>
               </View>
@@ -105,7 +143,7 @@ const AddScreen = () => {
                     style={[styles.searchInput, styles.width100]} />
                 </View>
               </View>
-             
+
             </View>
             {/* </View> */}
           </KeyboardAvoidingView>
@@ -128,7 +166,7 @@ const AddScreen = () => {
                 value={"Choose Date"} />
             </View>
           </View>
-          {showBottom && <BottomSheet onClose={()=>onCloseBottom()}>
+          {showBottom && <BottomSheet onClose={() => onCloseBottom()}>
             <View>
               <TextFeild
                 color={Colors.black}
@@ -244,10 +282,10 @@ const styles = StyleSheet.create({
   mt20: {
     marginTop: 20
   },
-  plusView:{
-    position:'absolute',
+  plusView: {
+    position: 'absolute',
     bottom: 20,
-    left:20
+    left: 20
   },
   searchInput: {
     fontSize: 15,
@@ -282,6 +320,25 @@ const styles = StyleSheet.create({
     bottom: '15%',
     right: -20
 
-  }
+  },
+  imgText: {
+    fontSize: 12,
+    color: Colors.dark,
+    width: WINDOW_WIDTH * 0.18,
+    marginTop: 5
+  },
+  image: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+  },
+  imgView: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.primary
+  },
 
 })
