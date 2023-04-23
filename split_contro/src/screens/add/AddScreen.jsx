@@ -23,6 +23,7 @@ import men from '../../assets/images/commonImage/men.png'
 const AddScreen = () => {
   const [showBottom, setShowBottom] = useState(false)
   const navigation = useNavigation();
+  const [selectedTrip, setSelectedTrip] = useState("Select Group");
 
   const handlechangeInput = (text) => {
     console.log('hhhh', text);
@@ -32,10 +33,10 @@ const AddScreen = () => {
     console.log('clicked');
     setShowBottom(false)
   }
-  const onClickAdd=(navigation,id)=>{
+  const onClickAdd = (navigation, id) => {
     console.log('iddd2', id)
 
-    if(id==0){
+    if (id == 0) {
       navigation.navigate('Contacts')
       // navigation.navigate("addFriend")
     }
@@ -44,7 +45,7 @@ const AddScreen = () => {
   const ItemFD = ({ name, gender, id }) => (
     console.log('iddd', id),
     <TouchableOpacity style={{ padding: 2 }}
-      onPress={() => onClickAdd(navigation,id)}
+      onPress={() => onClickAdd(navigation, id)}
     >
       <View style={[FlexStyles.flexDirectioncolumn, FlexStyles.alignItems, FlexStyles.justifyContainCenter]}>
         <View style={[styles.imgView]}>
@@ -155,7 +156,7 @@ const AddScreen = () => {
               </TouchableOpacity>
               <TextFeild
                 color={Colors.white}
-                value={"Choose Group"} />
+                value={selectedTrip} />
             </View>
             <View tyle={[FlexStyles.flexDirectioncolumn,]}>
               <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
@@ -166,13 +167,9 @@ const AddScreen = () => {
                 value={"Choose Date"} />
             </View>
           </View>
-          {showBottom && <BottomSheet onClose={() => onCloseBottom()}>
-            <View>
-              <TextFeild
-                color={Colors.black}
-                value={"Choose Date"} />
-            </View>
-          </BottomSheet>}
+          {showBottom &&
+            <BottomSheet setSelectedTrip={setSelectedTrip} onClose={() => onCloseBottom()} />
+          }
         </View >
       </ScrollView>
     </SafeAreaView>

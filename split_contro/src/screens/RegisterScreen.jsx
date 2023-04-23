@@ -10,7 +10,6 @@ import {
 
 import DatePicker from 'react-native-date-picker';
 
-import InputField from '../components/InputField';
 import NewInputField from '../components/NewInputField';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
