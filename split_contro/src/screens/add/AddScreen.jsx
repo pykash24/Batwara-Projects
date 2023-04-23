@@ -93,13 +93,13 @@ const AddScreen = () => {
       console.warn(err);
     }
   };
-  
+
 
   useEffect(() => {
     requestCameraPermission()
   }, []);
   useEffect(() => {
-    console.log('jjj',img);
+    console.log('jjj', img);
   }, [img]);
   return (
     <SafeAreaView
@@ -158,10 +158,10 @@ const AddScreen = () => {
 
             <View style={styles.mainViewChild1}>
               <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => handleClickImg()}>
-               {/* {!img?<Image style={styles.camera} source={{uri: base64}}/>
+                {img ? <Image style={styles.camera} source={{ uri: `data:${img?.mime};base64,${img?.data}` }} />
 
-               : <Image source={camera} style={styles.camera} />} */}
-               <Image style={styles.camera} source={{uri: `data:${img?.mime};base64,${img?.data}`}}/>
+                  : <Image source={camera} style={styles.camera} />}
+
               </TouchableOpacity>
             </View>
             <View style={styles.mainViewChild2}>
