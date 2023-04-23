@@ -1,5 +1,5 @@
-import { FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { FlatList, Image, KeyboardAvoidingView, PermissionsAndroid, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import TextFeild from '../../components/TextFeild'
 import { Colors } from '../../constants/Colors'
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
@@ -19,12 +19,13 @@ import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
 import { Friends } from '../../data/friends/Friends';
 import woman from '../../assets/images/commonImage/woman.png'
 import men from '../../assets/images/commonImage/men.png'
+import ImagePicker from 'react-native-image-crop-picker';
 
 const AddScreen = () => {
   const [showBottom, setShowBottom] = useState(false)
   const navigation = useNavigation();
   const [selectedTrip, setSelectedTrip] = useState("Select Group");
-
+  const [img, setImg] = useState(null)
   const handlechangeInput = (text) => {
     console.log('hhhh', text);
     setShowBottom(true)
@@ -56,6 +57,50 @@ const AddScreen = () => {
     </TouchableOpacity>
 
   );
+  const handleClickImg = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+      includeBase64: true
+    }).then(image => {
+      setImg(img)
+      console.log('imageyyyyy', image);
+    }).catch((error) => {
+      console.log('error', error);
+    })
+  }
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'BATWARA App Camera Permission',
+          message:
+            'BATWARA App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  
+
+  useEffect(() => {
+    requestCameraPermission()
+  }, []);
+  useEffect(() => {
+    console.log('jjj',img);
+  }, [img]);
   return (
     <SafeAreaView
       style={{
@@ -112,8 +157,11 @@ const AddScreen = () => {
             </View>
 
             <View style={styles.mainViewChild1}>
-              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-                <Image source={camera} style={styles.camera} />
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => handleClickImg()}>
+               {/* {!img?<Image style={styles.camera} source={{uri: base64}}/>
+
+               : <Image source={camera} style={styles.camera} />} */}
+               <Image style={styles.camera} source={{uri: `data:${img?.mime};base64,${img?.data}`}}/>
               </TouchableOpacity>
             </View>
             <View style={styles.mainViewChild2}>
