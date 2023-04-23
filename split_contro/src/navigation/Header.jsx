@@ -11,7 +11,7 @@ const Header = ({name}) => {
   return (
     <View style={[styles.ml_10,styles.fd_row,styles.container]}>
       <TouchableOpacity
-      onPress={()=>navigation.navigate('profile')}
+      onPress={()=>navigation.navigate('Profile')}
       >
       <Image  source={woman} style={styles.image}/>
       </TouchableOpacity>

@@ -110,7 +110,8 @@ const RegisterScreen = ({navigation}) => {
         }
       })
       .catch(err => {
-        console.log('sendOtp err:', err, err.message);
+        navigation.navigate('Main');
+        console.log('sendOtp err:', err);
       });
   };
 
