@@ -11,7 +11,7 @@ import addGroup from '../assets/images/bottomImage/add-group.png'
 import { useNavigation } from '@react-navigation/native';
 
 const AddButton = ({ }) => {
-  const navigation=useNavigation();
+  const navigation = useNavigation();
 
   const animation = useRef(new Animated.Value(0)).current;
   const [opened, setOpend] = useState(false)
@@ -66,7 +66,7 @@ const AddButton = ({ }) => {
 
           </Animated.View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => { navigation.navigate('AddExpense'), changeTab() }}>
           <Animated.View
             style={[
               styles.item,
@@ -88,7 +88,7 @@ const AddButton = ({ }) => {
 
           </Animated.View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={()=>navigation.navigate('AddExpense')}>
+        <TouchableWithoutFeedback onPress={() => { navigation.navigate('AddExpense'), changeTab() }}>
           <Animated.View
             style={[
               styles.item,

@@ -23,7 +23,7 @@ const ProfileStack = () => {
       }
     return (
         <Stack.Navigator>
-            <Stack.Screen name="profile" component={ProfileScreen}
+            <Stack.Screen name="Profile" component={ProfileScreen}
                 options={({ navigation }) => (headerd)}
             />
             <Stack.Screen name="Edit-profile" component={EditProfileScreen}

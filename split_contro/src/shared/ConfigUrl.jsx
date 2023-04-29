@@ -1,4 +1,8 @@
 export const BaseUrl = "https://b662-115-98-232-235.ngrok-free.app";
+export const SendOtp = "/authentication/send-otp/";
+export const opt_authentication = "/authentication/opt_authentication/"
+export const user_register = "/authentication/user_register/"
+export const GetUserDetails = "/authentication/get_user_details/"
 export const sign_up_send_otp = "/authentication/sign_up_send_otp/"   // for otp during registration
 export const sign_up_otp_verification = "/authentication/sign_up_otp_verification/" // for registration
 export const sign_in_send_otp ="/authentication/sign_in_send_otp/" // otp login

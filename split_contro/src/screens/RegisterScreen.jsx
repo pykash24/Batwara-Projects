@@ -10,7 +10,6 @@ import {
 
 import DatePicker from 'react-native-date-picker';
 
-import InputField from '../components/InputField';
 import NewInputField from '../components/NewInputField';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -110,7 +109,8 @@ const RegisterScreen = ({navigation}) => {
         }
       })
       .catch(err => {
-        console.log('sendOtp err:', err, err.message);
+        navigation.navigate('Main');
+        console.log('sendOtp err:', err);
       });
   };
 

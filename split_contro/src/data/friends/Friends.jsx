@@ -2,39 +2,40 @@ import React from 'react'
 
 export const Friends = [
     {
-        id: 1,
-        name: 'Anupama',
+        id: 0,
+        name: 'Add User',
         nickname: "Anu",
-        gender: "Female"
+        gender: "F"
+    },
+    {
+        id: 1,
+        name: 'Anupama Borkar',
+        nickname: "Anu",
+        gender: "F"
     },
     {
         id: 2,
-        name: 'Ankita',
-        nickname: "Anu",
-        gender: "Female"
+        name: 'Bhavik jain',
+        nickname: "BJ",
+        gender: "M"
     },
     {
         id: 3,
-        name: 'Nishant',
-        nickname: "Banty",
-        gender: "Male"
+        name: 'Mahesh Shendage',
+        nickname: "Patil",
+        gender: "M"
     },
     {
         id: 4,
-        name: 'Vikas',
-        nickname: "bablu",
-        gender: "Male"
+        name: 'Nishant Nandeshwar',
+        nickname: "Banty",
+        gender: "M"
     },
     {
         id: 5,
-        name: 'Mahesh',
-        nickname: "Patil",
-        gender: "Male"
+        name: 'Vikas Tomar',
+        nickname: "bablu",
+        gender: "M"
     },
-    {
-        id: 6,
-        name: 'Bhavik',
-        nickname: "BJ",
-        gender: "Male"
-    }
+    
 ]

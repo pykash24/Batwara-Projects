@@ -34,10 +34,6 @@ const userDetailSlice = createSlice({
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
       state.status.getUserDetails = "fulfilled";
       console.log('-------userdataslfulfilled',state);
-      // const accessToken = action.payload.getUserDetails.access_token;
-      // if (accessToken) {
-      //   state.accessToken = accessToken;
-      // }
     });
     builder.addCase(getUserDetails.rejected, (state, action) => {
       state.status.getUserDetails = "rejected";
