@@ -13,7 +13,11 @@ from datetime import datetime
 def create_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('group_description' in user_request or  'group_name' in user_request or 'user_id' in user_request['user_id']):
+        if (
+            'group_description' not in user_request
+            and 'group_name' not in user_request
+            and 'user_id' not in user_request['user_id']
+        ):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         #To create the group..
@@ -33,7 +37,7 @@ def create_group(request):
             group_description = group_description,
             group_created_by = user_id
         )
-        
+
         # Add default memeber of group.
         save_subgroup = UserGroup(
             usergroup_id = usergroup_id,
@@ -45,7 +49,7 @@ def create_group(request):
         save_subgroup.save()
         result = {'group_name':group_name,'group_id':group_id,'usergroup_id':usergroup_id}
         return JsonResponse({message.STATUS_KEY: message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:result},safe=False,status=constants.HTTP_201_CREATED)
-        
+
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)

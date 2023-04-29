@@ -48,16 +48,20 @@ def send_otp_via_sms(otp, to_number):
 def user_register(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'full_name' in user_request or 'nation' in user_request):
+        if (
+            'user_phone' not in user_request
+            and 'full_name' not in user_request
+            and 'nation' not in user_request
+        ):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        
+
         user_phone,nation,full_name,password = user_request['user_phone'],user_request['nation'],user_request['full_name'],user_request['password']
         is_user_present = UsersID.objects.filter(user_phone=user_phone)
         if bool(is_user_present):
             return JsonResponse({'data':'Already present'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         """ convert into hash password values """
-        sha256_hash_pasword = hashlib.sha256(password.encode()).hexdigest()
+        sha256_hash_password = hashlib.sha256(password.encode()).hexdigest()
 
         user_id = str(uuid.uuid4())
         save_user_register = UsersID(
@@ -65,7 +69,7 @@ def user_register(request):
             user_phone = user_phone,
             full_name = full_name,
             nation=nation,
-            password=sha256_hash_pasword,
+            password=sha256_hash_password,
             is_deleted = False
         )
         save_user_register.save()
@@ -86,7 +90,11 @@ def user_register(request):
 def sign_in_otp_verification(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request):
+        if (
+            'user_phone' not in user_request
+            and 'user_otp' not in user_request
+            and 'otp_unique_id' not in user_request
+        ):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         user_phone = user_request['user_phone']
@@ -104,7 +112,7 @@ def sign_in_otp_verification(request):
         #To check the generated otp is same as user pass otp
         if not is_valid:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        
+
         # save_user_details = user_register(request)
         # print(save_user_details)
         user_token = generate_token(request)
@@ -123,7 +131,13 @@ def sign_in_otp_verification(request):
 def sign_up_otp_verification(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_otp' in user_request or 'otp_unique_id' in user_request or 'full_name' in request or 'nation' in user_request):
+        if (
+            'user_phone' not in user_request
+            and 'user_otp' not in user_request
+            and 'otp_unique_id' not in user_request
+            and 'full_name' not in request
+            and 'nation' not in user_request
+        ):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         user_phone = user_request['user_phone']
@@ -142,7 +156,7 @@ def sign_up_otp_verification(request):
         #To check the generated otp is same as user pass otp
         if not is_valid:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        
+
         save_user_details = user_register(request)
         print(save_user_details)
         user_token = generate_token(request)
@@ -161,9 +175,12 @@ def sign_up_otp_verification(request):
 def user_authenticaton(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_mail' in user_request or 'user_password' in user_request):
+        if (
+            'user_mail' not in user_request
+            and 'user_password' not in user_request
+        ):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        
+
         user_password,user_mail= user_request['user_password'],user_request['user_mail']
 
         """ convert into hash password values """
@@ -173,7 +190,7 @@ def user_authenticaton(request):
         is_user_valid =UsersID.objects.filter(user_password=sha256_hash_pasword,user_mail=user_mail).first()
         if not is_user_valid:
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE:"Invalid Creditinals"},safe=False,status=constants.HTTP_401_UNAUTHORIZED)
-        
+
         user_token = generate_token(request)
         return JsonResponse({'data': 'success','token':user_token},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
@@ -184,9 +201,12 @@ def user_authenticaton(request):
 def generate_token(request):
     try:
         expiry_time = datetime.datetime.now()+timedelta(minutes=constants.TOKEN_EXPIRY)
-        encoded_jwt = jwt.encode({"app_id": constants.APP_ID, "exp": expiry_time}, constants.SECRET_KEY, algorithm="HS256")
-        return encoded_jwt
-        # return JsonResponse({'data': 'success','token':encoded_jwt},safe=False,status=constants.HTTP_200_OK)
+        return jwt.encode(
+            {"app_id": constants.APP_ID, "exp": expiry_time},
+            constants.SECRET_KEY,
+            algorithm="HS256",
+        )
+            # return JsonResponse({'data': 'success','token':encoded_jwt},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return False
@@ -208,13 +228,9 @@ def generate_token(request):
 @csrf_exempt
 def mail_sent(request):
     try:
-        if type(request) is dict:
-            user_request = request
-        else:
-            user_request = json.loads(request.body)
-
+        user_request = request if type(request) is dict else json.loads(request.body)
         #Mail sending details
-        sender_email = constants.MAIL_SENDER 
+        sender_email = constants.MAIL_SENDER
         # receiver_email = sankey_email #commnent for testing perspective
         receiver_email = "vikastomar2409@outlook.com"
 
@@ -223,7 +239,7 @@ def mail_sent(request):
 
         #Changes the mail body according the user requirments
         mail_body ="Body"
-       
+
         #mail sending after render html to pdf
         msg = EmailMultiAlternatives(mail_subject, mail_body, sender_email, [receiver_email])
         # pdf = render_to_pdf(html_text)
@@ -250,9 +266,7 @@ def render_to_pdf(employee_template: str):
         html = template.render(context)
         result = BytesIO()
         pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-        if not pdf.err:
-            return result.getvalue()
-        return None
+        return None if pdf.err else result.getvalue()
     except Exception as error:
         print(error)
         return JsonResponse({"status_code": "500", "message": "Internal server error"}, safe=False)
@@ -262,8 +276,14 @@ def render_to_pdf(employee_template: str):
 def new_member_mail_inviation(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'user_password' in user_request or 'first_name' in user_request or 'last_name' in user_request or 'user_mail' in user_request):
-            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST) 
+        if (
+            'user_phone' not in user_request
+            and 'user_password' not in user_request
+            and 'first_name' not in user_request
+            and 'last_name' not in user_request
+            and 'user_mail' not in user_request
+        ):
+            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         user_mail = user_request['user_mail']
 
         subject = templates.NEW_MEMBER_MAIL_INVIATION_SUBJECT
@@ -298,7 +318,7 @@ def generate_totp(secret_key):
 def sign_in_send_otp(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request):
+        if 'user_phone' not in user_request:
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         user_phone= user_request['user_phone']
 
@@ -338,8 +358,6 @@ def sign_in_send_otp(request):
 def sign_up_send_otp(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_phone' in user_request or 'nation' in user_request,):
-            return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
         user_phone,nation= user_request['user_phone'],user_request['nation']
 
         # To check the phone is register or not
@@ -347,9 +365,9 @@ def sign_up_send_otp(request):
 
         if is_user_present:
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_ALREADY_EXIST_DO_SIGN_IN},safe=False,status=constants.HTTP_400_BAD_REQUEST)
-        
+
         user_id = str(uuid.uuid4())
-        
+
 
         # Generate a TOTP and send it to the user
         secret_key,otp_unique_id = generate_secret_key(user_id,user_phone)
