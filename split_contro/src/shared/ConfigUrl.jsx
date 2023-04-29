@@ -1,4 +1,4 @@
-export const BaseUrl = "https://b662-115-98-232-235.ngrok-free.app";
+export const BaseUrl = "https://8aee-115-98-232-106.ngrok-free.app";
 export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_authenticaton = "/authentication/user_authenticaton/"

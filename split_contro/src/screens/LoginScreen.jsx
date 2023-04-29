@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -24,11 +24,12 @@ import CustomButton from '../components/CustomButton';
 import frontLogo from '../assets/images/login/frontLogo.png';
 import InputField from '../components/InputField';
 import Toast from 'react-native-toast-message';
+import {otploginMessage} from '../constants/StringsMessage';
 
-import { Colors } from '../constants/Colors';
+import {Colors} from '../constants/Colors';
 import TextFeild from '../components/TextFeild';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [number, setnumber] = useState(false);
   const [Otp, setOtp] = useState('');
   const [otp_unique_id, setotp_unique_id] = useState('');
@@ -56,6 +57,21 @@ const LoginScreen = ({ navigation }) => {
     setpassword(pass);
     console.log('pass', pass);
   };
+  const validatePhoneNo = () => {
+    console.log('validatePhoneNo called');
+    console.log('validatePhoneNo number:', number);
+    if (number == false || number.length < 10 || number.length == undefined) {
+      console.log('validatePhoneNo number length:', number.length);
+      Toast.show({
+        type: 'error',
+        text1: 'failed',
+        text2: 'fdsdsfsd',
+      });
+    }
+    // else{
+    //   sendOtp()
+    // }
+  };
 
   const sendOtp = () => {
     let data = {
@@ -81,12 +97,11 @@ const LoginScreen = ({ navigation }) => {
           });
           console.log('sendOtp err:', err?.message);
         });
-    }
-    else {
+    } else {
       Toast.show({
         type: 'error',
         text1: 'failed',
-        text2: "Invalid number",
+        text2: 'Invalid number',
       });
     }
   };
@@ -113,7 +128,7 @@ const LoginScreen = ({ navigation }) => {
           type: 'error',
           text1: 'failed',
           text2: err?.message,
-          position: "bottom"
+          position: 'bottom',
         });
       });
   };
@@ -127,9 +142,9 @@ const LoginScreen = ({ navigation }) => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 15 }}>
+        style={{paddingHorizontal: 15}}>
         <View>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{alignItems: 'center'}}>
             <Image
               source={frontLogo}
               style={{
@@ -158,7 +173,7 @@ const LoginScreen = ({ navigation }) => {
               color: Colors.gray,
               marginBottom: 20,
             }}>
-            Please fill up mobile number and OTP to log in to your account
+            {otploginMessage}
           </Text>
 
           {/* <View
@@ -224,7 +239,7 @@ const LoginScreen = ({ navigation }) => {
                 setNumber={getNumber}
                 keyboardType="numeric"
                 maxLength={10}
-                onPress={sendOtp}
+                onPress={validatePhoneNo}
                 sideButton={true}
               />
               <OtpInputBox onComplete={getOtp} />
@@ -249,11 +264,11 @@ const LoginScreen = ({ navigation }) => {
             </>
           )}
 
-          <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
+          {/* <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
             Or, Continue With ...
-          </Text>
+          </Text> */}
 
-          <View
+          {/* <View
             style={[
               FlexStyles.flexDirectionrow,
               FlexStyles.flexarround,
@@ -292,7 +307,7 @@ const LoginScreen = ({ navigation }) => {
                 style={[LoginStyles.loginwithlogoStyle]}
               />
             </View>
-          </View>
+          </View> */}
           <View
             style={[
               FlexStyles.flexDirectionrow,
@@ -308,9 +323,10 @@ const LoginScreen = ({ navigation }) => {
           </View>
           <CustomButton
             label={'SIGN IN'}
+            loading={true}
             onPress={() => {
-              login(loginType);
-              // navigation.navigate('Main');
+              // login(loginType);
+              navigation.navigate('Main');
             }}
           />
         </View>
