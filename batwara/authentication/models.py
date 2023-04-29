@@ -1,7 +1,6 @@
 from django.db import models
 
 # Create your models here.
- 
 class UsersID(models.Model):
     user_id = models.CharField(max_length=512,unique=True)
     user_phone = models.CharField(max_length=256,null=True)

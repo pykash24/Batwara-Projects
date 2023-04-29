@@ -36,7 +36,7 @@ X_FRAME_OPTION = 'DENY'
 
 CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = [
-    '438f-115-98-232-0.ngrok-free.app'
+    '8883-60-254-0-68.in.ngrok.io ','*'
 ]
 
 # Application definition
