@@ -1,5 +1,5 @@
-import { FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { FlatList, Image, KeyboardAvoidingView, PermissionsAndroid, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import TextFeild from '../../components/TextFeild'
 import { Colors } from '../../constants/Colors'
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
@@ -19,11 +19,13 @@ import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
 import { Friends } from '../../data/friends/Friends';
 import woman from '../../assets/images/commonImage/woman.png'
 import men from '../../assets/images/commonImage/men.png'
+import ImagePicker from 'react-native-image-crop-picker';
 
 const AddScreen = () => {
   const [showBottom, setShowBottom] = useState(false)
   const navigation = useNavigation();
-
+  const [selectedTrip, setSelectedTrip] = useState("Select Group");
+  const [img, setImg] = useState(null)
   const handlechangeInput = (text) => {
     console.log('hhhh', text);
     setShowBottom(true)
@@ -32,10 +34,10 @@ const AddScreen = () => {
     console.log('clicked');
     setShowBottom(false)
   }
-  const onClickAdd=(navigation,id)=>{
+  const onClickAdd = (navigation, id) => {
     console.log('iddd2', id)
 
-    if(id==0){
+    if (id == 0) {
       navigation.navigate('Contacts')
       // navigation.navigate("addFriend")
     }
@@ -44,7 +46,7 @@ const AddScreen = () => {
   const ItemFD = ({ name, gender, id }) => (
     console.log('iddd', id),
     <TouchableOpacity style={{ padding: 2 }}
-      onPress={() => onClickAdd(navigation,id)}
+      onPress={() => onClickAdd(navigation, id)}
     >
       <View style={[FlexStyles.flexDirectioncolumn, FlexStyles.alignItems, FlexStyles.justifyContainCenter]}>
         <View style={[styles.imgView]}>
@@ -55,6 +57,50 @@ const AddScreen = () => {
     </TouchableOpacity>
 
   );
+  const handleClickImg = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+      includeBase64: true
+    }).then(image => {
+      setImg(img)
+      console.log('imageyyyyy', image);
+    }).catch((error) => {
+      console.log('error', error);
+    })
+  }
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'BATWARA App Camera Permission',
+          message:
+            'BATWARA App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+
+  useEffect(() => {
+    requestCameraPermission()
+  }, []);
+  useEffect(() => {
+    console.log('jjj', img);
+  }, [img]);
   return (
     <SafeAreaView
       style={{
@@ -111,8 +157,11 @@ const AddScreen = () => {
             </View>
 
             <View style={styles.mainViewChild1}>
-              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
-                <Image source={camera} style={styles.camera} />
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => handleClickImg()}>
+                {img ? <Image style={styles.camera} source={{ uri: `data:${img?.mime};base64,${img?.data}` }} />
+
+                  : <Image source={camera} style={styles.camera} />}
+
               </TouchableOpacity>
             </View>
             <View style={styles.mainViewChild2}>
@@ -155,7 +204,7 @@ const AddScreen = () => {
               </TouchableOpacity>
               <TextFeild
                 color={Colors.white}
-                value={"Choose Group"} />
+                value={selectedTrip} />
             </View>
             <View tyle={[FlexStyles.flexDirectioncolumn,]}>
               <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
@@ -166,13 +215,9 @@ const AddScreen = () => {
                 value={"Choose Date"} />
             </View>
           </View>
-          {showBottom && <BottomSheet onClose={() => onCloseBottom()}>
-            <View>
-              <TextFeild
-                color={Colors.black}
-                value={"Choose Date"} />
-            </View>
-          </BottomSheet>}
+          {showBottom &&
+            <BottomSheet setSelectedTrip={setSelectedTrip} onClose={() => onCloseBottom()} />
+          }
         </View >
       </ScrollView>
     </SafeAreaView>

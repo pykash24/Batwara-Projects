@@ -1,8 +1,10 @@
-import { StatusBar, StyleSheet, View, Dimensions, Platform, Animated, PanResponder, TextInput, FlatList, TouchableOpacity, SafeAreaView, ScrollView, Image } from 'react-native'
-import React, { useEffect, useRef } from 'react';
+import { StatusBar, StyleSheet, View, Platform, Animated, PanResponder, TextInput, FlatList, TouchableOpacity, SafeAreaView, ScrollView, Image, ActivityIndicator } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../constants/Colors'
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import {
     Text,
 } from 'react-native-paper';
@@ -11,16 +13,21 @@ import FlexStyles from '../../assets/Styles/FlexStyles';
 import { Friends } from '../../data/friends/Friends';
 import woman from '../../assets/images/commonImage/woman.png'
 import men from '../../assets/images/commonImage/men.png'
+import { filter } from 'lodash'
 
 const bottomSheetMaxHeight = WINDOW_HEIGHT * 0.6
 const bottomSheetMinHeight = WINDOW_HEIGHT * 0.6
 const maxUpwardTranslateY = bottomSheetMinHeight - bottomSheetMaxHeight //negative no
 const maxDownwordTranslateY = 0
 const dragThreshold = 50
-const BottomSheet = ({ onClose }) => {
-
+const BottomSheet = ({ onClose,setSelectedTrip }) => {
     const animatedValue = useRef(new Animated.Value(0)).current;
     const lastGestureDy = useRef(0);
+    const [searchQuery, setsearchQuery] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [tripsData, setTripsData] = useState(TripsData)
+    const [fullData, setFullData] = useState(TripsData)
 
     const onCross = () => {
         onClose()
@@ -91,20 +98,14 @@ const BottomSheet = ({ onClose }) => {
     }
     useEffect(() => {
         animatedValue.setValue(0)
-
-        // console.log('animatedValue',animatedValue?.AnimatedValue);
         return () => {
         }
     }, [])
-    const handlechangeInput = (text) => {
-        console.log('hhhh', text);
-        // setShowBottom(true)
-    }
     const Item = ({ title }) => (
-        <View style={[FlexStyles.gap10, FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
+        <TouchableOpacity onPress={() => {setSelectedTrip(title),onClose()}} style={[FlexStyles.gap10, FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
             <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
             <Text style={styles.subText}>{title}</Text>
-        </View>
+        </TouchableOpacity>
     );
     const ItemFD = ({ name, nickname, gender }) => (
         <TouchableOpacity style={{ paddingTop: 8 }}
@@ -119,12 +120,37 @@ const BottomSheet = ({ onClose }) => {
         </TouchableOpacity>
 
     );
+    const handleSearch = (query) => {
+        setIsLoading(true)
+        console.log('query', query);
+        if (query) {
+            setsearchQuery(query)
+            const formittedQuery = query.toLowerCase();
+            const filteredData = filter(fullData, (user) => {
+                return contains(user, formittedQuery);
+            })
+            setTripsData(filteredData)
+            setIsLoading(false)
+
+        }
+    }
+
+    const contains = ({ title }, query) => {
+        if (title?.toLowerCase()?.includes(query)) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    const keyExtractor = (item, idx) => {
+        console.log('ite,m', idx);
+        return idx.toString();
+    };
     return (
         <SafeAreaView
             style={{
                 flex: 1,
-                // justifyContent: 'center',
-                // backgroundColor: Colors.bgColor,
             }}>
             <View style={[styles.container]}>
                 <Animated.View style={[styles.bottomSheet, bottomSheetAnimation]}>
@@ -132,28 +158,41 @@ const BottomSheet = ({ onClose }) => {
                         <View style={[styles.dragHandler]} />
                     </View>
                     <View style={[styles.cross]}>
-                        <TouchableOpacity onPress={() => onCross()} >
-                            <Text style={styles.crossText}>{"X"}</Text>
+                        <TouchableOpacity onPress={() => onCross()} style={styles.crossText} >
+                        <Entypo name="cross" color={ Colors.darkGrey} size={20} />
                         </TouchableOpacity>
                     </View>
                     <View style={[styles.searchOuterView, styles.pl20]}>
                         <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
-                        <TextInput placeholder='search by group name' onChange={(text) => handlechangeInput(text)} placeholderTextColor={Colors.darkGrey}
-                            style={[styles.searchInput]} />
+                        <TextInput
+                            style={[styles.searchInput]}
+                            placeholder='Search'
+                            clearButtonMode="always"
+                            placeholderTextColor={Colors.darkGrey}
+                            clearTextOnFocus={true}
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                            value={searchQuery}
+                            onChangeText={(query) => handleSearch(query)}
+                        />
+                        <TouchableOpacity onPress={() => setsearchQuery('')} style={styles.cross} >
+                            <Entypo name="cross" color={searchQuery ? Colors.dark : Colors.gray} size={14} />
+                        </TouchableOpacity>
                     </View>
                     <Text style={[styles.pl20, { color: Colors.darkGrey, marginVertical: 20 }]}>{"Recent"}</Text>
                     <ScrollView showsVerticalScrollIndicator={true} style={{}}>
                         <View style={styles.childView}>
                             <View style={[styles.pl20]}>
                                 <FlatList
-                                    data={TripsData}
+                                    data={tripsData}
                                     renderItem={({ item }) => <Item title={item.title} />}
-                                    keyExtractor={item => item.id}
+                                    keyExtractor={keyExtractor}
+
                                 />
                             </View>
                         </View>
                     </ScrollView>
-                    <View style={[styles.childView2, FlexStyles.justifyContainstart]}>
+                    {/* <View style={[styles.childView2, FlexStyles.justifyContainstart]}>
                         <Text style={styles.imgText}>{'All'}</Text>
                         <FlatList
                             data={Friends}
@@ -162,7 +201,7 @@ const BottomSheet = ({ onClose }) => {
                             renderItem={({ item }) => <ItemFD name={item.name} nickname={item.nickname} gender={item.gender} />}
                             keyExtractor={item => item.id}
                         />
-                    </View>
+                    </View> */}
 
                 </Animated.View>
             </View>
@@ -176,6 +215,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.white1,
+    },
+    cross: {
+        position: 'absolute',
+        right: 10
     },
     imgView: {
         width: 50,
@@ -251,7 +294,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: Colors.white1,
         width: '100%',
-        height: WINDOW_HEIGHT * 0.7,
+        height: bottomSheetMaxHeight,
         bottom: bottomSheetMinHeight - bottomSheetMaxHeight,
         borderTopRightRadius: 32,
         borderTopLeftRadius: 32,
@@ -270,4 +313,18 @@ const styles = StyleSheet.create({
             }
         })
     },
+    searchBox: {
+        paddingHorizontal: WINDOW_WIDTH * 0.051,
+        paddingVertical: WINDOW_HEIGHT * 0.01,
+        borderColor: "#ccc",
+        borderWidth: 1,
+        borderRadius: 8,
+        color: Colors.black,
+        marginTop: WINDOW_HEIGHT * 0.01
+    },
+    loaderView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })

@@ -22,7 +22,6 @@ import CommonStyles from '../assets/Styles/CommonStyles';
 import LoginStyles from './LoginStyles';
 import CustomButton from '../components/CustomButton';
 import frontLogo from '../assets/images/login/frontLogo.png';
-import InputField from '../components/InputField';
 import Toast from 'react-native-toast-message';
 import {otploginMessage} from '../constants/StringsMessage';
 
