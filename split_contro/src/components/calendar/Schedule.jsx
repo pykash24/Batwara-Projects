@@ -72,12 +72,16 @@ const Schedule = () => {
           });
     }
     useEffect(() => {
-        console.log('mmmmmmmmmm',expenseCTX?.date?.date);
+        console.log('mmmmmmmmmm', expenseCTX?.date?.date==undefined);
         let selected=expenseCTX?.date?.date
-        if(selectedDate){    
-          setSelectedDate(new Date(selected))
+        if(!!selected && selected !=undefined){    
+            console.log('mmmmmmmmmm999');
+          setSelectedDate(selected)
         }
-      }, [expenseCTX]);
+        else{
+            setSelectedDate(new Date())
+        }
+      }, []);
     const renderItem = (item) => {
         return (
             <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }} onPress={()=>onDateSelect(item?.date) }>

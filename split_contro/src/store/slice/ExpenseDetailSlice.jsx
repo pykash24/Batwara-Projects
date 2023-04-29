@@ -8,7 +8,7 @@ import { AddExpense } from "../thunks/ExpenseDetailthunk";
 const initialState = {
   isLoggedIn: false,
   accessToken: null,
-  date:null,
+  date:new Date(),
   status: {
     AddExpense: null,
   },
