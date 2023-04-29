@@ -17,6 +17,7 @@ import ProfileStack from './ProfileStack';
 import BottomSheet from '../components/bottomSheet/BottomSheet';
 import BottomSheetScreen from '../components/bottomSheet/BottomSheet';
 import ContactGet from '../screens/friends/ContactGet';
+import Schedule from '../components/calendar/Schedule';
 
 const Stack = createNativeStackNavigator();
 const commonHeaderStyles = {
@@ -45,7 +46,9 @@ function Rootnavigation() {
         <Stack.Screen name="AddExpense" component={AddScreen} />
         <Stack.Screen name="Profile" component={ProfileStack} />
         <Stack.Screen name="Contacts" component={ContactGet}
-        options={({ navigation }) => (headerd)} />
+          options={({ navigation }) => (headerd)} />
+        <Stack.Screen name="Schedule" component={Schedule}
+          options={({ navigation }) => (headerd)} />
 
       </Stack.Navigator>
     </NavigationContainer>

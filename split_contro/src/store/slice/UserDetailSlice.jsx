@@ -10,6 +10,7 @@ const initialState = {
   accessToken: null,
   isAddTab: false,
   userData:[],
+  date:null,
   status: {
     getTrips: null,
     prodileDetail: null,
@@ -24,7 +25,7 @@ const userDetailSlice = createSlice({
         const userdata = action.payload;
       console.log('user data slice called',userdata);
       state.userData = userdata;
-    },
+    }
    
   },
   extraReducers: (builder) => {

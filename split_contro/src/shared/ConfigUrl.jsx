@@ -8,3 +8,4 @@ export const sign_up_send_otp = "/authentication/sign_up_send_otp/"   // for otp
 export const sign_up_otp_verification = "/authentication/sign_up_otp_verification/" // for registration
 export const sign_in_send_otp ="/authentication/sign_in_send_otp/" // otp login
 export const sign_in_otp_verification = "/authentication/sign_in_otp_verification/" // login usig otp
+export const create_expense="/authentication/create_expense/"
