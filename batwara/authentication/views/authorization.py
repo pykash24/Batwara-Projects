@@ -181,7 +181,7 @@ def sign_up_otp_verification(request):
 
 # User OTP authentication
 @csrf_exempt
-def user_authenticaton(request):
+def user_authentication(request):
     try:
         user_request = json.loads(request.body)
         if (
