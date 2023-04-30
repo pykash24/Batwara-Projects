@@ -183,7 +183,7 @@ def create_expense(request):
 def get_user_group_members(request):
     try:
         user_request = json.loads(request.body)
-        if not ('group_id' in user_request):
+        if 'group_id' not in user_request:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         group_id = user_request['group_id']
@@ -191,7 +191,7 @@ def get_user_group_members(request):
 
         if not get_user_id_of_group:
             get_user_id_of_group = []
-        
+
         get_user_id_data = UsersID.objects.filter(user_id__in=get_user_id_of_group).values()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
 
@@ -200,17 +200,16 @@ def get_user_group_members(request):
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 #Set the group to delete status..
-@csrf_exempt    
+@csrf_exempt
 def group_set_to_delete(request):
     try:
         user_request = json.loads(request.body)
         if not(user_request and 'group_id' in user_request or 'group_name' in user_request):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         group_id,group_name= user_request['group_id'], user_request['group_name']
-        set_to_delete_group = Group.objects.filter(group_id=group_id,group_name=group_name).first()
-
-        #Set the group to delete status..
-        if set_to_delete_group:
+        if set_to_delete_group := Group.objects.filter(
+            group_id=group_id, group_name=group_name
+        ).first():
             set_to_delete_group.is_delete = True
             set_to_delete_group.save()
             return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Group Deleted'},safe=False,status=constants.HTTP_200_OK)
@@ -239,12 +238,12 @@ def update_expenses(request):
 
         #Reference of expenses sharses id
         expenses_id_data = Expenses.objects.filter(expenses_id=expenses_id).first()
-        
-        #Delete the old 
-        delete_expenses_share = ExpensesShares.objects.filter(expenses_id=expenses_id)
-        if delete_expenses_share:
+
+        if delete_expenses_share := ExpensesShares.objects.filter(
+            expenses_id=expenses_id
+        ):
             delete_expenses_share.delete()
-        
+
         #Update the updated expenses shares to group member
         for user_shares in user_ids:
             user_shares_id = user_shares['user_id']
@@ -255,7 +254,7 @@ def update_expenses(request):
                 user_id =user_shares_data,
                 amount = sharable_amount,
             )
-            save_expenses_shares.save()        
+            save_expenses_shares.save()
         updated_expenses_shares = ExpensesShares.objects.filter(expenses_id=expenses_id).values()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data updated successfully',message.DATA_MESSAGE:list(updated_expenses_shares)},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
@@ -294,7 +293,7 @@ def remove_user_from_group(request):
 def get_user_details(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_id' in user_request):
+        if 'user_id' not in user_request:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         user_id = user_request['user_id']
         user_details_json = UsersID.objects.filter(user_id=user_id).values()
