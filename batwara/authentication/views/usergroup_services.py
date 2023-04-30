@@ -67,7 +67,7 @@ def add_user_in_group(request):
         is_phone_exist = UsersID.objects.filter(user_phone=phone).first()
         if not is_phone_exist:
             user_id = uuid.uuid4()
-            save_user_register = Users(
+            save_user_register = UsersID(
                 user_id =user_id,
                 user_phone = user_request['phone'],
                 user_password = constants.EMPTY,
