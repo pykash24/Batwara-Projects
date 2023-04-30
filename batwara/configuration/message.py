@@ -1,6 +1,6 @@
 INVALID_REQUEST_BODY_MESSAGE = "Invalid request body"
 INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
-SUCCESS_MESSAAGE = "success"
+SUCCESS_MESSAGE = "success"
 STATUS_KEY ="status"
 ERROR_KEY = "error"
 ERROR_MESSAGE = "error"

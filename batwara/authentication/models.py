@@ -9,6 +9,7 @@ class UsersID(models.Model):
     nation = models.CharField(max_length=256,null=True)
     password = models.CharField(max_length=1024,null=True)
     is_deleted= models.BooleanField(default=False,null=True)
+    is_activate= models.BooleanField(default=False,null=True)
 
     class Meta:
         db_table = "users_ids"

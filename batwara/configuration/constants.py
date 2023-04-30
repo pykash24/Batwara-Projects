@@ -29,5 +29,6 @@ DATA = "data"
 EMPTY = ""
 FAIL = "fail"
 BOOLEAN_FALSE = False
+BOOLEAN_TRUE = True
 TOKEN_TYPE = "bearer"
 MAIL_SENDER = "batwaraapp@gmail.com"

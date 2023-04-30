@@ -369,14 +369,12 @@ def sign_up_send_otp(request):
         user_request = json.loads(request.body)
         user_phone,nation= user_request['user_phone'],user_request['nation']
 
-        # To check the phone is register or not
-        is_user_present = UsersID.objects.filter(user_phone=user_phone).first()
-
-        if is_user_present:
+        if is_user_present := UsersID.objects.filter(
+            user_phone=user_phone, is_activate=constants.BOOLEAN_TRUE
+        ).first():
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_ALREADY_EXIST_DO_SIGN_IN},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
         user_id = str(uuid.uuid4())
-
 
         # Generate a TOTP and send it to the user
         secret_key,otp_unique_id = generate_secret_key(user_id,user_phone)

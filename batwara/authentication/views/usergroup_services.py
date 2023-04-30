@@ -48,7 +48,7 @@ def create_group(request):
         save_group.save()
         save_subgroup.save()
         result = {'group_name':group_name,'group_id':group_id,'usergroup_id':usergroup_id}
-        return JsonResponse({message.STATUS_KEY: message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:result},safe=False,status=constants.HTTP_201_CREATED)
+        return JsonResponse({message.STATUS_KEY: message.SUCCESS_MESSAGE,message.DATA_MESSAGE:result},safe=False,status=constants.HTTP_201_CREATED)
 
     except Exception as error:
         print(error)
@@ -59,21 +59,22 @@ def create_group(request):
 def add_user_in_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('phone' in user_request and 'group_id' in user_request and 'usergroup_id' in user_request):
+        if not ('phone' in user_request and 'group_id' in user_request and 'usergroup_id' in user_request or 'nation' in user_request):
             return JsonResponse({message.STATUS_KEY: constants.FAIL,'message':message.INVALID_REQUEST_BODY_MESSAGE},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # To create the group..
-        phone, group_id,usergroup_id = user_request['phone'], user_request['group_id'], user_request['usergroup_id']
+        phone, group_id,usergroup_id,nation= user_request['phone'], user_request['group_id'], user_request['usergroup_id'],user_request['nation']
         is_phone_exist = UsersID.objects.filter(user_phone=phone).first()
         if not is_phone_exist:
             user_id = uuid.uuid4()
             save_user_register = UsersID(
                 user_id =user_id,
                 user_phone = user_request['phone'],
-                user_password = constants.EMPTY,
-                first_name = user_request['first_name'],
-                last_name = user_request['last_name'],
-                user_mail = constants.EMPTY,
+                password = constants.EMPTY,
+                full_name = user_request['full_name'],
+                nation = nation,
+                is_deleted = constants.BOOLEAN_FALSE,
+                is_activate=constants.BOOLEAN_FALSE
             )
             save_user_register.save()
             print("user entry not exist")
@@ -84,7 +85,7 @@ def add_user_in_group(request):
         user_data = UsersID.objects.filter(user_id=user_id).first()
         group_data = Group.objects.filter(group_id=group_id).first()
         is_user_already_exist_group = UserGroup.objects.filter(user_id=user_id,group_id=group_id).first()
-        if not (is_user_already_exist_group or user_data or user_data):
+        if not (is_user_already_exist_group):
             
             #Create the foreign releation with User & Group tables.
             save_group = UserGroup(
@@ -97,7 +98,7 @@ def add_user_in_group(request):
         else:
             print("User already exist in group")
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY,'message':'Already exist'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,'usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
         
     except Exception as error:
         print(error)
@@ -119,7 +120,7 @@ def get_user_group(request):
             get_user_group_data = []
         
         get_user_group_data = Group.objects.filter(group_id__in=get_group_id).values()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:list(get_user_group_data)},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(get_user_group_data)},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
         print(error)
@@ -171,7 +172,7 @@ def create_expense(request):
             )
             save_expenses_shares.save()
 
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:expenses_id},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:expenses_id},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
         print(error)
@@ -192,7 +193,7 @@ def get_user_group_members(request):
             get_user_id_of_group = []
         
         get_user_id_data = UsersID.objects.filter(user_id__in=get_user_id_of_group).values()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
         print(error)
@@ -212,7 +213,7 @@ def group_set_to_delete(request):
         if set_to_delete_group:
             set_to_delete_group.is_delete = True
             set_to_delete_group.save()
-            return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,'message':'Group Deleted'},safe=False,status=constants.HTTP_200_OK)
+            return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Group Deleted'},safe=False,status=constants.HTTP_200_OK)
         return JsonResponse({message.STATUS_KEY:message.ERROR_KEY,'message':'Group not exist'},safe=False,status=constants.HTTP_403_FORBIDDED)
     except Exception as error:
         print(error)
@@ -256,7 +257,7 @@ def update_expenses(request):
             )
             save_expenses_shares.save()        
         updated_expenses_shares = ExpensesShares.objects.filter(expenses_id=expenses_id).values()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,'message':'Data updated successfully',message.DATA_MESSAGE:list(updated_expenses_shares)},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data updated successfully',message.DATA_MESSAGE:list(updated_expenses_shares)},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -283,7 +284,7 @@ def remove_user_from_group(request):
         #Remove the user from group
         is_user_exist_in_group.is_delete=True
         is_user_exist_in_group.save()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,'message':'Data updated successfully'},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data updated successfully'},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY,'message':'Internal server error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -297,7 +298,7 @@ def get_user_details(request):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         user_id = user_request['user_id']
         user_details_json = UsersID.objects.filter(user_id=user_id).values()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:list(user_details_json)},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(user_details_json)},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
