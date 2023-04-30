@@ -65,12 +65,12 @@ def user_register(request):
 
         user_id = str(uuid.uuid4())
         save_user_register = UsersID(
-            user_id = str(user_id),
-            user_phone = user_phone,
-            full_name = full_name,
+            user_id=user_id,
+            user_phone=user_phone,
+            full_name=full_name,
             nation=nation,
             password=sha256_hash_password,
-            is_deleted = False
+            is_deleted=False,
         )
         save_user_register.save()
 
@@ -198,7 +198,7 @@ def user_authentication(request):
         """ To check is user is valid or not"""
         is_user_valid =UsersID.objects.filter(user_password=sha256_hash_pasword,user_mail=user_mail).first()
         if not is_user_valid:
-            return JsonResponse({constants.STATUS:"error",constants.MESSAGE:"Invalid Creditinals"},safe=False,status=constants.HTTP_401_UNAUTHORIZED)
+            return JsonResponse({constants.STATUS:"error",constants.MESSAGE:"Invalid Credentials"},safe=False,status=constants.HTTP_401_UNAUTHORIZED)
 
         user_token = generate_token(request)
         return JsonResponse({'data': 'success','token':user_token},safe=False,status=constants.HTTP_200_OK)
