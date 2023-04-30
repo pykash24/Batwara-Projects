@@ -115,12 +115,21 @@ def sign_in_otp_verification(request):
 
         # save_user_details = user_register(request)
         # print(save_user_details)
+        user_details = UsersID.objects.filter(user_phone=user_phone,is_deleted=constants.BOOLEAN_FALSE).first()
+        if not user_details:
+            return JsonResponse({constants.STATUS: 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+            
         user_token = generate_token(request)
         if not user_token:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
+        data = {
+            'token':user_token,
+            "user_id": str(user_details.user_id),
+            "name": str(user_details.full_name)
+        }
         delete_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).delete()
-        return JsonResponse({constants.STATUS: "success",'token':user_token},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({constants.STATUS: "success","data":data},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({constants.STATUS: 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -324,7 +333,7 @@ def sign_in_send_otp(request):
 
         # To check the phone is register or not
         is_user_present = UsersID.objects.filter(user_phone=user_phone).first()
-
+        print(is_user_present)
         if not is_user_present:
             return JsonResponse({constants.STATUS:"error",constants.MESSAGE: message.ACCOUNT_DOES_NOT_EXIST_DO_SIGN_UP},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
@@ -332,7 +341,7 @@ def sign_in_send_otp(request):
         nation = str(is_user_present.nation)
 
         # Generate a TOTP and send it to the user
-        secret_key,otp_unique_id = generate_secret_key(user_id)
+        secret_key,otp_unique_id = generate_secret_key(user_id,user_phone)
         otp,otp_expiry_time= generate_totp(secret_key)
 
         user_phone_with_country_prefix = nation + user_phone

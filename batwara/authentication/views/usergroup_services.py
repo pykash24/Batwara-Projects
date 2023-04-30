@@ -26,7 +26,7 @@ def create_group(request):
         usergroup_id = uuid.uuid4()
 
         #create the user reference foreign key if exist
-        user_data = Users.objects.filter(user_id = user_id).first()
+        user_data = UsersID.objects.filter(user_id = user_id).first()
         if not user_data:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_403_FORBIDDED,safe=False)
 
@@ -64,7 +64,7 @@ def add_user_in_group(request):
 
         # To create the group..
         phone, group_id,usergroup_id = user_request['phone'], user_request['group_id'], user_request['usergroup_id']
-        is_phone_exist = Users.objects.filter(user_phone=phone).first()
+        is_phone_exist = UsersID.objects.filter(user_phone=phone).first()
         if not is_phone_exist:
             user_id = uuid.uuid4()
             save_user_register = Users(
@@ -81,7 +81,7 @@ def add_user_in_group(request):
             user_id = is_phone_exist.user_id
             print("user entry already exist in tank")
 
-        user_data = Users.objects.filter(user_id=user_id).first()
+        user_data = UsersID.objects.filter(user_id=user_id).first()
         group_data = Group.objects.filter(group_id=group_id).first()
         is_user_already_exist_group = UserGroup.objects.filter(user_id=user_id,group_id=group_id).first()
         if not (is_user_already_exist_group or user_data or user_data):
@@ -137,7 +137,7 @@ def create_expense(request):
         expenses_id = uuid.uuid4()
         expense_created_date = datetime.now().date()
 
-        user_data = Users.objects.filter(user_id=paid_by).first()
+        user_data = UsersID.objects.filter(user_id=paid_by).first()
         group_data = Group.objects.filter(group_id=group_id).first()
 
         #check the user data or group data of user reference is exist.
@@ -162,7 +162,7 @@ def create_expense(request):
         #Shares expenses into listed users equally.
         for user_shares in user_ids:
             user_shares_id = user_shares['user_id']
-            user_shares_data = Users.objects.filter(user_id=user_shares_id).first()
+            user_shares_data = UsersID.objects.filter(user_id=user_shares_id).first()
             save_expenses_shares = ExpensesShares(
                 expenses_shares_id = uuid.uuid4(),
                 expenses_id = expenses_id_data,
@@ -191,7 +191,7 @@ def get_user_group_members(request):
         if not get_user_id_of_group:
             get_user_id_of_group = []
         
-        get_user_id_data = Users.objects.filter(user_id__in=get_user_id_of_group).values()
+        get_user_id_data = UsersID.objects.filter(user_id__in=get_user_id_of_group).values()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
@@ -247,7 +247,7 @@ def update_expenses(request):
         #Update the updated expenses shares to group member
         for user_shares in user_ids:
             user_shares_id = user_shares['user_id']
-            user_shares_data = Users.objects.filter(user_id=user_shares_id).first()
+            user_shares_data = UsersID.objects.filter(user_id=user_shares_id).first()
             save_expenses_shares = ExpensesShares(
                 expenses_shares_id = uuid.uuid4(),
                 expenses_id = expenses_id_data,
@@ -271,7 +271,7 @@ def remove_user_from_group(request):
         user_id,group_id,usergroup_id = user_request['user_id'], user_request['group_id'],user_request['usergroup_id']
 
         #Get the user id reference
-        user_data = Users.objects.filter(user_id=user_id).first()
+        user_data = UsersID.objects.filter(user_id=user_id).first()
         if not user_data:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY,'message':'Not found!'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -296,7 +296,7 @@ def get_user_details(request):
         if not ('user_id' in user_request):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         user_id = user_request['user_id']
-        user_details_json = Users.objects.filter(user_id=user_id).values()
+        user_details_json = UsersID.objects.filter(user_id=user_id).values()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAAGE,message.DATA_MESSAGE:list(user_details_json)},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
