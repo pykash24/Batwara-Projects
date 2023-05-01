@@ -378,7 +378,7 @@ def set_up_profile(request):
             is_user_profile_set.gender = gender,
             is_user_profile_set.address = address,
             is_user_profile_set.save()
-            return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Profile update successful'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+            return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Profile update successful'},safe=False,status=constants.HTTP_200_OK)
 
         """ Set the user profile if user details not exist"""
         set_user_profile = UserDetails(
