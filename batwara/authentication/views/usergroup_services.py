@@ -317,9 +317,40 @@ def get_user_details(request):
         if 'user_id' not in user_request:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         user_id = user_request['user_id']
-        user_details_json = UsersID.objects.filter(user_id=user_id).values()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(user_details_json)},safe=False,status=constants.HTTP_200_OK)
+        user_details = UsersID.objects.filter(user_id=user_id).first()
+
+        if not user_details:
+            print("user not exist")
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+
+        user_details_json = {
+            "full_name":user_details.full_name,
+            "user_phone":user_details.user_phone,
+        }
+
+        if is_user_profile := UserDetails.objects.filter(
+            user_id=user_id
+        ).first():
+            user_details_json['account_verified'] = is_user_profile.account_verified
+            user_details_json['mail'] = is_user_profile.mail
+            user_details_json['address'] = is_user_profile.address
+            user_details_json['gender'] = is_user_profile.gender
+            user_details_json['is_profile_set'] = constants.BOOLEAN_TRUE
+        else:
+            user_details_json['is_profile_set'] = constants.BOOLEAN_FALSE
+            print("user details not exist")
+        return JsonResponse(
+            {
+                message.STATUS_KEY: message.SUCCESS_MESSAGE,
+                message.DATA_MESSAGE: [user_details_json],
+                
+            },
+            safe=False,
+            status=constants.HTTP_200_OK,
+        )
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
