@@ -48,6 +48,7 @@ def create_group(request):
         save_group.save()
         save_subgroup.save()
         result = {'group_name':group_name,'group_id':group_id,'usergroup_id':usergroup_id}
+        
         return JsonResponse({message.STATUS_KEY: message.SUCCESS_MESSAGE,message.DATA_MESSAGE:result},safe=False,status=constants.HTTP_201_CREATED)
 
     except Exception as error:
@@ -59,47 +60,54 @@ def create_group(request):
 def add_user_in_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('phone' in user_request and 'group_id' in user_request and 'usergroup_id' in user_request or 'nation' in user_request):
+        if (
+            'group_id' not in user_request
+            or 'usergroup_id' not in user_request
+        ):
             return JsonResponse({message.STATUS_KEY: constants.FAIL,'message':message.INVALID_REQUEST_BODY_MESSAGE},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
-        # To create the group..
-        phone, group_id,usergroup_id,nation= user_request['phone'], user_request['group_id'], user_request['usergroup_id'],user_request['nation']
-        is_phone_exist = UsersID.objects.filter(user_phone=phone).first()
-        if not is_phone_exist:
-            user_id = uuid.uuid4()
-            save_user_register = UsersID(
-                user_id =user_id,
-                user_phone = user_request['phone'],
-                password = constants.EMPTY,
-                full_name = user_request['full_name'],
-                nation = nation,
-                is_deleted = constants.BOOLEAN_FALSE,
-                is_activate=constants.BOOLEAN_FALSE
-            )
-            save_user_register.save()
-            print("user entry not exist")
-        else:
-            user_id = is_phone_exist.user_id
-            print("user entry already exist in tank")
+        group_id, usergroup_id,user_add_on= user_request['group_id'], user_request['usergroup_id'],user_request['user_add_on']
 
-        user_data = UsersID.objects.filter(user_id=user_id).first()
-        group_data = Group.objects.filter(group_id=group_id).first()
-        is_user_already_exist_group = UserGroup.objects.filter(user_id=user_id,group_id=group_id).first()
-        if not (is_user_already_exist_group):
-            
-            #Create the foreign releation with User & Group tables.
-            save_group = UserGroup(
-                usergroup_id = usergroup_id,
-                group_id = group_data,
-                user_id =user_data,
-                is_delete= False
-            )
-            save_group.save()
-        else:
-            print("User already exist in group")
-            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY,'message':'Already exist'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        for user_data in user_add_on:
+            phone,nation,full_name = user_data['phone'],user_data['nation'],user_data['full_name'],
+
+            """To create the group.. """
+            if is_phone_exist := UsersID.objects.filter(
+                user_phone=phone
+            ).first():
+                user_id = is_phone_exist.user_id
+                print("user entry already exist in tank")
+
+            else:
+                user_id = uuid.uuid4()
+                save_user_register = UsersID(
+                    user_id =user_id,
+                    user_phone = phone,
+                    password = constants.EMPTY,
+                    full_name =full_name ,
+                    nation = nation,
+                    is_deleted = constants.BOOLEAN_FALSE,
+                    is_activate=constants.BOOLEAN_FALSE
+                )
+                save_user_register.save()
+                print("user entry not exist")
+            user_data = UsersID.objects.filter(user_id=user_id).first()
+            group_data = Group.objects.filter(group_id=group_id).first()
+            if is_user_already_exist_group := UserGroup.objects.filter(
+                user_id=user_id, group_id=group_id
+            ).first():
+                print("User already exist in group")
+            else:
+                #Create the foreign relation with User & Group tables.
+                save_group = UserGroup(
+                    usergroup_id = usergroup_id,
+                    group_id = group_data,
+                    user_id =user_data,
+                    is_delete= False
+                )
+                save_group.save()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
-        
+
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
