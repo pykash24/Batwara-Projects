@@ -24,8 +24,16 @@ import user from '../assets/images/inputBox/user.png';
 import OtpInputBox from '../components/OtpInputBox.js';
 import fetchApi from '../shared/AxiosCall';
 import {sign_up_otp_verification, sign_up_send_otp} from '../shared/ConfigUrl';
+import {
+  fial_signUp_otpVerification,
+  signUp_send_otp,
+} from '../store/thunks/RegistrationThunk';
+import {useDispatch} from 'react-redux';
 
 const RegisterScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  // const navigation = useNavigation();
+
   const [number, setnumber] = useState('');
   const [Otp, setOtp] = useState('');
   const [otp_unique_id, setotp_unique_id] = useState('');
@@ -33,6 +41,7 @@ const RegisterScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [nationCode, setnationCode] = useState('+91');
   const [loading, setLoading] = useState(false);
+
   const getNumber = number => {
     setnumber(number);
     console.log('number', number);
@@ -75,6 +84,7 @@ const RegisterScreen = ({navigation}) => {
       registration();
     }
   };
+
   const sendOtp = () => {
     let data = {
       user_phone: number ? number : '',
@@ -83,20 +93,31 @@ const RegisterScreen = ({navigation}) => {
     setLoading(true);
     console.log('sendOtp called:', data);
     if (number.length == 10) {
-      fetchApi(sign_up_send_otp, data)
-        .then(res => {
-          if (res.status == 200) {
-            setLoading(true);
-            setotp_unique_id(res.data.otp_unique_id);
-            console.log('sendOtp res:', res);
-          }
-        })
-        .catch(err => {
+      dispatch(signUp_send_otp(data)).then(res => {
+        console.log("signUp_send_otp res:",res)
+        console.log("res?.data?.status == 'success':",res?.data?.status == 'success')
+        if (res?.data?.status == 'success') {
           setLoading(true);
-          console.log('sendOtp err:', err);
-        });
+          setotp_unique_id(res.data.otp_unique_id);
+          console.log('resfffffff', res);
+        }
+      });
+      // fetchApi(sign_up_send_otp, data)
+      //   .then(res => {
+      //     if (res.status == 200) {
+      //       setLoading(true);
+      //       setotp_unique_id(res.data.otp_unique_id);
+      //       console.log('sendOtp res:', res);
+      //     }
+      //   })
+      //   .catch(err => {
+      //     setLoading(true);
+      //     console.log('sendOtp err:', err);
+      //   });
     }
   };
+
+  
 
   const registration = () => {
     let data = {
@@ -172,7 +193,7 @@ const RegisterScreen = ({navigation}) => {
           setNumber={getNumber}
           keyboardType="numeric"
           maxLength={10}
-          onPress={sendOtp}
+          onPress={varifySendOTP}
           sideButton={true}
           secureTextEntry={false}
         />

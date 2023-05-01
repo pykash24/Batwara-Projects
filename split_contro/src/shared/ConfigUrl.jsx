@@ -1,5 +1,5 @@
 // export const BaseUrl = "https://8aee-115-98-232-106.ngrok-free.app";
-export const BaseUrl = "https://b9e2-103-211-41-140.ngrok-free.app";
+export const BaseUrl = "https://eedc-115-98-234-254.in.ngrok.io";
 export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_register = "/authentication/user_register/"

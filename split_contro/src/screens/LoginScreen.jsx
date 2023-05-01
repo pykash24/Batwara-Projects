@@ -68,9 +68,9 @@ const LoginScreen = ({navigation}) => {
         text2: 'fdsdsfsd',
       });
     }
-    // else{
-    //   sendOtp()
-    // }
+    else{
+      sendOtp()
+    }
   };
 
   const sendOtp = () => {
@@ -86,6 +86,9 @@ const LoginScreen = ({navigation}) => {
             setLoading(false)
             setotp_unique_id(res.data.otp_unique_id);
             console.log('sendOtp res:', res);
+          }
+          else{
+            setLoading(false)
           }
         })
         .catch(err => {
