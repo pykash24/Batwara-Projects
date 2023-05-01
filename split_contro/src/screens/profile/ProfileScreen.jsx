@@ -31,31 +31,15 @@ const ProfileScreen = () => {
     const dispatch = useDispatch()
     const navigation = useNavigation();
     const [userData, setUserData] = useState({})
-    const getUserData = () => {
-        let payload = {
-            user_id: "73e59de5-934f-46c5-bafa-1dfe2ce385c6",
-        };
-        console.log('GetUserDetails called:', payload);
-        fetchApi(GetUserDetails, payload)
-            .then(res => {
-                if (res?.data?.status == "success") {
-                    setUserData(res?.data?.data?.[0])
-                    // dispatch(homeActions.setIsTab(false));
-
-                }
-                console.log('GetUserDetails res:', res?.data?.data?.[0]);
-            })
-            .catch(err => {
-                console.log('GetUserDetails err:', err);
-            });
-    };
     useEffect(() => {
         let payload = {
-            user_id: "73e59de5-934f-46c5-bafa-1dfe2ce385c6",
+            user_id: "be31d44f-2c0b-40ae-b082-469868a19866",
         };
-        getUserData();
         dispatch(getUserDetails(payload)).then((res)=>{
-            console.log('resfffffff',res);
+            if (res?.payload?.status == "success") {
+                setUserData(res?.payload?.data[0])
+                console.log('resfffffff',res?.payload?.data[0]            );
+            }
         })
     }, [])
     useEffect(() => {
@@ -105,7 +89,7 @@ const ProfileScreen = () => {
                         <Title style={[styles.title, {
                             marginTop: 15,
                             marginBottom: 5,
-                        }]}>{userData?.first_name} {userData?.last_name}</Title>
+                        }]}>{userData?.full_name  } </Title>
                         <Caption style={styles.caption}>{'Kavi'}</Caption>
                     </View>
                 </View>

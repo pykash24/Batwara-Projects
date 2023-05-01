@@ -88,7 +88,7 @@ const AddButton = ({ }) => {
 
           </Animated.View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => { navigation.navigate('AddExpense'), changeTab() }}>
+        <TouchableWithoutFeedback onPress={() => { navigation.navigate('AddGroup'), changeTab() }}>
           <Animated.View
             style={[
               styles.item,

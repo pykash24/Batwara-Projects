@@ -1,4 +1,4 @@
-import { FlatList, Image, KeyboardAvoidingView, PermissionsAndroid, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, KeyboardAvoidingView, PermissionsAndroid, ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import TextFeild from '../../components/TextFeild'
 import { Colors } from '../../constants/Colors'
@@ -20,16 +20,48 @@ import { Friends } from '../../data/friends/Friends';
 import woman from '../../assets/images/commonImage/woman.png'
 import men from '../../assets/images/commonImage/men.png'
 import ImagePicker from 'react-native-image-crop-picker';
+import { formatDate } from '../../utils/Helper';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddExpense } from '../../store/thunks/ExpenseDetailthunk';
 
-const AddScreen = () => {
+const AddScreen = ({ route }) => {
+  const expenseCTX = useSelector((state) => state.expense);
+  const dispatch = useDispatch()
   const [showBottom, setShowBottom] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   const navigation = useNavigation();
   const [selectedTrip, setSelectedTrip] = useState("Select Group");
   const [img, setImg] = useState(null)
-  const handlechangeInput = (text) => {
-    console.log('hhhh', text);
-    setShowBottom(true)
+  const [date, setDate] = useState(formatDate(new Date()))
+
+  const [data,setData]=useState({
+    description:"",
+    amount:null,
+    type:""
+  })
+  const handlechangeInput = (name,value) => {
+    console.log('hhhh', name,value);
+    setData((prevState) => {
+      let returnVal = {
+        ...prevState,
+        [name]: value,
+      };
+      return returnVal;
+    });
   }
+  const [uri, setUri] = useState(null);
+  const pickPicture = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      console.log('urlll', image.path);
+      setUri(image.path);
+      // props.onChange?.(image);
+    });
+  };
   const onCloseBottom = () => {
     console.log('clicked');
     setShowBottom(false)
@@ -66,6 +98,9 @@ const AddScreen = () => {
     }).then(image => {
       setImg(img)
       console.log('imageyyyyy', image);
+      url = `data:${image?.mime};base64,${image?.data}`
+      console.log('bbbb', `data:${image?.mime};base64,${image?.data}`);
+
     }).catch((error) => {
       console.log('error', error);
     })
@@ -99,8 +134,37 @@ const AddScreen = () => {
     requestCameraPermission()
   }, []);
   useEffect(() => {
-    console.log('jjj', img);
-  }, [img]);
+    console.log('mmmmmmmmmm', expenseCTX?.date?.date);
+    let selectedDate = expenseCTX?.date?.date
+    if (selectedDate) {
+      let updatedDate = formatDate(new Date(selectedDate))
+
+      setDate(updatedDate)
+    }
+  }, [expenseCTX]);
+  console.log('jj000j', data);
+  const createexpense = () => {
+    setLoading(true)
+    let payload = {
+      description: data?.description,
+      group_id: "301a7607-d32f-4aa7-ae01-e9c14604c96e",
+      paid_by: "34234d6d-0824-4025-b93c-7d75f6f28249",
+      amount: data?.amount,
+      user_ids: [
+        {
+          "user_id": "34234d6d-0824-4025-b93c-7d75f6f28249"
+        },
+        {
+          "user_id": "ad13e705-6a34-4b72-bdff-7a476679842e"
+        }
+      ]
+    };
+    dispatch(AddExpense(payload)).then((res) => {
+      console.log('add expense return', res);
+    }).finally(() => {
+      setLoading(false)
+    })
+  }
   return (
     <SafeAreaView
       style={{
@@ -120,15 +184,17 @@ const AddScreen = () => {
                   type={"heading"} color={Colors.white}
                   value={"Add Expense"} />
               </TouchableOpacity>
-              <TouchableOpacity >
-                <Image source={checked} style={styles.checked} />
+              <TouchableOpacity onPress={() => createexpense()} >
+                {loading ?
+                  <ActivityIndicator size="small" color="#ffff" animating={loading} /> :
+                  <Image source={checked} style={styles.checked} />
+                }
               </TouchableOpacity>
             </View>
 
           </View>
 
           <KeyboardAvoidingView style={[styles.mainView, FlexStyles.flexDirectioncolumn]}>
-            {/* <View > */}
             <View style={[styles.round1]}>
               <View style={[styles.whiteRound]} />
             </View>
@@ -152,7 +218,6 @@ const AddScreen = () => {
                     keyExtractor={item => item.id}
                   />
                 </ScrollView>
-
               </View>
             </View>
 
@@ -163,6 +228,12 @@ const AddScreen = () => {
                   : <Image source={camera} style={styles.camera} />}
 
               </TouchableOpacity>
+              {/* <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={pickPicture}>
+                <Image
+                  style={styles.avatar}
+                  source={uri ? { uri } : ''}
+                />
+              </TouchableOpacity> */}
             </View>
             <View style={styles.mainViewChild2}>
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
@@ -171,7 +242,9 @@ const AddScreen = () => {
                 </TouchableOpacity>
                 <View style={[styles.searchOuterView, styles.pl10]}>
                   <TextInput placeholder='Enter bill or item name' placeholderTextColor={Colors.darkGrey}
-                    style={[styles.searchInput, styles.width100]} />
+                    style={[styles.searchInput, styles.width100]}
+                    value={data?.description}
+                    onChangeText={text => handlechangeInput('description',text)} />
                 </View>
               </View>
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
@@ -180,7 +253,10 @@ const AddScreen = () => {
                 </TouchableOpacity>
                 <View style={[styles.searchOuterView, styles.pl10]}>
                   <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey}
-                    style={[styles.searchInput, styles.width100]} />
+                    style={[styles.searchInput, styles.width100]}
+                    keyboardType={'numeric'} 
+                    value={data?.amount}
+                    onChangeText={text => handlechangeInput('amount',text)}/>
                 </View>
               </View>
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
@@ -207,12 +283,12 @@ const AddScreen = () => {
                 value={selectedTrip} />
             </View>
             <View tyle={[FlexStyles.flexDirectioncolumn,]}>
-              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]}>
+              <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => navigation.navigate('Schedule')}>
                 <Image source={calendar} style={styles.footerIcon} />
               </TouchableOpacity>
               <TextFeild
                 color={Colors.white}
-                value={"Choose Date"} />
+                value={date} />
             </View>
           </View>
           {showBottom &&
