@@ -336,6 +336,7 @@ def get_user_details(request):
             user_details_json['address'] = is_user_profile.address
             user_details_json['gender'] = is_user_profile.gender
             user_details_json['is_profile_set'] = constants.BOOLEAN_TRUE
+            user_details_json['account_verified'] = is_user_profile.account_verified
         else:
             user_details_json['is_profile_set'] = constants.BOOLEAN_FALSE
             print("user details not exist")
