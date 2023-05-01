@@ -16,36 +16,48 @@ import {Colors} from '../constants/Colors';
 import FlexStyles from '../assets/Styles/FlexStyles';
 import LoginStyles from './LoginStyles';
 import CommonStyles from '../assets/Styles/CommonStyles';
+import {splashHeader, splashTitle} from '../constants/StringsMessage'
 const {width, height} = Dimensions.get('window');
 
 class Splashscreen extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+
+    this.pan = new Animated.ValueXY();
+    this.panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event(
+        [null, {dx: this.pan.x, dy: this.pan.y}],
+        {useNativeDriver: false},
+      ),
+      onPanResponderRelease: (event, gesture) => {
+        Animated.spring(this.pan, {
+          toValue: {x: 0, y: 0},
+          useNativeDriver: true,
+        }).start();
+        console.log('onPanResponderRelease called');
+        console.log('this.pan.x:', this.pan.x._value);
+        console.log('width:', width);
+        if (this.pan.x._value >= Dimensions.get('window').width - Dimensions.get('window').width/2.2) {
+          this.props.navigation.navigate('Login');
+        } else {
+          console.log('move again');
+        }
+      },
+    });
+
+    // Add a limit for the x direction
+    const xMax =Dimensions.get('window').width - Dimensions.get('window').width/2.2; // Change this value to set the maximum x value
+    this.clampedPan = this.pan.x.interpolate({
+      inputRange: [-xMax, 0, xMax],
+      outputRange: [-xMax, 0, xMax],
+      extrapolate: 'clamp',
+    });
+
   }
-  pan = new Animated.ValueXY();
-  panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event(
-      [null, {dx: this.pan.x, dy: this.pan.y}],
-      {useNativeDriver: false},
-    ),
-    onPanResponderRelease: () => {
-      Animated.spring(this.pan, {
-        toValue: {x: 0, y: 0},
-        useNativeDriver: true,
-      }).start();
-      console.log('onPanResponderRelease called');
-      console.log('this.pan.x:', this.pan.x._value);
-      console.log('width:', width);
-      if (this.pan.x._value > '170') {
-        this.props.navigation.navigate('Login');
-      } else {
-        console.log('move again');
-      }
-    },
-  });
   render() {
+    console.log(" Dimensions.get('window'):", Dimensions.get('window').width)
     return (
       <SafeAreaView style={[FlexStyles.flex1]}>
         <View
@@ -53,7 +65,6 @@ class Splashscreen extends Component {
             FlexStyles.flex1,
             FlexStyles.flexDirectioncolumn,
             FlexStyles.flexarround,
-            // FlexStyles.alignItems,
           ]}>
           <View>
             <Image
@@ -80,16 +91,19 @@ class Splashscreen extends Component {
                     color: '#20315f',
                   },
                 ]}>
-                Split bills made easy with Batwara!
+               {splashHeader}
               </Text>
-              <Text style={[CommonStyles.pt10,{
+              <Text
+                style={[
+                  CommonStyles.pt10,
+                  {
                     fontFamily: 'Roboto-Regular',
                     fontWeight: 100,
                     fontSize: 15,
                     color: '#666',
-                  },]}>
-                Say goodbye to the headache of splitting bills - with Batwara,
-                it's as easy as pie and you can keep your cool!
+                  },
+                ]}>
+                {splashTitle}
               </Text>
             </View>
             <View
@@ -97,7 +111,7 @@ class Splashscreen extends Component {
               <Animated.View
                 style={{
                   transform: [
-                    {translateX: this.pan.x},
+                    {translateX: this.clampedPan},
                     // {translateY: this.pan.y},
                   ],
                 }}
@@ -112,57 +126,3 @@ class Splashscreen extends Component {
   }
 }
 export default Splashscreen;
-// const Splashscreen = ({navigation}) => {
-//   return (
-//     <SafeAreaView
-//       style={{
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         backgroundColor: '#fff',
-//       }}>
-//       <View style={{marginTop: 20}}>
-//         <Text
-//           style={{
-// fontFamily: 'Inter-Bold',
-// fontWeight: 'bold',
-// fontSize: 30,
-// color: '#20315f',
-//           }}>
-//           BATWARA
-//         </Text>
-//       </View>
-//       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-//       <MaterialIcons name="arrow-forward-ios" size={22} color="#fff" />
-//       <Image source={userprofile}  style={{width:300,height:300, resizeMode: 'contain',
-// }}/>
-
-//       </View>
-//       <TouchableOpacity
-//         style={{
-//           backgroundColor: Colors.primary,
-//           padding: 20,
-//           width: '90%',
-//           borderRadius: 10,
-//           marginBottom: 50,
-//           flexDirection: 'row',
-//           justifyContent: 'space-between',
-//         }}
-//         onPress={() => navigation.navigate('Login')}>
-//         <Text
-//           style={{
-//             color: 'white',
-//             fontSize: 18,
-//             textAlign: 'center',
-//             fontWeight: 'bold',
-//             fontFamily: 'Roboto-MediumItalic',
-//           }}>
-//           Let's Begin
-//         </Text>
-//         <MaterialIcons name="arrow-forward-ios" size={22} color="#fff" />
-//       </TouchableOpacity>
-//     </SafeAreaView>
-//   );
-// };
-
-// export default Splashscreen;

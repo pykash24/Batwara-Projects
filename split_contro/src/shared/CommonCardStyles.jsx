@@ -69,6 +69,9 @@ const CommonCardStyles = StyleSheet.create({
     width: 3, 
     height:30,
     backgroundColor: 'black'
+  },
+  mr10:{
+    marginRight:10
   }
 });
 export default CommonCardStyles;
