@@ -364,13 +364,23 @@ def set_up_profile(request):
             and 'address' not in user_request
             ):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
-        
+
         user_id,gender,mail,address= user_request['user_id'],user_request['gender'],user_request['mail'],user_request['address']
         user_details = UsersID.objects.filter(user_id=user_id).first()
-        
+
         if not user_details:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
-        
+
+        if is_user_profile_set := UserDetails.objects.filter(
+            user_id=user_id
+        ).first():
+            is_user_profile_set.mail = mail,
+            is_user_profile_set.gender = gender,
+            is_user_profile_set.address = address,
+            is_user_profile_set.save()
+            return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Profile update successful'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
+
+        """ Set the user profile if user details not exist"""
         set_user_profile = UserDetails(
             unique_id = str(uuid.uuid4()),
             user_id = user_details,
@@ -382,8 +392,7 @@ def set_up_profile(request):
             is_deleted= False
         )
         set_user_profile.save()
-        
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data updated successfully',message.DATA_MESSAGE:list(updated_expenses_shares)},safe=False,status=constants.HTTP_200_OK)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data updated successfully'},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
