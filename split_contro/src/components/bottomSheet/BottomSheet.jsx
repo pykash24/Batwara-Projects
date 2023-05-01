@@ -162,6 +162,8 @@ const BottomSheet = ({ onClose,setSelectedTrip }) => {
                         <Entypo name="cross" color={ Colors.darkGrey} size={20} />
                         </TouchableOpacity>
                     </View>
+                    <View style={[FlexStyles.flexDirectionrow,{width:"100%"}]}>
+                    <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
                     <View style={[styles.searchOuterView, styles.pl20]}>
                         <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
                         <TextInput
@@ -178,6 +180,7 @@ const BottomSheet = ({ onClose,setSelectedTrip }) => {
                         <TouchableOpacity onPress={() => setsearchQuery('')} style={styles.cross} >
                             <Entypo name="cross" color={searchQuery ? Colors.dark : Colors.gray} size={14} />
                         </TouchableOpacity>
+                    </View>
                     </View>
                     <Text style={[styles.pl20, { color: Colors.darkGrey, marginVertical: 20 }]}>{"Recent"}</Text>
                     <ScrollView showsVerticalScrollIndicator={true} style={{}}>
@@ -255,7 +258,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         color: Colors.black,
         marginHorizontal: 20,
-        marginTop: 10
+        marginTop: 10,
+        width:"80%"
     },
     searchInput: {
         fontSize: 15,

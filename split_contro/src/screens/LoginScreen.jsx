@@ -344,7 +344,7 @@ const LoginScreen = ({navigation}) => {
             loading={loading}
             onPress={() => {
               login(loginType);
-              // navigation.navigate('Main');
+              navigation.navigate('Main');
             }}
           />
         </View>
