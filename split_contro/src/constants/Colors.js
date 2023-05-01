@@ -18,5 +18,12 @@ export const Colors={
 
     darkGrey:"#777777",
     red:"red",
-    white1:"#fafaf6"
+    white1:"#fafaf6",
+
+    //-------Common App Colors-----------
+    commonAppBackground: '#E2E8F0',
+    commonCardBackground: '#FBFCFD',
+    commonTextBlack: '#1E293B',
+    CommonBorderGrey: '#E9EFF6',
+    CommonInputColor: '#E9EFF6'
 }

@@ -309,7 +309,7 @@ const LoginScreen = ({ navigation }) => {
             label={'SIGN IN'}
             onPress={() => {
               login(loginType);
-              // navigation.navigate('Main');
+              navigation.navigate('Main');
             }}
           />
         </View>
