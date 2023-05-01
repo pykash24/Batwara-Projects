@@ -77,7 +77,7 @@ const Schedule = () => {
         if(!!selected && selected !=undefined){    
             console.log('mmmmmmmmmm999');
           setSelectedDate(selected)
-        }
+        }   
         else{
             setSelectedDate(new Date())
         }

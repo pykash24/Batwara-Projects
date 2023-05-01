@@ -1,4 +1,5 @@
-export const BaseUrl = "https://8aee-115-98-232-106.ngrok-free.app";
+// export const BaseUrl = "https://8aee-115-98-232-106.ngrok-free.app";
+export const BaseUrl = "https://b9e2-103-211-41-140.ngrok-free.app";
 export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_authenticaton = "/authentication/user_authenticaton/"
@@ -9,3 +10,4 @@ export const sign_up_otp_verification = "/authentication/sign_up_otp_verificatio
 export const sign_in_send_otp ="/authentication/sign_in_send_otp/" // otp login
 export const sign_in_otp_verification = "/authentication/sign_in_otp_verification/" // login usig otp
 export const create_expense="/authentication/create_expense/"
+export const create_group="/authentication/create_group/"

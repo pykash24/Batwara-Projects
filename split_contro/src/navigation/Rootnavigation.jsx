@@ -18,6 +18,7 @@ import BottomSheet from '../components/bottomSheet/BottomSheet';
 import BottomSheetScreen from '../components/bottomSheet/BottomSheet';
 import ContactGet from '../screens/friends/ContactGet';
 import Schedule from '../components/calendar/Schedule';
+import AddGroup from '../screens/add/AddGroup';
 
 const Stack = createNativeStackNavigator();
 const commonHeaderStyles = {
@@ -49,6 +50,8 @@ function Rootnavigation() {
           options={({ navigation }) => (headerd)} />
         <Stack.Screen name="Schedule" component={Schedule}
           options={({ navigation }) => (headerd)} />
+        <Stack.Screen name="AddGroup" component={AddGroup} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

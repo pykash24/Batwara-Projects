@@ -62,8 +62,9 @@ const expenseSlice = createSlice({
       state.status.AddExpense = "rejected";
       console.log("REJECTED");
     });
-   
   },
+
+  
 });
 
 export const expenseReducer = expenseSlice.reducer;
