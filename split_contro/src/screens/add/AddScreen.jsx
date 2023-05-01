@@ -24,7 +24,7 @@ import { formatDate } from '../../utils/Helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddExpense } from '../../store/thunks/ExpenseDetailthunk';
 
-const AddScreen = ({ route }) => {
+const AddScreen = () => {
   const expenseCTX = useSelector((state) => state.expense);
   const dispatch = useDispatch()
   const [showBottom, setShowBottom] = useState(false)

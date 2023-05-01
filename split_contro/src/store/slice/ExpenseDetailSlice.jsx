@@ -45,7 +45,7 @@ const expenseSlice = createSlice({
   initialState,
   reducers: {
     setDate(state, action) {
-      const data = action.payload;
+      const data = action?.payload;
       console.log('ttttt',data);
       state.date = data;
     },
