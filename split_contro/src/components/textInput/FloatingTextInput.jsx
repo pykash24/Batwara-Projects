@@ -40,7 +40,7 @@ const FloatingTextInput = ({ label, value, onChangeText }) => {
         <View>
             <Animated.Text style={[styles.label, animatedLabelStyle]}>{label}</Animated.Text>
             <TextInput
-                style={styles.textInput}
+                style={styles.textInputColor}
                 value={value}
                 onChangeText={onChangeText}
                 onFocus={handleFocus}
@@ -51,6 +51,10 @@ const FloatingTextInput = ({ label, value, onChangeText }) => {
 };
 
 const styles = StyleSheet.create({
+    textInputColor: {
+        color: Colors.commonTextBlack,
+        fontSize: 14,
+    },
     label: {
         position: 'absolute',
         left: 2,
