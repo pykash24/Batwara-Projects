@@ -29,7 +29,7 @@ def create_group(request):
         #create the user reference foreign key if exist
         user_data = UsersID.objects.filter(user_id = user_id).first()
         if not user_data:
-            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_403_FORBIDDED,safe=False)
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         # Create the group
         save_group = Group(
