@@ -374,9 +374,9 @@ def set_up_profile(request):
         if is_user_profile_set := UserDetails.objects.filter(
             user_id=user_id
         ).first():
-            is_user_profile_set.mail = mail,
-            is_user_profile_set.gender = gender,
-            is_user_profile_set.address = address,
+            is_user_profile_set.mail = mail
+            is_user_profile_set.gender = gender
+            is_user_profile_set.address = address
             is_user_profile_set.save()
             return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Profile update successful'},safe=False,status=constants.HTTP_200_OK)
 
