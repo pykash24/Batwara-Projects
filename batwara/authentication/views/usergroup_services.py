@@ -351,6 +351,41 @@ def get_user_details(request):
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
+""" To set the user profile"""
+@csrf_exempt
+def set_up_profile(request):
+    try:
+        user_request = json.loads(request.body)
+        if (
+            'user_id' not in user_request
+            and 'gender' not in user_request
+            and 'mail' not in user_request
+            and 'address' not in user_request
+            ):
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        
+        user_id,gender,mail,address= user_request['user_id'],user_request['gender'],user_request['mail'],user_request['address']
+        user_details = UsersID.objects.filter(user_id=user_id).first()
+        
+        if not user_details:
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        
+        set_user_profile = UserDetails(
+            unique_id = str(uuid.uuid4()),
+            user_id = user_details,
+            address = address,
+            mail = mail,
+            password = user_details.password,
+            gender = gender,
+            account_verified = False,
+            is_deleted= False
+        )
+        set_user_profile.save()
+        
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data updated successfully',message.DATA_MESSAGE:list(updated_expenses_shares)},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
