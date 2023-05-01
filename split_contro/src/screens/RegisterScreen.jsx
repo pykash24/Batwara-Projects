@@ -29,6 +29,7 @@ import {
   signUp_send_otp,
 } from '../store/thunks/RegistrationThunk';
 import {useDispatch} from 'react-redux';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const RegisterScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -101,7 +102,16 @@ const RegisterScreen = ({navigation}) => {
           setotp_unique_id(res.data.otp_unique_id);
           console.log('resfffffff', res);
         }
-      });
+        else{
+          Toast.show({
+            type: "error",
+            text1: "something went wrong 😞",
+            text2: "try again!",
+          });
+        }
+      }).catch((e)=>{
+        console.log('error1',e);
+      })
       // fetchApi(sign_up_send_otp, data)
       //   .then(res => {
       //     if (res.status == 200) {

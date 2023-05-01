@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchApi from "../../shared/AxiosCall";
 import { sign_up_otp_verification, sign_up_send_otp } from "../../shared/ConfigUrl";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 export const signUp_send_otp = createAsyncThunk(
     "signUp_send_otp",
@@ -20,7 +21,12 @@ export const signUp_send_otp = createAsyncThunk(
                 console.log('signUp_send_otp res in thunk:', res);
             })
             .catch(err => {
-                console.log('signUp_send_otp err:', err);
+                console.log('signUp_send_otp err:', err.message);
+                Toast.show({
+                    type: "error",
+                    text1: `${err.message} 😞`,
+                    text2: "try again!",
+                  });
             });
             return response;
         } catch (error) {

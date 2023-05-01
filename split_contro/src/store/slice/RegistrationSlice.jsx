@@ -14,17 +14,17 @@ const initialState = {
 const registrationSlice = createSlice({
   name: "registration",
   initialState,
-  reducers: {
+  // reducers: {
    
    
-  },
+  // },
   extraReducers: (builder) => {
     builder.addCase(signUp_send_otp.pending, (state, action) => {
       state.status.signUp_send_otp = "pending";
     });
     builder.addCase(signUp_send_otp.fulfilled, (state, action) => {
       state.status.signUp_send_otp = "fulfilled";
-      console.log('-------userdataslfulfilled',state);
+      console.log('-------userdataslfulfilled');
     });
     builder.addCase(signUp_send_otp.rejected, (state, action) => {
       state.status.signUp_send_otp = "rejected";

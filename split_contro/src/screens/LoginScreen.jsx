@@ -82,19 +82,29 @@ const LoginScreen = ({navigation}) => {
     if (number.length == 10) {
       fetchApi(sign_in_send_otp, data)
         .then(res => {
-          if (res.status == 200) {
+          if (res?.status =="success") {
             setLoading(false)
             setotp_unique_id(res.data.otp_unique_id);
             console.log('sendOtp res:', res);
+            Toast.show({
+              type: "success",
+              text1: " 👏 check your messanger for OTP",
+              text2: "content de te revoir",
+            });
           }
           else{
+            Toast.show({
+              type: "error",
+              text1: "connection lossed 😞",
+              text2: "try again",
+            });
             setLoading(false)
           }
         })
         .catch(err => {
           setLoading(false)
-          console.log('err.response.status:', err.response.status);
-          console.log('err.response.data.message:', err.response.data.message);
+          console.log('err.response.status:', err?.response?.status);
+          console.log('err.response.data.message:', err?.response?.data?.message);
           Toast.show({
             type: 'error',
             text1: 'failed',
