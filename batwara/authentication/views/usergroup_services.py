@@ -17,11 +17,12 @@ def create_group(request):
             'group_description' not in user_request
             and 'group_name' not in user_request
             and 'user_id' not in user_request['user_id']
+            and 'user_add_on' not in user_request['user_add_on']
         ):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         #To create the group..
-        group_name, group_description,user_id = user_request['group_name'], user_request['group_description'],user_request['user_id']
+        group_name, group_description,user_id,user_add_on= user_request['group_name'], user_request['group_description'],user_request['user_id'],user_request['user_add_on']
         group_id = uuid.uuid4()
         usergroup_id = uuid.uuid4()
 
@@ -38,7 +39,7 @@ def create_group(request):
             group_created_by = user_id
         )
 
-        # Add default memeber of group.
+        # Add default member of group.
         save_subgroup = UserGroup(
             usergroup_id = usergroup_id,
             user_id =user_data,
@@ -49,8 +50,17 @@ def create_group(request):
         save_subgroup.save()
         result = {'group_name':group_name,'group_id':group_id,'usergroup_id':usergroup_id}
         
+        
+        add_user_request_body = {
+            "user_add_on":user_add_on,
+            "group_id" :group_id,
+            "usergroup_id":usergroup_id
+        }
+        add_users_on_group = add_user_in_group(add_user_request_body)
+        print("response",add_users_on_group)
+        if add_users_on_group.status_code != constants.HTTP_200_OK:
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
         return JsonResponse({message.STATUS_KEY: message.SUCCESS_MESSAGE,message.DATA_MESSAGE:result},safe=False,status=constants.HTTP_201_CREATED)
-
     except Exception as error:
         print(error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -59,7 +69,10 @@ def create_group(request):
 @csrf_exempt
 def add_user_in_group(request):
     try:
-        user_request = json.loads(request.body)
+        if type(request) is str or type(request) is dict:
+            user_request = request
+        else:
+            user_request = json.loads(request.body)
         if (
             'group_id' not in user_request
             or 'usergroup_id' not in user_request
@@ -106,7 +119,7 @@ def add_user_in_group(request):
                     is_delete= False
                 )
                 save_group.save()
-        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'usergroup_id':usergroup_id},safe=False,status=constants.HTTP_201_CREATED)
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'usergroup_id':usergroup_id},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
         print(error)
@@ -117,7 +130,7 @@ def add_user_in_group(request):
 def get_user_group(request):
     try:
         user_request = json.loads(request.body)
-        if not ('user_id' in user_request):
+        if 'user_id' not in user_request:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         user_id = user_request['user_id']
@@ -126,7 +139,7 @@ def get_user_group(request):
 
         if not get_group_id:
             get_user_group_data = []
-        
+
         get_user_group_data = Group.objects.filter(group_id__in=get_group_id).values()
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(get_user_group_data)},safe=False,status=constants.HTTP_200_OK)
 
