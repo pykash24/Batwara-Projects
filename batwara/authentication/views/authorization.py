@@ -172,6 +172,11 @@ def sign_up_otp_verification(request):
         if not user_token:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
+        if activate_user_account := UsersID.objects.filter(
+            user_phone=user_phone
+        ).first():
+            activate_user_account.is_activate = constants.BOOLEAN_TRUE
+            activate_user_account.save()
         delete_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).delete()
         return JsonResponse({constants.STATUS: "success",'token':user_token},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
