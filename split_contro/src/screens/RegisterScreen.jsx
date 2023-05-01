@@ -30,8 +30,9 @@ const RegisterScreen = ({navigation}) => {
   const [Otp, setOtp] = useState('');
   const [otp_unique_id, setotp_unique_id] = useState('');
   const [full_name, setfull_name] = useState('');
+  const [password, setPassword] = useState('');
   const [nationCode, setnationCode] = useState('+91');
-
+  const [loading, setLoading] = useState(false);
   const getNumber = number => {
     setnumber(number);
     console.log('number', number);
@@ -41,7 +42,10 @@ const RegisterScreen = ({navigation}) => {
     setfull_name(full_name);
     console.log('full_name', full_name);
   };
-
+  const getpassword = password => {
+    setPassword(password);
+    console.log('password', password);
+  };
   const getnation = nationCode => {
     setnationCode(nationCode);
     console.log('nationCode', nationCode);
@@ -57,17 +61,16 @@ const RegisterScreen = ({navigation}) => {
   const setOTP = otp => {
     setOtp(otp);
   };
+
   const varifyRegistration = otp => {
-    if (number === '') {
+    if (full_name === '') {
+      console.log('enter the full name');
+    } else if (number === '') {
       console.log('enter the mobile no');
     } else if (Otp === '') {
       console.log('enter the otp');
-    } else if (otp_unique_id === '') {
-      console.log('enter the otp');
-    } else if (full_name === '') {
-      console.log('enter the full name');
-    } else if (nationCode === '') {
-      console.log('enter the nation code');
+    } else if (password === '') {
+      console.log('enter the password');
     } else {
       registration();
     }
@@ -77,20 +80,24 @@ const RegisterScreen = ({navigation}) => {
       user_phone: number ? number : '',
       nation: '+91',
     };
+    setLoading(true);
     console.log('sendOtp called:', data);
     if (number.length == 10) {
       fetchApi(sign_up_send_otp, data)
         .then(res => {
           if (res.status == 200) {
+            setLoading(true);
             setotp_unique_id(res.data.otp_unique_id);
             console.log('sendOtp res:', res);
           }
         })
         .catch(err => {
+          setLoading(true);
           console.log('sendOtp err:', err);
         });
     }
   };
+
   const registration = () => {
     let data = {
       user_phone: number,
@@ -98,17 +105,20 @@ const RegisterScreen = ({navigation}) => {
       otp_unique_id: otp_unique_id,
       full_name: full_name,
       nation: nationCode,
+      password: password,
     };
     console.log('registration data:', data);
-
+    setLoading(false);
     fetchApi(sign_up_otp_verification, data)
       .then(res => {
         if (res.status == 200) {
+          setLoading(true);
           navigation.navigate('Login');
           console.log('sendOtp res:', res);
         }
       })
       .catch(err => {
+        setLoading(true);
         navigation.navigate('Main');
         console.log('sendOtp err:', err);
       });
@@ -167,10 +177,21 @@ const RegisterScreen = ({navigation}) => {
           secureTextEntry={false}
         />
         <OtpInputBox onComplete={setOTP} />
+        <NewInputField
+          label={'Enter password'}
+          icon={phonecall}
+          setNumber={getpassword}
+          keyboardType="default"
+          maxLength={10}
+          onPress={sendOtp}
+          sideButton={false}
+          secureTextEntry={true}
+        />
         <CustomButton
           label={'Register'}
+          loading={loading}
           onPress={() => {
-            registration();
+            varifyRegistration();
           }}
         />
         <View

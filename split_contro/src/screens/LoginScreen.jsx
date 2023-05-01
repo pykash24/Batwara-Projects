@@ -34,6 +34,7 @@ const LoginScreen = ({navigation}) => {
   const [otp_unique_id, setotp_unique_id] = useState('');
 
   const [loginType, setloginType] = useState('otp');
+  const [loading, setLoading] = useState(false);
 
   const getOtp = otp => {
     setOtp(otp);
@@ -75,18 +76,20 @@ const LoginScreen = ({navigation}) => {
   const sendOtp = () => {
     let data = {
       user_phone: number,
-      // user_phone: '8668776095',
     };
+    setLoading(true)
     console.log('sendOtp called:', data);
     if (number.length == 10) {
       fetchApi(sign_in_send_otp, data)
         .then(res => {
           if (res.status == 200) {
+            setLoading(false)
             setotp_unique_id(res.data.otp_unique_id);
             console.log('sendOtp res:', res);
           }
         })
         .catch(err => {
+          setLoading(false)
           console.log('err.response.status:', err.response.status);
           console.log('err.response.data.message:', err.response.data.message);
           Toast.show({
@@ -111,10 +114,12 @@ const LoginScreen = ({navigation}) => {
       user_otp: Otp,
       otp_unique_id: otp_unique_id,
     };
+    setLoading(true)
     console.log('login data:', data);
     fetchApi(sign_in_otp_verification, data)
       .then(res => {
         if (res.status == 200) {
+          setLoading(false)
           if (res.data.status === 'success') {
             navigation.navigate('Main');
           }
@@ -122,6 +127,7 @@ const LoginScreen = ({navigation}) => {
         }
       })
       .catch(err => {
+        setLoading(false)
         console.log('login err:', err);
         Toast.show({
           type: 'error',
@@ -322,10 +328,10 @@ const LoginScreen = ({navigation}) => {
           </View>
           <CustomButton
             label={'SIGN IN'}
-            loading={true}
+            loading={loading}
             onPress={() => {
-              // login(loginType);
-              navigation.navigate('Main');
+              login(loginType);
+              // navigation.navigate('Main');
             }}
           />
         </View>
