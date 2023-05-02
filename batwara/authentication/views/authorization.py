@@ -114,8 +114,6 @@ def sign_in_otp_verification(request):
         if not is_valid:
             return JsonResponse({constants.STATUS: 'error','data': 'Invalid OTP'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
-        # save_user_details = user_register(request)
-        # print(save_user_details)
         user_details = UsersID.objects.filter(user_phone=user_phone,is_deleted=constants.BOOLEAN_FALSE).first()
         if not user_details:
             return JsonResponse({constants.STATUS: 'error'},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -150,6 +148,7 @@ def sign_up_otp_verification(request):
         ):
             return JsonResponse({'data':'request body error'},safe=False,status=constants.HTTP_400_BAD_REQUEST)
 
+        print(user_request)
         user_phone = user_request['user_phone']
         otp_unique_id = user_request['otp_unique_id']
         user_otp = user_request['user_otp']
