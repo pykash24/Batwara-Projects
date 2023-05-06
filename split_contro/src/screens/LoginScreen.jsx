@@ -146,7 +146,6 @@ const LoginScreen = ({navigation}) => {
           type: 'error',
           text1: 'failed',
           text2: err?.message,
-          position: 'bottom',
         });
       });
   };

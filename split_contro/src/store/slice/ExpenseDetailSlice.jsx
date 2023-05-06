@@ -9,6 +9,8 @@ const initialState = {
   isLoggedIn: false,
   accessToken: null,
   date:new Date(),
+  adddContactList:[],
+  allContacts:[],
   status: {
     AddExpense: null,
   },
@@ -46,8 +48,18 @@ const expenseSlice = createSlice({
   reducers: {
     setDate(state, action) {
       const data = action?.payload;
-      console.log('ttttt',data);
-      state.date = data;
+      console.log('tttttdate',data);
+      state.date = new Date(data);
+    },
+    setAllContacts(state, action) {
+      const data = action?.payload;
+      console.log('added friends11',data?.contacts);
+      state.allContacts = data?.contacts;
+    },
+    setSelectedContact(state, action) {
+      const data = action?.payload;
+      console.log('added friends',data?.contact);
+      state.addedFriendsList = data?.contact;
     },
   },
   extraReducers: (builder) => {
