@@ -40,12 +40,12 @@ function Rootnavigation() {
           headerTitleStyle: styles.headerTitle,
 
         }}>
-        {/* <Stack.Screen name="Splash" component={Splashscreen} />
+        <Stack.Screen name="Splash" component={Splashscreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="AddExpense" component={AddScreen} />
-        <Stack.Screen name="Profile" component={ProfileStack} /> */}
+        <Stack.Screen name="Profile" component={ProfileStack} />
         <Stack.Screen name="Contacts" component={ContactGet}
           options={({ navigation }) => (headerd)} />
         <Stack.Screen name="Schedule" component={Schedule}
