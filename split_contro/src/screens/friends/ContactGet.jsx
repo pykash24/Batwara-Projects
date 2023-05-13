@@ -105,27 +105,61 @@ export default function ContactGet() {
     const expenseCTX = useSelector((state) => state.expense);
     console.log('expenseCTXaaa', expenseCTX);
 
+    async function hasAndroidPermission() {
+        const permission = PermissionsAndroid.PERMISSIONS.READ_CONTACTS;
+        const hasPermission = await PermissionsAndroid.check(permission);
+        if (hasPermission) {
+            return true;
+        }
+        const status = await PermissionsAndroid.request(permission);
+        return status === 'granted';
+    }
+
+    const loadContacts = async () => {
+        let contactsaray=[]
+        if (await hasAndroidPermission()) {
+            Contacts.getAll().then(contacts => {
+                contacts?.map((list, i) => {
+                    contactsaray.push({
+                        displayName: list?.displayName,
+                        phoneNumbers: list?.phoneNumbers,
+                        recordID: list?.recordID,
+                        familyName: list?.familyName
+                    })
+                })
+                setContactData(contactsaray)
+            })
+        }
+        return
+    };
 
     useEffect(() => {
-        // if (expenseCTX?.allContacts?.length > 0) {
-        //     setContactData(expenseCTX?.allContacts)
-        //     setFullData(expenseCTX?.allContacts)
-        // }
-        // else {
-        if (Platform.OS === 'android') {
-            PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-                title: 'Access Contacts',
-                message: 'App Want to View your Phone Contacts.',
-            }).then(() => {
-                accessContacts();
-            }
-            );
-        } else {
-            accessContacts();
-        }
-        // }
-    }, []);
+        hasAndroidPermission()
+    }, [])
+
+    useEffect(() => {
+        loadContacts()
+    }, [hasAndroidPermission])
+    // useEffect(() => {
+    //     // if (expenseCTX?.allContacts?.length > 0) {
+    //     //     setContactData(expenseCTX?.allContacts)
+    //     //     setFullData(expenseCTX?.allContacts)
+    //     // }
+    //     // else {
+    //     if (Platform.OS === 'android') {
+    //         PermissionsAndroid.request(
+    //             PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+    //             title: 'Access Contacts',
+    //             message: 'App Want to View your Phone Contacts.',
+    //         }).then(() => {
+    //             accessContacts();
+    //         }
+    //         );
+    //     } else {
+    //         accessContacts();
+    //     }
+    //     // }
+    // }, []);
     useEffect(() => {
         navigation.setOptions({
             headerLargeTitle: true,
