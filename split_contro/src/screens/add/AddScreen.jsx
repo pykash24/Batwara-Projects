@@ -176,7 +176,7 @@ const AddScreen = () => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ backgroundColor: Colors.bgColor, height: WINDOW_HEIGHT }}>
+        style={{ backgroundColor: Colors.commonAppBackground, height: WINDOW_HEIGHT }}>
         <View style={styles.container}>
           <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
             <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
@@ -274,7 +274,7 @@ const AddScreen = () => {
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={splitEqual} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.TextInputContainer, CommonStyles.mt10, styles.pl10]}>
+                <View style={[styles.TextInputContainer, CommonStyles.mt10]}>
                   <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
                     style={[styles.searchInput, styles.width100]} />
                 </View>
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     width: WINDOW_WIDTH
   },
   mainView: {
-    backgroundColor: Colors.gray3,
+    backgroundColor: Colors.white,
     // height: '70%',
     height: '100%',
     flex: 1,
@@ -443,16 +443,16 @@ const styles = StyleSheet.create({
     left: 20
   },
   searchInput: {
-    fontSize: 15,
+    fontSize: 12,
     color: Colors.black,
-    paddingHorizontal: 10
+    // paddingHorizontal: 10
   },
   whiteRound: {
     width: 50,
     height: 50,
     borderRadius: 100,
     zIndex: -90,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.commonAppBackground,
   },
   round1: {
     position: 'absolute',
