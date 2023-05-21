@@ -27,7 +27,7 @@ import { otploginMessage } from '../constants/StringsMessage';
 
 import { Colors } from '../constants/Colors';
 import TextFeild from '../components/TextFeild';
-import { sign_in_send_otpp } from '../store/thunks/RegistrationThunk';
+import { sign_in_otp_verificationn, sign_in_send_otpp } from '../store/thunks/RegistrationThunk';
 import { useDispatch } from 'react-redux';
 
 const LoginScreen = ({ navigation }) => {
@@ -84,11 +84,16 @@ const LoginScreen = ({ navigation }) => {
     if (number.length == 10) {
       dispatch(sign_in_send_otpp(data)).then(res => {
         console.log("signUp_send_otp res:", res)
-        console.log("res?.data?.status == 'success':", res?.payload?.status == 'success')
-        if (res?.payload?.status == 'success' || res?.payload?.status==200 ||  res?.payload?.status==201) {
-          setLoading(true);
-          setotp_unique_id(res.payload.otp_unique_id);
-          console.log('resfffffff', res);
+        console.log("res?.data?.status == 'success':", res?.payload?.data?.status == 'success')
+        if (res?.payload?.data?.status == 'success' || res?.payload?.data?.status == 200 || res?.payload?.data?.status == 201) {
+          setLoading(false);
+          setotp_unique_id(res.payload?.data?.otp_unique_id);
+          console.log('resfffffff', res?.payload);
+          Toast.show({
+            type: "success",
+            text1: "success",
+            text2: "check message for OTP",
+          });
         }
         else {
           Toast.show({
@@ -110,7 +115,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const login = loginType => {
+  const login = () => {
     let data = {
       user_phone: number,
       user_otp: Otp,
@@ -118,25 +123,30 @@ const LoginScreen = ({ navigation }) => {
     };
     setLoading(true)
     console.log('login data:', data);
-    fetchApi(sign_in_otp_verification, data)
-      .then(res => {
-        if (res.status == 200) {
-          setLoading(false)
-          if (res.data.status === 'success') {
-            navigation.navigate('Main');
-          }
-          console.log('login res:', res);
-        }
-      })
-      .catch(err => {
-        setLoading(false)
-        console.log('login err:', err);
+    dispatch(sign_in_otp_verificationn(data)).then(res => {
+      console.log("login1", res)
+      if (res?.payload?.data?.status == 'success' || res?.payload?.data?.status == 200 || res?.payload?.data?.status == 201) {
+        setLoading(false);
+        console.log('resfffffff', res.payload);
         Toast.show({
-          type: 'error',
-          text1: 'failed',
-          text2: err?.message,
+          type: "success",
+          text1: "success",
+          text2: "Logged in successfuly",
         });
-      });
+        setTimeout(() => {
+          navigation.navigate("Main")
+        }, 1000);
+      }
+      else {
+        Toast.show({
+          type: "error",
+          text1: "something went wrong 😞",
+          text2: "try again!",
+        });
+      }
+    }).catch((e) => {
+      console.log('error1', e);
+    })
   };
 
   return (
@@ -332,7 +342,7 @@ const LoginScreen = ({ navigation }) => {
             loading={loading}
             onPress={() => {
               login(loginType);
-              navigation.navigate('Main');
+              // navigation.navigate('Main');
             }}
           />
         </View>

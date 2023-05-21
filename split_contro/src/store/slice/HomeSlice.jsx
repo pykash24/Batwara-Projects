@@ -9,6 +9,7 @@ import { getTrips } from "../thunks/HomeThunks";
     isLoggedIn: false,
     accessToken: null,
     isAddTab: false,
+    userData:[],
     status: {
       getTrips: null,
       home: null,
@@ -19,26 +20,10 @@ import { getTrips } from "../thunks/HomeThunks";
     name: "home",
     initialState,
     reducers: {
-      setIsLogin(state, action) {
-        const status = action.payload;
-        state.isLoggedIn = status;
-        if (status) {
-          Toast.show({
-            type: "success",
-            text1: "connexion réussie",
-            text2: "content de te revoir",
-          });
-        } else {
-        //   clearSession();
-          Toast.show({
-            type: "success",
-            text1: "déconnexion réussie",
-          });
-        }
-      },
+    
       setIsTab(state, action) {
-        const tabStatus = action.payload;
-        console.log('ttttt',tabStatus);
+        const tabStatus = action?.payload;
+        console.log('ttttt',tabStatus,state);
         state.isAddTab = tabStatus;
       },
      
