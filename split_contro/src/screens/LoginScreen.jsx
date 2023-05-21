@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -12,7 +12,7 @@ import {
 import NewInputField from '../components/NewInputField';
 import phonecall from '../assets/images/inputBox/phonecall.png';
 import fetchApi from '../shared/AxiosCall';
-import {sign_in_send_otp, sign_in_otp_verification} from '../shared/ConfigUrl';
+import { sign_in_send_otp, sign_in_otp_verification } from '../shared/ConfigUrl';
 import OtpInputBox from '../components/OtpInputBox.js';
 import facebook from '../assets/images/login/facebook.png';
 import google from '../assets/images/login/google.png';
@@ -23,16 +23,18 @@ import LoginStyles from './LoginStyles';
 import CustomButton from '../components/CustomButton';
 import frontLogo from '../assets/images/login/frontLogo.png';
 import Toast from 'react-native-toast-message';
-import {otploginMessage} from '../constants/StringsMessage';
+import { otploginMessage } from '../constants/StringsMessage';
 
-import {Colors} from '../constants/Colors';
+import { Colors } from '../constants/Colors';
 import TextFeild from '../components/TextFeild';
+import { sign_in_send_otpp } from '../store/thunks/RegistrationThunk';
+import { useDispatch } from 'react-redux';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [number, setnumber] = useState(false);
   const [Otp, setOtp] = useState('');
   const [otp_unique_id, setotp_unique_id] = useState('');
-
+  const dispatch = useDispatch()
   const [loginType, setloginType] = useState('otp');
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +70,7 @@ const LoginScreen = ({navigation}) => {
         text2: 'fdsdsfsd',
       });
     }
-    else{
+    else {
       sendOtp()
     }
   };
@@ -80,40 +82,25 @@ const LoginScreen = ({navigation}) => {
     setLoading(true)
     console.log('sendOtp called:', data);
     if (number.length == 10) {
-      fetchApi(sign_in_send_otp, data)
-        .then(res => {
-          console.log('eeeeeeeeeeeee', res);
-
-          if (res?.status =="success") {
-            setLoading(false)
-            setotp_unique_id(res.data.otp_unique_id);
-            console.log('sendOtp res:', res);
-            Toast.show({
-              type: "success",
-              text1: " 👏 check your messanger for OTP",
-              text2: "content de te revoir",
-            });
-          }
-          else{
-            Toast.show({
-              type: "error",
-              text1: "connection lossed 😞",
-              text2: "try again",
-            });
-            setLoading(false)
-          }
-        })
-        .catch(err => {
-          setLoading(false)
-          console.log('err.response.status:', err);
-          console.log('err.response.data.message:', err?.response?.data?.message);
+      dispatch(sign_in_send_otpp(data)).then(res => {
+        console.log("signUp_send_otp res:", res)
+        console.log("res?.data?.status == 'success':", res?.payload?.status == 'success')
+        if (res?.payload?.status == 'success') {
+          setLoading(true);
+          setotp_unique_id(res.payload.otp_unique_id);
+          console.log('resfffffff', res);
+        }
+        else {
           Toast.show({
-            type: 'error',
-            text1: 'failed',
-            text2: err?.message,
+            type: "error",
+            text1: "something went wrong 😞",
+            text2: "try again!",
           });
-          console.log('sendOtp err:', err?.message);
-        });
+        }
+      }).catch((e) => {
+        console.log('error1', e);
+      })
+
     } else {
       Toast.show({
         type: 'error',
@@ -161,9 +148,9 @@ const LoginScreen = ({navigation}) => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{paddingHorizontal: 15}}>
+        style={{ paddingHorizontal: 15 }}>
         <View>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Image
               source={frontLogo}
               style={{

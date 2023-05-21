@@ -8,7 +8,7 @@ import calendar from '../../assets/images/commonImage/calendar.png'
 import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
-import camera from '../../assets/images/commonImage/camera.png'
+import camera from '../../assets/images/commonImage/camera-sm.png'
 import amount from '../../assets/images/commonImage/amount.png'
 import addUser from '../../assets/images/commonImage/addUser.png'
 
@@ -238,11 +238,11 @@ const AddScreen = () => {
               </TouchableOpacity> */}
             </View>
             <View style={styles.mainViewChild2}>
-              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={bill} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                <View style={[styles.TextInputContainer]}>
                   <FloatingTextInput
                     textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
                     label={'Enter bill or item name'}
@@ -250,7 +250,7 @@ const AddScreen = () => {
                     onChangeText={text => handlechangeInput('description', text)} />
                 </View>
               </View>
-              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={amount} style={styles.footerIcon} />
                 </TouchableOpacity>
@@ -261,7 +261,7 @@ const AddScreen = () => {
                     value={data?.amount}
                     onChangeText={text => handlechangeInput('amount', text)} />
                 </View> */}
-                <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                <View style={[styles.TextInputContainer]}>
                   <FloatingTextInput
                     textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
                     label={'Enter Amount'}
@@ -270,11 +270,11 @@ const AddScreen = () => {
                 </View>
               </View>
 
-              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={splitEqual} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.TextInputContainer, CommonStyles.mt10]}>
+                <View style={[styles.TextInputContainer]}>
                   <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
                     style={[styles.searchInput, styles.width100]} />
                 </View>
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.commonAppBackground,
     paddingHorizontal: 10,
-    width: "70%"
+    width: "75%"
   },
   header: {
     padding: 15,
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: 90,
     height: 90,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.commonAppBackground,
     borderRadius: 100
   },
   mainViewChild2: {
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.commonAppBackground,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   footerIcon: {
     width: 30,
     height: 30,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   checked: {
     width: 25,
