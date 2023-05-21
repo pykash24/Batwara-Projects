@@ -153,6 +153,9 @@ const CommonStyles = StyleSheet.create({
   mr10: {
     marginRight: 10
   },
+  mr20: {
+    marginRight: 20
+  },
   p20: {
     padding: 20,
   },

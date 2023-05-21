@@ -51,8 +51,6 @@ function Rootnavigation() {
         <Stack.Screen name="Schedule" component={Schedule}
           options={({ navigation }) => (headerd)} />
         <Stack.Screen name="AddGroup" component={AddGroup} />
-
-
       </Stack.Navigator>
     </NavigationContainer>
   );

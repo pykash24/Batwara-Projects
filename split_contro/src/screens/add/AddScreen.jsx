@@ -23,8 +23,10 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { formatDate } from '../../utils/Helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddExpense } from '../../store/thunks/ExpenseDetailthunk';
+import FloatingTextInput from '../../components/textInput/FloatingTextInput';
+import CommonStyles from '../../assets/Styles/CommonStyles';
 
-const AddScreen = ({ route }) => {
+const AddScreen = () => {
   const expenseCTX = useSelector((state) => state.expense);
   const dispatch = useDispatch()
   const [showBottom, setShowBottom] = useState(false)
@@ -35,13 +37,13 @@ const AddScreen = ({ route }) => {
   const [img, setImg] = useState(null)
   const [date, setDate] = useState(formatDate(new Date()))
 
-  const [data,setData]=useState({
-    description:"",
-    amount:null,
-    type:""
+  const [data, setData] = useState({
+    description: "",
+    amount: null,
+    type: ""
   })
-  const handlechangeInput = (name,value) => {
-    console.log('hhhh', name,value);
+  const handlechangeInput = (name, value) => {
+    console.log('hhhh', name, value);
     setData((prevState) => {
       let returnVal = {
         ...prevState,
@@ -240,24 +242,32 @@ const AddScreen = ({ route }) => {
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={bill} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.searchOuterView, styles.pl10]}>
-                  <TextInput placeholder='Enter bill or item name' placeholderTextColor={Colors.darkGrey}
-                    style={[styles.searchInput, styles.width100]}
-                    value={data?.description}
-                    onChangeText={text => handlechangeInput('description',text)} />
-                </View>
+                  <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                    <FloatingTextInput
+                      textStyles={{backgroundColor:"transparent",color:Colors.gray,fontSize:12}}
+                      label={'Enter bill or item name'}
+                      value={data?.description}
+                      onChangeText={text => handlechangeInput('description', text)} />
+                  </View>
               </View>
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={amount} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.searchOuterView, styles.pl10]}>
+                {/* <View style={[styles.searchOuterView, styles.pl10]}>
                   <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey}
                     style={[styles.searchInput, styles.width100]}
-                    keyboardType={'numeric'} 
+                    keyboardType={'numeric'}
                     value={data?.amount}
-                    onChangeText={text => handlechangeInput('amount',text)}/>
-                </View>
+                    onChangeText={text => handlechangeInput('amount', text)} />
+                </View> */}
+                 <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                    <FloatingTextInput
+                      textStyles={{backgroundColor:"transparent",color:Colors.gray,fontSize:12}}
+                      label={'Enter Amount'}
+                      value={data?.amount}
+                      onChangeText={text => handlechangeInput('amount', text)} />
+                    </View>
               </View>
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
@@ -312,6 +322,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     backgroundColor: Colors.white
+  },
+  TextInputContainer: {
+    height: 45,
+    borderRadius: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderWidth: 1.2,
+    borderColor: Colors.white,
+    paddingHorizontal: 10,
+    width:"70%"
   },
   header: {
     padding: 15,

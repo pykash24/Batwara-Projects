@@ -25,12 +25,13 @@ export default function CustomButton({label, onPress, loading}) {
           FlexStyles.flexDirectionrow,
           buttonStyles.commmonButton,
         ]}>
-        <Text
-          style={[buttonStyles.buttonText]}>
-          {label}
-        </Text>
-        <View style={[buttonStyles.verticalLine]}></View>
-        <ActivityIndicator size="small" color="#ffff" animating={loading}/>
+        <Text style={[buttonStyles.buttonText]}>{label}</Text>
+        {loading && (
+          <>
+            <View style={[buttonStyles.verticalLine]}></View>
+            <ActivityIndicator size="small" color="#ffff" animating={loading} />
+          </>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -62,5 +63,5 @@ const buttonStyles = StyleSheet.create({
     backgroundColor: '#ffff',
     marginLeft: 10,
     marginRight: 10,
-  }
+  },
 });

@@ -64,7 +64,7 @@ const Schedule = () => {
     };
 
     const onDateSelect = (date) => {
-        dispatch(expenseActions?.setDate({date}))
+        dispatch(expenseActions?.setDate({date:date}))
         console.log('a123', date);
         setSelectedDate(new Date(date))
         navigation.navigate('AddExpense', {

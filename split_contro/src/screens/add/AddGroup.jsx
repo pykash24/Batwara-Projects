@@ -9,10 +9,10 @@ import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
 import camera from '../../assets/images/commonImage/camera.png'
-import amount from '../../assets/images/commonImage/amount.png'
+import tag from '../../assets/images/commonImage/tag.png'
 import addUser from '../../assets/images/commonImage/addUser.png'
 
-import bill from '../../assets/images/commonImage/bill.png'
+import group1 from '../../assets/images/commonImage/group_name.png'
 import splitEqual from '../../assets/images/commonImage/splitEqual.png'
 import BottomSheet from '../../components/bottomSheet/BottomSheet';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
@@ -242,7 +242,7 @@ const AddGroup = ({ route }) => {
                         <View style={styles.mainViewChild2}>
                             <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
                                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                                    <Image source={bill} style={styles.footerIcon} />
+                                    <Image source={group1} style={styles.footerIcon} />
                                 </TouchableOpacity>
                                 <View style={[styles.searchOuterView, styles.pl10]}>
                                     <TextInput placeholder='Enter Group name' placeholderTextColor={Colors.darkGrey}
@@ -253,10 +253,10 @@ const AddGroup = ({ route }) => {
                             </View>
                             <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
                                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                                    <Image source={amount} style={styles.footerIcon} />
+                                    <Image source={tag} style={styles.footerIcon} />
                                 </TouchableOpacity>
                                 <View style={[styles.searchOuterView, styles.pl10]}>
-                                    <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey}
+                                    <TextInput placeholder='Trip' placeholderTextColor={Colors.darkGrey}
                                         style={[styles.searchInput, styles.width100]}
                                         value={data?.amount}
                                         onChangeText={text => handlechangeInput('amount', text)} />
