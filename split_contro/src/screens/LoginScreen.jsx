@@ -85,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
       dispatch(sign_in_send_otpp(data)).then(res => {
         console.log("signUp_send_otp res:", res)
         console.log("res?.data?.status == 'success':", res?.payload?.status == 'success')
-        if (res?.payload?.status == 'success') {
+        if (res?.payload?.status == 'success' || res?.payload?.status==200 ||  res?.payload?.status==201) {
           setLoading(true);
           setotp_unique_id(res.payload.otp_unique_id);
           console.log('resfffffff', res);
