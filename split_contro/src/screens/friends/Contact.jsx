@@ -8,16 +8,22 @@ import { expenseActions } from '../../store/slice/ExpenseDetailSlice';
 const Contact = ({ }) => {
   const { selectedData, setSelectedData, contact } = useContext(ContactContext);
   const onSelect = (data) => {
-    if (selectedData) {
-      setSelectedData([...selectedData, {...data}])
-    }
-    else {
-      setSelectedData([data])
-    }
+    // if (selectedData) {
+    //   setSelectedData([...selectedData, {...data}])
+    // }
+    // else {
+    //   setSelectedData([data])
+    // }
+
+    selectedData.push(data)
+    console.log('dattt', data, selectedData);
+    let newdata = JSON.stringify(selectedData)
+    let selectedContact = JSON.parse(newdata);
+    setSelectedData(selectedContact)
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={() => onSelect(contact)}>
+    <TouchableOpacity activeOpacity={0.5} style={styles.container} onPress={() => onSelect(contact)}>
       <View style={styles.imgCon}>
         <View style={styles.placeholder}>
           <Text style={styles.txt}>{contact?.displayName?.[0] ? contact?.displayName?.[0] : "Default"}</Text>

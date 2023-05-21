@@ -14,13 +14,16 @@ import { Friends } from '../../data/friends/Friends';
 import woman from '../../assets/images/commonImage/woman.png'
 import men from '../../assets/images/commonImage/men.png'
 import { filter } from 'lodash'
+import { useNavigation } from '@react-navigation/native';
 
 const bottomSheetMaxHeight = WINDOW_HEIGHT * 0.6
 const bottomSheetMinHeight = WINDOW_HEIGHT * 0.6
 const maxUpwardTranslateY = bottomSheetMinHeight - bottomSheetMaxHeight //negative no
 const maxDownwordTranslateY = 0
 const dragThreshold = 50
-const BottomSheet = ({ onClose,setSelectedTrip }) => {
+const BottomSheet = ({ onClose, setSelectedTrip }) => {
+    const navigation = useNavigation();
+
     const animatedValue = useRef(new Animated.Value(0)).current;
     const lastGestureDy = useRef(0);
     const [searchQuery, setsearchQuery] = useState("")
@@ -102,7 +105,7 @@ const BottomSheet = ({ onClose,setSelectedTrip }) => {
         }
     }, [])
     const Item = ({ title }) => (
-        <TouchableOpacity onPress={() => {setSelectedTrip(title),onClose()}} style={[FlexStyles.gap10, FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
+        <TouchableOpacity onPress={() => { setSelectedTrip(title), onClose() }} style={[FlexStyles.gap10, FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
             <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
             <Text style={styles.subText}>{title}</Text>
         </TouchableOpacity>
@@ -157,33 +160,36 @@ const BottomSheet = ({ onClose,setSelectedTrip }) => {
                     <View style={styles.dragarea} {...panResponder.panHandlers}>
                         <View style={[styles.dragHandler]} />
                     </View>
-                    <View style={[styles.cross]}>
-                        <TouchableOpacity onPress={() => onCross()} style={styles.crossText} >
-                        <Entypo name="cross" color={ Colors.darkGrey} size={20} />
+
+                    <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.pl20, { width: "100%" }]}>
+                        <TouchableOpacity onPress={() => onCross()} >
+                            <FontAwesomIcon name="arrow-left" color={Colors.gray} size={15} />
+                        </TouchableOpacity>
+                        <View style={[styles.searchOuterView, styles.pl20]}>
+                            <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
+                            <TextInput
+                                style={[styles.searchInput]}
+                                placeholder='Search'
+                                clearButtonMode="always"
+                                placeholderTextColor={Colors.darkGrey}
+                                clearTextOnFocus={true}
+                                autoCapitalize='none'
+                                autoCorrect={false}
+                                value={searchQuery}
+                                onChangeText={(query) => handleSearch(query)}
+                            />
+                            <TouchableOpacity onPress={() => setsearchQuery('')} style={styles.cross} >
+                                <Entypo name="cross" color={searchQuery ? Colors.dark : Colors.gray} size={14} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={[styles.ph20, FlexStyles.flexDirectionrow, FlexStyles.flexBetween, { color: Colors.darkGrey, marginVertical: 20 }]}>
+                        <Text style={[{ color: Colors.darkGrey }]}>{"Recent"}</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate("AddGroup")} >
+                            <Text style={[{ color: Colors.darkGrey }]}>{"Add Group"}</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={[FlexStyles.flexDirectionrow,{width:"100%"}]}>
-                    <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
-                    <View style={[styles.searchOuterView, styles.pl20]}>
-                        <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
-                        <TextInput
-                            style={[styles.searchInput]}
-                            placeholder='Search'
-                            clearButtonMode="always"
-                            placeholderTextColor={Colors.darkGrey}
-                            clearTextOnFocus={true}
-                            autoCapitalize='none'
-                            autoCorrect={false}
-                            value={searchQuery}
-                            onChangeText={(query) => handleSearch(query)}
-                        />
-                        <TouchableOpacity onPress={() => setsearchQuery('')} style={styles.cross} >
-                            <Entypo name="cross" color={searchQuery ? Colors.dark : Colors.gray} size={14} />
-                        </TouchableOpacity>
-                    </View>
-                    </View>
-                    <Text style={[styles.pl20, { color: Colors.darkGrey, marginVertical: 20 }]}>{"Recent"}</Text>
-                    <ScrollView showsVerticalScrollIndicator={true} style={{}}>
+                    <ScrollView showsVerticalScrollIndicator={true} style={{opacity:1}}>
                         <View style={styles.childView}>
                             <View style={[styles.pl20]}>
                                 <FlatList
@@ -257,9 +263,10 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         alignItems: 'center',
         color: Colors.black,
-        marginHorizontal: 20,
-        marginTop: 10,
-        width:"80%"
+        // marginRight: 20,
+        // marginTop: 10,
+        width: "90%",
+        marginLeft: 5
     },
     searchInput: {
         fontSize: 15,
@@ -269,9 +276,14 @@ const styles = StyleSheet.create({
     pl20: {
         paddingLeft: 20
     },
+    ph20: {
+        paddingHorizontal: 20
+    },
     subText: {
         fontSize: 14,
-        margin: 10
+        margin: 10,
+        opacity:1,
+        color:Colors.black
     },
     crossText: {
         fontSize: 18,

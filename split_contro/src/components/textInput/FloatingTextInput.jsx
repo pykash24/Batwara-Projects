@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { View, TextInput, StyleSheet, Animated } from 'react-native';
 import { Colors } from '../../constants/Colors';
 
-const FloatingTextInput = ({ label, value, onChangeText }) => {
+const FloatingTextInput = ({ label, value, onChangeText,textStyles }) => {
     const animatedIsFocused = useRef(new Animated.Value(value ? 1 : 0)).current;
 
     const handleFocus = () => {
@@ -38,7 +38,7 @@ const FloatingTextInput = ({ label, value, onChangeText }) => {
 
     return (
         <View>
-            <Animated.Text style={[styles.label, animatedLabelStyle]}>{label}</Animated.Text>
+            <Animated.Text style={[styles.label, animatedLabelStyle,textStyles]}>{label}</Animated.Text>
             <TextInput
                 style={styles.textInput}
                 value={value}
@@ -60,6 +60,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 1.8,
     },
+    textInput:{
+        color:Colors.black
+    }
 });
 
 export default FloatingTextInput;
