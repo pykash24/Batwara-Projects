@@ -82,6 +82,8 @@ const LoginScreen = ({navigation}) => {
     if (number.length == 10) {
       fetchApi(sign_in_send_otp, data)
         .then(res => {
+          console.log('eeeeeeeeeeeee', res);
+
           if (res?.status =="success") {
             setLoading(false)
             setotp_unique_id(res.data.otp_unique_id);
@@ -103,7 +105,7 @@ const LoginScreen = ({navigation}) => {
         })
         .catch(err => {
           setLoading(false)
-          console.log('err.response.status:', err?.response?.status);
+          console.log('err.response.status:', err);
           console.log('err.response.data.message:', err?.response?.data?.message);
           Toast.show({
             type: 'error',

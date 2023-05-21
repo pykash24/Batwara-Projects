@@ -176,7 +176,7 @@ const AddScreen = () => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ backgroundColor: 'red', height: WINDOW_HEIGHT }}>
+        style={{ backgroundColor: Colors.bgColor, height: WINDOW_HEIGHT }}>
         <View style={styles.container}>
           <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
             <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
@@ -242,13 +242,13 @@ const AddScreen = () => {
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={bill} style={styles.footerIcon} />
                 </TouchableOpacity>
-                  <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
-                    <FloatingTextInput
-                      textStyles={{backgroundColor:"transparent",color:Colors.gray,fontSize:12}}
-                      label={'Enter bill or item name'}
-                      value={data?.description}
-                      onChangeText={text => handlechangeInput('description', text)} />
-                  </View>
+                <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                  <FloatingTextInput
+                    textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
+                    label={'Enter bill or item name'}
+                    value={data?.description}
+                    onChangeText={text => handlechangeInput('description', text)} />
+                </View>
               </View>
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
@@ -261,22 +261,27 @@ const AddScreen = () => {
                     value={data?.amount}
                     onChangeText={text => handlechangeInput('amount', text)} />
                 </View> */}
-                 <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
-                    <FloatingTextInput
-                      textStyles={{backgroundColor:"transparent",color:Colors.gray,fontSize:12}}
-                      label={'Enter Amount'}
-                      value={data?.amount}
-                      onChangeText={text => handlechangeInput('amount', text)} />
-                    </View>
+                <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                  <FloatingTextInput
+                    textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
+                    label={'Enter Amount'}
+                    value={data?.amount}
+                    onChangeText={text => handlechangeInput('amount', text)} />
+                </View>
               </View>
+
               <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={splitEqual} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.searchOuterView, styles.pl10]}>
+                <View style={[styles.TextInputContainer, CommonStyles.mt10, styles.pl10]}>
                   <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
                     style={[styles.searchInput, styles.width100]} />
                 </View>
+                {/* <View style={[styles.searchOuterView, styles.pl10]}>
+                  <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
+                    style={[styles.searchInput, styles.width100]} />
+                </View> */}
               </View>
 
             </View>
@@ -321,17 +326,26 @@ const styles = StyleSheet.create({
     position: "relative",
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: Colors.white
   },
+  // TextInputContainer: {
+  //   height: 45,
+  //   borderRadius: 10,
+  //   marginLeft: 10,
+  //   marginRight: 10,
+  //   borderWidth: 1.2,
+  //   borderColor: Colors.white,
+  //   paddingHorizontal: 10,
+  //   width:"70%"
+  // },
   TextInputContainer: {
     height: 45,
     borderRadius: 10,
     marginLeft: 10,
     marginRight: 10,
-    borderWidth: 1.2,
-    borderColor: Colors.white,
+    borderWidth: 2,
+    borderColor: Colors.commonAppBackground,
     paddingHorizontal: 10,
-    width:"70%"
+    width: "70%"
   },
   header: {
     padding: 15,

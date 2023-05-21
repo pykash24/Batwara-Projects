@@ -1,5 +1,5 @@
 // export const BaseUrl = "http://127.0.0.1:80";
-export const BaseUrl = "https://eedc-115-98-234-254.in.ngrok.io";
+export const BaseUrl = "https://8864-103-211-42-25.ngrok-free.app";
 export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_register = "/authentication/user_register/"

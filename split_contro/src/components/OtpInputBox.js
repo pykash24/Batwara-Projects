@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import FlexStyles from '../assets/Styles/FlexStyles.jsx'
 import CommonStyles from '../assets/Styles/CommonStyles.jsx'
+import { Colors } from '../constants/Colors.js';
 const OtpInputBox = ({ onComplete }) => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 5,
     width: '15%',
+    color:Colors.black
   },
 });
 
