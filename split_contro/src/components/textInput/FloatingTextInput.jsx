@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { View, TextInput, StyleSheet, Animated } from 'react-native';
 import { Colors } from '../../constants/Colors';
+import { SendOTP } from '../../constants/labels/Profile/EditProfileLabels';
 
-const FloatingTextInput = ({ label, value, onChangeText }) => {
+const FloatingTextInput = ({ label, setNumber, setText, text, value, placeholder, keyboardType, secureTextEntry, maxLength, onPress, OTPButton, onChangeText }) => {
     const animatedIsFocused = useRef(new Animated.Value(value ? 1 : 0)).current;
-
     const handleFocus = () => {
         Animated.timing(animatedIsFocused, {
             toValue: 1,
@@ -36,16 +36,32 @@ const FloatingTextInput = ({ label, value, onChangeText }) => {
         }),
     };
 
+    const setNumberFunction = (number) => {
+        setNumber(number)
+    }
+
     return (
         <View>
             <Animated.Text style={[styles.label, animatedLabelStyle]}>{label}</Animated.Text>
             <TextInput
                 style={styles.textInputColor}
                 value={value}
-                onChangeText={onChangeText}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
+                onChangeText={(number) => setNumberFunction(number)}
+
+                placeholder={placeholder}
+                keyboardType={keyboardType}
+                maxLength={maxLength}
+                secureTextEntry={secureTextEntry}
             />
+            {OTPButton == true && (
+                <Animated.Text
+                    style={[styles.OtpButtonStyle]}
+                    onPress={onPress}
+                > {SendOTP}
+                </Animated.Text>
+            )}
         </View>
     );
 };
@@ -64,6 +80,17 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 1.8,
     },
+    OtpButtonStyle: {
+        position: 'absolute',
+        right: 0,
+        top: 8,
+        backgroundColor: Colors.primary,
+        paddingHorizontal: 5,
+        paddingVertical: 5,
+        borderRadius: 6,
+        color: Colors.white,
+        fontSize: 12,
+    }
 });
 
 export default FloatingTextInput;

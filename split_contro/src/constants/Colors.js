@@ -1,5 +1,5 @@
 export const Colors={
-    white:"#ffffff",
+    white:"#FFFFF",
     black:'#000',
     dark:'#000',
     primary:"#FC8415",
@@ -23,7 +23,7 @@ export const Colors={
     //-------Common App Colors-----------
     commonAppBackground: '#E2E8F0',
     commonCardBackground: '#FBFCFD',
-    commonTextBlack: '#1E293B',
     CommonBorderGrey: '#E9EFF6',
-    CommonInputColor: '#E9EFF6'
+    commonTextBlack: '#1E293B',
+    CommonTextGrey: '#AAAA',
 }
