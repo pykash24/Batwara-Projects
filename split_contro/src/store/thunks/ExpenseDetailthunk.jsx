@@ -1,7 +1,7 @@
 //redux
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchApi from "../../shared/AxiosCall";
-import { create_expense, create_group } from "../../shared/ConfigUrl";
+import { create_expense, create_group, get_user_group } from "../../shared/ConfigUrl";
 
 export const AddExpense = createAsyncThunk(
     "addExpense",
@@ -38,6 +38,32 @@ export const CreateGroup = createAsyncThunk(
         const token=state?.home?.accessToken
         try {
             const response= await fetchApi(create_group, payload,token)
+            .then(res => {
+                if (res?.data?.status == "success") {
+                    // dispatch(homeActions.setIsTab(false));
+                    return res
+                }
+                console.log('create_group res:', res);
+            })
+            .catch(err => {
+                console.log('create_group err:', err);
+            });
+           
+            return response;
+        } catch (error) {
+            console.log("ERROR MESSAGE", error);
+            return thunkAPI.rejectWithValue("error");
+        }
+    }
+);
+export const GetUserGroupList = createAsyncThunk(
+    "GetUserGroupList",
+    async (payload, thunkAPI) => {
+        console.log('createGroup',payload);
+        const state = thunkAPI.getState();
+        const token=state?.home?.accessToken
+        try {
+            const response= await fetchApi(get_user_group, payload,token)
             .then(res => {
                 if (res?.data?.status == "success") {
                     // dispatch(homeActions.setIsTab(false));

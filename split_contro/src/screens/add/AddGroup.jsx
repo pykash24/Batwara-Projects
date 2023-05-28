@@ -10,28 +10,29 @@ import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
 import camera from '../../assets/images/commonImage/camera-sm.png'
-import amount from '../../assets/images/commonImage/amount.png'
-import addUser from '../../assets/images/commonImage/addUser.png'
 import tag from '../../assets/images/commonImage/tag.png'
+import airplane from '../../assets/images/commonImage/airplane.png'
+import down_arrow from '../../assets/images/commonImage/down-arrow.png'
 
-import bill from '../../assets/images/commonImage/bill.png'
+import group_name from '../../assets/images/commonImage/group_name.png'
 import splitEqual from '../../assets/images/commonImage/splitEqual.png'
 import BottomSheet from '../../components/bottomSheet/BottomSheet';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
-import { Friends } from '../../data/friends/Friends';
-import woman from '../../assets/images/commonImage/woman.png'
-import men from '../../assets/images/commonImage/men.png'
 import ImagePicker from 'react-native-image-crop-picker';
 import { formatDate } from '../../utils/Helper';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddExpense, CreateGroup } from '../../store/thunks/ExpenseDetailthunk';
+import { CreateGroup } from '../../store/thunks/ExpenseDetailthunk';
 import FloatingTextInput from '../../components/textInput/FloatingTextInput';
-import CommonStyles from '../../assets/Styles/CommonStyles';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Dropdown from '../../components/dropdown/Dropdown';
+import BottomSlider from '../../components/bottomSheet/BottomSlider';
+import { TripsOptionData } from '../../data/expense/Expense';
 
 const AddScreen = () => {
     const expenseCTX = useSelector((state) => state.expense);
     const registerCTX = useSelector((state) => state.register);
+    const [show, setshow] = useState(false)
+    const [tripData, setTripData] = useState(TripsOptionData)
 
     const dispatch = useDispatch()
     const [showBottom, setShowBottom] = useState(false)
@@ -43,11 +44,12 @@ const AddScreen = () => {
     const [date, setDate] = useState(formatDate(new Date()))
 
     const [data, setData] = useState({
-        description: "",
+        description: "Trip Type",
         group_name: "",
     })
     const handleGroupName = (text) => {
         console.log('teeeeee', text);
+        setshow(false)
         setData({ ...data, group_name: text })
     }
     const handlechangeInput = (value) => {
@@ -66,14 +68,12 @@ const AddScreen = () => {
             // props.onChange?.(image);
         });
     };
-    const onCloseBottom = () => {
-        console.log('clicked');
-        setShowBottom(false)
-    }
+  
     const createGroup = () => {
         console.log('aaaaaaaa', registerCTX, data);
         setLoading(true)
         let user_id = registerCTX?.loginData?.user_id
+        // let user_id="be31d44f-2c0b-40ae-b082-469868a19866"
 
         let payload = {
             "user_id": user_id,
@@ -102,7 +102,7 @@ const AddScreen = () => {
                         navigation.navigate('Main')
                     }, 1000);
                 }
-                else{
+                else {
                     Toast.show({
                         type: "error",
                         text1: "error",
@@ -195,7 +195,7 @@ const AddScreen = () => {
                                     type={"heading"} color={Colors.white}
                                     value={"Create a group"} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => createGroup()} >
+                            <TouchableOpacity onPress={() => createGroup()} activeOpacity={0.2}>
                                 {loading ?
                                     <ActivityIndicator size="small" color="#ffff" animating={loading} /> :
                                     <Image source={checked} style={styles.checked} />
@@ -227,9 +227,9 @@ const AddScreen = () => {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.mainViewChild2}>
-                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
+                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
                                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                                    <Image source={tag} style={styles.footerIcon} />
+                                    <Image source={group_name} style={styles.icon} />
                                 </TouchableOpacity>
                                 <View style={[styles.TextInputContainer]}>
                                     <FloatingTextInput
@@ -240,15 +240,17 @@ const AddScreen = () => {
                                 </View>
                             </View>
 
-                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
+                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
                                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                                    <Image source={splitEqual} style={styles.footerIcon} />
+                                    <Image source={tag} style={styles.icon} />
                                 </TouchableOpacity>
                                 <View style={[styles.TextInputContainer]}>
-                                    <FloatingTextInput
+                                    <Dropdown
+                                        startIcon={<Image source={airplane} style={[styles.icon, { marginRight: 10 }]} />}
                                         textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
-                                        label={'Trip Type'}
+                                        show={show} setshow={setshow}
                                         value={data?.description}
+                                        setValue={(value) => { console.log('aaaaa', value); }}
                                         onChangeText={text => handlechangeInput(text)} />
                                 </View>
 
@@ -276,11 +278,16 @@ const AddScreen = () => {
                                 value={date ? date : "Select Date"} />
                         </View>
                     </View>
-                    {showBottom &&
-                        <BottomSheet setSelectedTrip={setSelectedTrip} onClose={() => onCloseBottom()} />
-                    }
                 </View >
             </ScrollView>
+            {show &&
+                <BottomSlider
+                    data={tripData}
+                    value={data.description}
+                    setData={setData} onSelect={(data) => { handlechangeInput(data) }}
+                    optionIcon={<Image source={airplane} style={[styles.icon]} />}
+                    onClose={() => setshow(false)} />
+            }
         </SafeAreaView>
     )
 }
@@ -371,6 +378,11 @@ const styles = StyleSheet.create({
     footerIcon: {
         width: 30,
         height: 30,
+        resizeMode: 'contain',
+    },
+    icon: {
+        width: 20,
+        height: 20,
         resizeMode: 'contain',
     },
     checked: {

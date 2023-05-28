@@ -127,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
       console.log("login1", res)
       if (res?.payload?.data?.status == 'success' || res?.payload?.data?.status == 200 || res?.payload?.data?.status == 201) {
         setLoading(false);
-        console.log('resfffffff', res.payload);
+        console.log('resfffffff12', res.payload);
         Toast.show({
           type: "success",
           text1: "success",
@@ -342,8 +342,11 @@ const LoginScreen = ({ navigation }) => {
             loading={loading}
             onPress={() => {
               login(loginType);
-              // navigation.navigate('Main');
             }}
+            onLongPress={()=>{
+              navigation.navigate('Main');   //remove in production ///////////////////////////////////////////////////////////////////////////////////////////
+            }}
+            
           />
         </View>
       </ScrollView>

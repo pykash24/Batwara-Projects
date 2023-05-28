@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 //helper functions
 //external packages
 import Toast from "react-native-toast-message";
-import { AddExpense } from "../thunks/ExpenseDetailthunk";
+import { AddExpense, GetUserGroupList } from "../thunks/ExpenseDetailthunk";
 
 const initialState = {
   isLoggedIn: false,
@@ -11,8 +11,10 @@ const initialState = {
   date:new Date(),
   adddContactList:[],
   allContacts:[],
+  userGroups:[],
   status: {
     AddExpense: null,
+    GetUserGroupList:null
   },
   groupsData:[{
     title:"Vrindavan Group",
@@ -72,6 +74,21 @@ const expenseSlice = createSlice({
     });
     builder.addCase(AddExpense.rejected, (state, action) => {
       state.status.AddExpense = "rejected";
+      console.log("REJECTED");
+    });
+  },
+
+  // get user groups
+  extraReducers: (builder) => {
+    builder.addCase(GetUserGroupList.pending, (state, action) => {
+      state.status.GetUserGroupList = "pending";
+    });
+    builder.addCase(GetUserGroupList.fulfilled, (state, action) => {
+      state.status.GetUserGroupList = "fulfilled";
+      console.log('-------GetUserGroupList slice----',state);
+    });
+    builder.addCase(GetUserGroupList.rejected, (state, action) => {
+      state.status.GetUserGroupList = "rejected";
       console.log("REJECTED");
     });
   },

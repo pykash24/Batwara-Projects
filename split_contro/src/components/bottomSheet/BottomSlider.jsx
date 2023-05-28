@@ -15,30 +15,26 @@ import woman from '../../assets/images/commonImage/woman.png'
 import men from '../../assets/images/commonImage/men.png'
 import { filter } from 'lodash'
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { CreateGroup, GetUserGroupList } from '../../store/thunks/ExpenseDetailthunk';
+import airplane from '../../assets/images/commonImage/airplane.png'
 
 const bottomSheetMaxHeight = WINDOW_HEIGHT * 0.6
 const bottomSheetMinHeight = WINDOW_HEIGHT * 0.3
 const maxUpwardTranslateY = bottomSheetMinHeight - bottomSheetMaxHeight //negative no
 const maxDownwordTranslateY = 0
 const dragThreshold = 50
-const BottomSheet = ({ onClose, setSelectedTrip }) => {
+const BottomSlider = ({ onClose, onSelect=()=>{},data,setData ,value="",optionIcon=null}) => {
     const navigation = useNavigation();
 
     const animatedValue = useRef(new Animated.Value(0)).current;
     const lastGestureDy = useRef(0);
-    const [searchQuery, setsearchQuery] = useState("")
+    const [searchQuery, setsearchQuery] = useState(value)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [tripsData, setTripsData] = useState([])
     const [fullData, setFullData] = useState(TripsData)
-    const dispatch = useDispatch()
+
     const onCross = () => {
         onClose()
     }
-    const registerCTX = useSelector((state) => state.register);
-
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -103,68 +99,16 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
             })
         }]
     }
-    const getGroupData = () => {
-        // let user_id = registerCTX?.loginData?.user_id
-        let user_id = "be31d44f-2c0b-40ae-b082-469868a19866"
-        console.log('be31d44f-2c0b-40ae-b082-469868a19866', user_id);
-        const payload = {
-            user_id
-        }
-        if (user_id == null || user_id == "") {
-            {
-                Toast.show({
-                    type: "error",
-                    text1: "error",
-                    text2: `Something went wrong, re login and try`,
-                });
-            }
-        }
-        else {
-            dispatch(GetUserGroupList(payload)).then((res) => {
-                console.log('add group return', res?.payload?.data);
-                if (res?.payload?.data?.data) {
-                    let data = res?.payload?.data?.data
-                    let newdata = data?.map((list, i) => {
-                        return { ...list, title: list.group_description }
-                    })
-                    setTripsData(newdata)
-                }
-                else {
-                    Toast.show({
-                        type: "error",
-                        text1: "error",
-                        text2: `error in fetching data`,
-                    });
-                }
-            }).finally(() => {
-                // setLoading(false)
-            })
-        }
-    }
     useEffect(() => {
-        getGroupData()
         animatedValue.setValue(0)
         return () => {
         }
     }, [])
     const Item = ({ title }) => (
-        <TouchableOpacity onPress={() => { setSelectedTrip(title), onClose() }} style={[FlexStyles.gap10, FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
-            <FontAwesomIcon name="search" color={Colors.grey1} size={14} />
+        <TouchableOpacity onPress={() => { onSelect(title), onClose() }} style={[FlexStyles.gap10, FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
+            {optionIcon}
             <Text style={styles.subText}>{title}</Text>
         </TouchableOpacity>
-    );
-    const ItemFD = ({ name, nickname, gender }) => (
-        <TouchableOpacity style={{ paddingTop: 8 }}
-            onPress={() => { }}
-        >
-            <View style={[FlexStyles.flexDirectioncolumn, FlexStyles.alignItems]}>
-                <View style={[styles.imgView]}>
-                    <Image source={gender == "F" ? woman : men} style={styles.image} />
-                </View>
-                <Text style={styles.imgText}>{name}</Text>
-            </View>
-        </TouchableOpacity>
-
     );
     const handleSearch = (query) => {
         setIsLoading(true)
@@ -175,7 +119,7 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
             const filteredData = filter(fullData, (user) => {
                 return contains(user, formittedQuery);
             })
-            setTripsData(filteredData)
+            setData(filteredData)
             setIsLoading(false)
 
         }
@@ -205,7 +149,7 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
                     </View>
 
                     <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.pl20, { width: "100%" }]}>
-                        <TouchableOpacity onPress={onCross} style={{ backgroundColor: Colors.gray4, padding: 10, borderRadius: 100 }} >
+                        <TouchableOpacity onPress={onCross} style={{backgroundColor:Colors.gray4,padding:10,borderRadius:100}} >
                             <FontAwesomIcon name="arrow-left" color={Colors.dark} size={12} />
                         </TouchableOpacity>
                         <View style={[styles.searchOuterView, styles.pl20]}>
@@ -226,17 +170,11 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={[styles.ph20, FlexStyles.flexDirectionrow, FlexStyles.flexBetween, { color: Colors.darkGrey, marginVertical: 20 }]}>
-                        <Text style={[{color: Colors.gray,fontSize:12  }]}>{"Recent"}</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("AddGroup")} >
-                            <Text style={[{ color: Colors.gray,fontSize:12 }]}>{"Add Group"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView showsVerticalScrollIndicator={true} style={{ opacity: 1 }}>
+                    <ScrollView showsVerticalScrollIndicator={true} style={{opacity:1}}>
                         <View style={styles.childView}>
-                            <View style={[styles.pl20]}>
+                            <View style={[styles.pl20,{marginTop:10}]}>
                                 <FlatList
-                                    data={tripsData}
+                                    data={data}
                                     renderItem={({ item }) => <Item title={item.title} />}
                                     keyExtractor={keyExtractor}
 
@@ -244,24 +182,13 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
                             </View>
                         </View>
                     </ScrollView>
-                    {/* <View style={[styles.childView2, FlexStyles.justifyContainstart]}>
-                        <Text style={styles.imgText}>{'All'}</Text>
-                        <FlatList
-                            data={Friends}
-                            horizontal={true}
-                            style={{ width: '100%' }}
-                            renderItem={({ item }) => <ItemFD name={item.name} nickname={item.nickname} gender={item.gender} />}
-                            keyExtractor={item => item.id}
-                        />
-                    </View> */}
-
                 </Animated.View>
             </View>
         </SafeAreaView>
     )
 }
 
-export default BottomSheet
+export default BottomSlider
 
 const styles = StyleSheet.create({
     container: {
@@ -302,12 +229,11 @@ const styles = StyleSheet.create({
     },
     searchOuterView: {
         flexDirection: 'row',
-        backgroundColor: '#EFECE5',
+        backgroundColor: Colors.gray4,
         borderRadius: 40,
         alignItems: 'center',
-        color: Colors.gray,
-        // marginRight: 20,
-        // marginTop: 10,
+        color: Colors.black,
+
         width: "85%",
         marginLeft: 5
     },
@@ -325,8 +251,8 @@ const styles = StyleSheet.create({
     subText: {
         fontSize: 12,
         margin: 10,
-        opacity: 1,
-        color: Colors.gray
+        opacity:1,
+        color:Colors.gray
     },
     crossText: {
         fontSize: 18,

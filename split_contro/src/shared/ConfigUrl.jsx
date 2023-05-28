@@ -1,5 +1,5 @@
 // export const BaseUrl = "http://127.0.0.1:80";
-export const BaseUrl = "https://8864-103-211-42-25.ngrok-free.app";
+export const BaseUrl = "https://9814-103-211-42-25.ngrok-free.app";
 export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_register = "/authentication/user_register/"
@@ -11,3 +11,5 @@ export const sign_in_otp_verification = "/authentication/sign_in_otp_verificatio
 export const user_authenticaton = "/authentication/user_authenticaton/"  // login using id and pass
 export const create_expense="/authentication/create_expense/"
 export const create_group="/authentication/create_group/"
+export const get_user_group="/authentication/get_user_group/"
+
