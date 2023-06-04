@@ -46,7 +46,7 @@ const CommonCard = props => {
   console.log('props:', props.data);
   return (
     <>
-      {props.data.map((item, idx) => (
+      {props?.data?.map((item, idx) => (
         <View style={[CommonCardStyles.cardStyle]} key={idx}>
           <View
             style={[
@@ -70,10 +70,10 @@ const CommonCard = props => {
               <View style={[FlexStyles.flexDirectioncolumn]}>
                 <View style={[FlexStyles.flexDirectionrow]}>
                   <View style={[{width: width / 2.09, height: 60}]}>
-                    <Text>{item.title}</Text>
+                    <Text>{item?.title}</Text>
                   </View>
                   <View>
-                    <Text>{item.date}</Text>
+                    <Text>{item?.date}</Text>
                   </View>
                 </View>
                 <View
@@ -94,7 +94,7 @@ const CommonCard = props => {
                       source={require('../assets/images/homescreen/group.png')}
                       style={[{width: 20, height: 20, resizeMode: 'center'}]}
                     />
-                    <Text>{item.totalPerson}</Text>
+                    <Text>{item?.totalPerson}</Text>
                   </View>
                 </View>
               </View>

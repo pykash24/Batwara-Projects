@@ -34,7 +34,7 @@ const AddButton = ({ }) => {
   const changeTab = () => {
     console.log('999999tabch');
     setOpend(!opened)
-    dispatch(homeActions.setIsTab(!opened));
+    dispatch(homeActions.setIsTab({value:!opened}));
   }
   return (
     <View style={styles.container}>

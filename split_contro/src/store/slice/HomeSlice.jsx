@@ -21,8 +21,8 @@ import { getTrips } from "../thunks/HomeThunks";
     reducers: {
     
       setIsTab(state, action) {
-        const tabStatus = action?.payload;
-        console.log('ttttt',tabStatus,state);
+        console.log('c',state,action);
+        const tabStatus = !!action?.payload?.value;
         state.isAddTab = tabStatus;
       },
      

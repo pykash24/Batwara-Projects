@@ -156,15 +156,14 @@ const AddScreen = () => {
     requestCameraPermission()
   }, []);
   useEffect(() => {
-    console.log('mmmmmmmmmm', expenseCTX?.date?.date);
-    let selectedDate = expenseCTX?.date?.date
-    if (selectedDate) {
+    console.log('mmmmmmmmmm', expenseCTX?.date);
+    let selectedDate = expenseCTX?.date
+    if (selectedDate !=undefined) {
       let updatedDate = formatDate(new Date(selectedDate))
 
       setDate(updatedDate)
     }
   }, [expenseCTX]);
-  console.log('jj000j', data);
   const createexpense = () => {
     setLoading(true)
     let payload = {

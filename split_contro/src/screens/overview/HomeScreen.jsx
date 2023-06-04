@@ -24,7 +24,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    dispatch(homeActions.setIsTab(false));
+    dispatch(homeActions.setIsTab({value:false}));
   }, [])
 
   return (

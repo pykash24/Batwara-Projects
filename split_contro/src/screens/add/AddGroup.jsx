@@ -171,13 +171,17 @@ const AddScreen = () => {
         requestCameraPermission()
     }, []);
     useEffect(() => {
-        console.log('mmmmmmmmmm', expenseCTX?.date?.date);
-        let selectedDate = expenseCTX?.date?.date
-        if (selectedDate) {
-            let updatedDate = formatDate(new Date(selectedDate))
-
+        console.log('mmmmmmmmmm', expenseCTX?.date);
+        let selectedDate = expenseCTX?.date
+        let updatedDate
+        if (selectedDate != undefined) {
+            try {                
+                updatedDate = formatDate(new Date(selectedDate))
+            } catch (error) {
+                console.log('error dat', error);
+            }
             setDate(updatedDate)
-        }
+         }
     }, [expenseCTX]);
 
     return (

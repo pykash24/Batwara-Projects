@@ -7,14 +7,12 @@ export const AddExpense = createAsyncThunk(
     "addExpense",
     async (payload, thunkAPI) => {
         console.log('addExpensethunk',payload);
-        const url=''
         const state = thunkAPI.getState();
         const token=state?.register?.loginData?.token
         try {
             const response= await fetchApi(create_expense, payload,token)
             .then(res => {
                 if (res?.data?.status == "success") {
-                    // dispatch(homeActions.setIsTab(false));
                     return res?.data
                 }
                 console.log('create_expense res:', res);
@@ -40,7 +38,6 @@ export const CreateGroup = createAsyncThunk(
             const response= await fetchApi(create_group, payload,token)
             .then(res => {
                 if (res?.data?.status == "success") {
-                    // dispatch(homeActions.setIsTab(false));
                     return res
                 }
                 console.log('create_group res:', res);
@@ -66,7 +63,6 @@ export const GetUserGroupList = createAsyncThunk(
             const response= await fetchApi(get_user_group, payload,token)
             .then(res => {
                 if (res?.data?.status == "success") {
-                    // dispatch(homeActions.setIsTab(false));
                     return res
                 }
                 console.log('create_group res:', res);
@@ -90,13 +86,12 @@ export const GetAllUsers = createAsyncThunk(
         const state = thunkAPI.getState();
         const token=state?.register?.loginData?.token
         try {
-            const response= await fetchApi(get_all_users, payload,token)
+            const response= await fetchApi(get_all_users, {},token?token:"")
             .then(res => {
+                console.log('create_group res:', res);
                 if (res?.data?.status == "success") {
-                    // dispatch(homeActions.setIsTab(false));
                     return res
                 }
-                console.log('create_group res:', res);
             })
             .catch(err => {
                 console.log('create_group err:', err);

@@ -26,16 +26,16 @@ const Contact = ({ }) => {
     <TouchableOpacity activeOpacity={0.5} style={styles.container} onPress={() => onSelect(contact)}>
       <View style={styles.imgCon}>
         <View style={styles.placeholder}>
-          <Text style={styles.txt}>{contact?.displayName?.[0] ? contact?.displayName?.[0] : "Default"}</Text>
+          <Text style={styles.txt}>{contact?.full_name ? contact?.full_name[0] : "D"}</Text>
         </View>
       </View>
       <View style={styles.contactDat}>
         <Text style={styles.name}>
-          {contact?.displayName} 
-          {contact?.familyName}
+          {contact?.full_name}
         </Text>
         <Text style={styles.phoneNumber}>
-          {contact?.phoneNumbers[0]?.number ? contact?.phoneNumbers[0]?.number : ""}
+        {contact?.nation} {" "}
+          {contact?.user_phone ? contact?.user_phone : ""}
         </Text>
       </View>
     </TouchableOpacity>

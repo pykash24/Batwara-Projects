@@ -91,7 +91,6 @@ export default function ContactGet() {
     const [selectedData, setSelectedData] = useState([])
     const dispatch = useDispatch()
     const expenseCTX = useSelector((state) => state.expense);
-    console.log('expenseCTXaaa', expenseCTX);
 
     async function hasAndroidPermission() {
         const permission = PermissionsAndroid.PERMISSIONS.READ_CONTACTS;
@@ -118,28 +117,30 @@ export default function ContactGet() {
                 let newdata=JSON.stringify(contactsaray)
                 let allContacts = JSON.parse(newdata);
 
-                console.log('contactsaray11',newdata);
-                console.log('contactsaray',allContacts);
-
-                setContactData(allContacts)
+                // setContactData(allContacts)
             })
         }
         return
     };
 
     useEffect(() => {
-        hasAndroidPermission()
+        console.log('expenseCTXaaa', expenseCTX);
+        // hasAndroidPermission()
         getAllusers()
     }, [])
 
     useEffect(() => {
-        loadContacts()
+        // loadContacts()
     }, [hasAndroidPermission])
     
     const getAllusers=()=>{
         const payload={}
-        dispatch(GetAllUsers(payload)).then((res) => {
-            console.log('get all app users return', res);
+        dispatch(GetAllUsers()).then((res) => {
+            console.log('get all app users return', res?.payload?.data);
+            if(res?.payload?.status==200){
+                setContactData(res?.payload?.data?.data)
+                setFullData(res?.payload?.data?.data)
+            }
           }).finally(() => {
             // setLoading(false)
           })
@@ -147,7 +148,7 @@ export default function ContactGet() {
     useEffect(() => {
         navigation.setOptions({
             headerLargeTitle: true,
-            headerTitle: "Contacts",
+            headerTitle: " ",
             headerLeft: () => (
                 <TouchableOpacity style={[CommonStyles.mr20]} onPress={() => navigation.goBack()}>
                     <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
@@ -164,7 +165,6 @@ export default function ContactGet() {
         let contactsaray = []
         Contacts.getAll()
             .then((contacts) => {
-                console.warn('gettttt', contacts);
                 contacts?.map((list, i) => {
                     contactsaray.push({
                         displayName: list?.displayName,
@@ -194,7 +194,6 @@ export default function ContactGet() {
         )
     };
     const handleSearch = (query) => {
-        console.log('query', query);
         if (query) {
             setsearchQuery(query)
             const formittedQuery = query.toLowerCase();
@@ -210,20 +209,9 @@ export default function ContactGet() {
 
     }, [selectedData])
 
-    const contains = ({ displayName, givenName, familyName, phoneNumbers }, query) => {
-        console.log('90000dat', phoneNumbers);
+    const contains = ({ full_name,user_phone }, query) => {
 
-        const numbermatch = phoneNumbers.map((list) => {
-            if (list?.number == query) {
-                return true
-            }
-            else {
-                return false
-            }
-        })
-
-        if (givenName?.toLowerCase()?.includes(query) || displayName?.toLowerCase()?.includes(query) ||
-            familyName?.toLowerCase()?.includes(query) || phoneNumbers[0]?.number.includes(query)) {
+        if (full_name?.toLowerCase()?.includes(query) || user_phone?.toLowerCase()?.includes(query)  ) {
             return true
         }
         else {

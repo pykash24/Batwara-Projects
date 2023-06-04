@@ -8,6 +8,7 @@ import { expenseActions } from '../../store/slice/ExpenseDetailSlice';
 import FontAwesomIcon from 'react-native-vector-icons/FontAwesome5';
 import CommonCardStyles from '../../shared/CommonCardStyles';
 import { Colors } from '../../constants/Colors';
+import { formatDate } from '../../utils/Helper';
 
 const timeToString = (time) => {
     const date = new Date(time);
@@ -72,12 +73,11 @@ const Schedule = () => {
         });
     }
     useEffect(() => {
-        console.log('mmmmmmmmmm', expenseCTX?.date?.date == undefined);
         try {
-            let selected = expenseCTX?.date?.date
+            let selected = expenseCTX?.date
             if (!!selected && selected != undefined) {
                 console.log('mmmmmmmmmm999');
-                setSelectedDate(selected)
+                setSelectedDate(formatDate(new Date(selected)))
             }
             else {
                 setSelectedDate(new Date())
