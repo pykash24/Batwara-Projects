@@ -20,5 +20,6 @@ urlpatterns = [
     path('remove_user_from_group/', views.remove_user_from_group, name='remove_user_from_group'),
     path('mail_sent/', views.mail_sent, name='mail_sent'),#not working
     path('get_user_details/', views.get_user_details, name='get_user_details'),
+    path('get_all_users/', views.get_all_users, name='get_all_users'),
 
 ]

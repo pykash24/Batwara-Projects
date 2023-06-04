@@ -399,3 +399,14 @@ def set_up_profile(request):
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+""" To set the user profile"""
+@csrf_exempt
+def get_all_users(request):
+    try:
+        user_details = UsersID.objects.filter(is_deleted=constants.BOOLEAN_FALSE).values('full_name','user_id','user_phone')
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data retrieved successfully','data':list(user_details)},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print(error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+

@@ -33,9 +33,7 @@ def send_otp_via_sms(otp, to_number):
         auth_token = '1f2a443035e3b8084abb315cce60ac5f'
         client = Client(account_sid, auth_token)
         message = client.messages.create(
-            to=to_number,
-            from_='+14698296521',
-            body='Your OTP is: ' + otp
+            to=to_number, from_='+14698296521', body=f'Your OTP is: {otp}'
         )
         # print(message.sid)
         return JsonResponse({'status': 'success'},safe=False,status=constants.HTTP_200_OK)
@@ -75,8 +73,8 @@ def user_register(request):
         )
         save_user_register.save()
 
-        # calling mail invaition function parallel
-        # thread1 = threading.Thread(target=new_member_mail_inviation, args=(request,))
+        # calling mail invitation function parallel
+        # thread1 = threading.Thread(target=new_member_mail_invitation, args=(request,))
 
         # # Start threads
         # thread1.start()
@@ -102,7 +100,7 @@ def sign_in_otp_verification(request):
         otp_unique_id = user_request['otp_unique_id']
         user_otp = user_request['user_otp']
 
-        #To check the otp has been generated for respectivity phone or not.
+        #To check the otp has been generated for respectively phone or not.
         is_otp_generated = TempOtp.objects.filter(otp_unique_id=otp_unique_id).first()
         if not is_otp_generated:
             return JsonResponse({constants.STATUS: 'error',constants.MESSAGE:"please re-sent otp"},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
