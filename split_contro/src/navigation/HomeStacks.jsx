@@ -16,7 +16,7 @@ export default function HomeStacks() {
     }
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Overview" component={HomeScreen} 
+            <Stack.Screen name="Main2" component={HomeScreen} 
              options={({ navigation }) => ({
 
                 headerTitle: () => <Header name={"Hello, Batwara"} />,

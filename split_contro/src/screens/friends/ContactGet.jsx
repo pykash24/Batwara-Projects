@@ -281,7 +281,7 @@ export default function ContactGet() {
 
             </View>
             <FlatList
-                data={allContact}
+                data={contactData}
                 renderItem={({ item }) => <RenderItem contact={item} />}
 
                 // renderItem={renderItem}

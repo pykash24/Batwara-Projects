@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -12,7 +12,7 @@ import {
 import NewInputField from '../components/NewInputField';
 import phonecall from '../assets/images/inputBox/phonecall.png';
 import fetchApi from '../shared/AxiosCall';
-import {sign_in_send_otp, sign_in_otp_verification} from '../shared/ConfigUrl';
+import { sign_in_send_otp, sign_in_otp_verification } from '../shared/ConfigUrl';
 import OtpInputBox from '../components/OtpInputBox.js';
 import facebook from '../assets/images/login/facebook.png';
 import google from '../assets/images/login/google.png';
@@ -23,16 +23,18 @@ import LoginStyles from './LoginStyles';
 import CustomButton from '../components/CustomButton';
 import frontLogo from '../assets/images/login/frontLogo.png';
 import Toast from 'react-native-toast-message';
-import {otploginMessage} from '../constants/StringsMessage';
+import { otploginMessage } from '../constants/StringsMessage';
 
-import {Colors} from '../constants/Colors';
+import { Colors } from '../constants/Colors';
 import TextFeild from '../components/TextFeild';
+import { sign_in_otp_verificationn, sign_in_send_otpp } from '../store/thunks/RegistrationThunk';
+import { useDispatch } from 'react-redux';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [number, setnumber] = useState(false);
   const [Otp, setOtp] = useState('');
   const [otp_unique_id, setotp_unique_id] = useState('');
-
+  const dispatch = useDispatch()
   const [loginType, setloginType] = useState('otp');
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +70,7 @@ const LoginScreen = ({navigation}) => {
         text2: 'fdsdsfsd',
       });
     }
-    else{
+    else {
       sendOtp()
     }
   };
@@ -80,40 +82,30 @@ const LoginScreen = ({navigation}) => {
     setLoading(true)
     console.log('sendOtp called:', data);
     if (number.length == 10) {
-      fetchApi(sign_in_send_otp, data)
-        .then(res => {
-          console.log('eeeeeeeeeeeee', res);
-
-          if (res?.status =="success") {
-            setLoading(false)
-            setotp_unique_id(res.data.otp_unique_id);
-            console.log('sendOtp res:', res);
-            Toast.show({
-              type: "success",
-              text1: " 👏 check your messanger for OTP",
-              text2: "content de te revoir",
-            });
-          }
-          else{
-            Toast.show({
-              type: "error",
-              text1: "connection lossed 😞",
-              text2: "try again",
-            });
-            setLoading(false)
-          }
-        })
-        .catch(err => {
-          setLoading(false)
-          console.log('err.response.status:', err);
-          console.log('err.response.data.message:', err?.response?.data?.message);
+      dispatch(sign_in_send_otpp(data)).then(res => {
+        console.log("signUp_send_otp res:", res)
+        console.log("res?.data?.status == 'success':", res?.payload?.data?.status == 'success')
+        if (res?.payload?.data?.status == 'success' || res?.payload?.data?.status == 200 || res?.payload?.data?.status == 201) {
+          setLoading(false);
+          setotp_unique_id(res.payload?.data?.otp_unique_id);
+          console.log('resfffffff', res?.payload);
           Toast.show({
-            type: 'error',
-            text1: 'failed',
-            text2: err?.message,
+            type: "success",
+            text1: "success",
+            text2: "check message for OTP",
           });
-          console.log('sendOtp err:', err?.message);
-        });
+        }
+        else {
+          Toast.show({
+            type: "error",
+            text1: "something went wrong 😞",
+            text2: "try again!",
+          });
+        }
+      }).catch((e) => {
+        console.log('error1', e);
+      })
+
     } else {
       Toast.show({
         type: 'error',
@@ -123,7 +115,7 @@ const LoginScreen = ({navigation}) => {
     }
   };
 
-  const login = loginType => {
+  const login = () => {
     let data = {
       user_phone: number,
       user_otp: Otp,
@@ -131,25 +123,30 @@ const LoginScreen = ({navigation}) => {
     };
     setLoading(true)
     console.log('login data:', data);
-    fetchApi(sign_in_otp_verification, data)
-      .then(res => {
-        if (res.status == 200) {
-          setLoading(false)
-          if (res.data.status === 'success') {
-            navigation.navigate('Main');
-          }
-          console.log('login res:', res);
-        }
-      })
-      .catch(err => {
-        setLoading(false)
-        console.log('login err:', err);
+    dispatch(sign_in_otp_verificationn(data)).then(res => {
+      console.log("login1", res)
+      if (res?.payload?.data?.status == 'success' || res?.payload?.data?.status == 200 || res?.payload?.data?.status == 201) {
+        setLoading(false);
+        console.log('resfffffff12', res.payload);
         Toast.show({
-          type: 'error',
-          text1: 'failed',
-          text2: err?.message,
+          type: "success",
+          text1: "success",
+          text2: "Logged in successfuly",
         });
-      });
+        setTimeout(() => {
+          navigation.navigate("Main")
+        }, 1000);
+      }
+      else {
+        Toast.show({
+          type: "error",
+          text1: "something went wrong 😞",
+          text2: "try again!",
+        });
+      }
+    }).catch((e) => {
+      console.log('error1', e);
+    })
   };
 
   return (
@@ -161,9 +158,9 @@ const LoginScreen = ({navigation}) => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{paddingHorizontal: 15}}>
+        style={{ paddingHorizontal: 15 }}>
         <View>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Image
               source={frontLogo}
               style={{
@@ -345,8 +342,11 @@ const LoginScreen = ({navigation}) => {
             loading={loading}
             onPress={() => {
               login(loginType);
-              navigation.navigate('Main');
             }}
+            onLongPress={()=>{
+              navigation.navigate('Main');   //remove in production ///////////////////////////////////////////////////////////////////////////////////////////
+            }}
+            
           />
         </View>
       </ScrollView>

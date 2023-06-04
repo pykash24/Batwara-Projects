@@ -1,5 +1,3 @@
-// In Rootnavigation.js in a new project
-
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,13 +7,8 @@ import RegisterScreen from '../screens/RegisterScreen';
 import Splashscreen from '../screens/Splashscreen';
 import { TabNavigator } from './BottomTabs';
 import AddScreen from '../screens/add/AddScreen';
-import SettingsScreen from '../screens/settings/SettingScreen';
-import ProfileScreen from '../screens/profile/ProfileScreen';
 import { Colors } from '../constants/Colors';
-import Header from './Header';
 import ProfileStack from './ProfileStack';
-import BottomSheet from '../components/bottomSheet/BottomSheet';
-import BottomSheetScreen from '../components/bottomSheet/BottomSheet';
 import ContactGet from '../screens/friends/ContactGet';
 import Schedule from '../components/calendar/Schedule';
 import AddGroup from '../screens/add/AddGroup';

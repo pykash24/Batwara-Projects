@@ -40,6 +40,9 @@ const FlexStyles = StyleSheet.create({
   },
   gap10:{
     gap:10
+  },
+  gap5:{
+    gap:5
   }
 });
 

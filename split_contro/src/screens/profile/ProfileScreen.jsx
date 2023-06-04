@@ -26,6 +26,7 @@ import fetchApi from '../../shared/AxiosCall'
 import { GetUserDetails } from '../../shared/ConfigUrl';
 import { useDispatch } from 'react-redux';
 import { getUserDetails } from '../../store/thunks/UserDetailThunk';
+import { registrationActions } from '../../store/slice/RegistrationSlice';
 
 const ProfileScreen = () => {
     const dispatch = useDispatch()
@@ -75,6 +76,10 @@ const ProfileScreen = () => {
             console.log('Error => ', error);
         }
     };
+    const logout=()=>{
+        dispatch(registrationActions.setIsLogin(false))
+        navigation.navigate("Splash")
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -155,6 +160,14 @@ const ProfileScreen = () => {
                         <Ionicons name="settings" color={Colors.primary} size={25} />
 
                         <Text style={styles.menuItemText}>Settings</Text>
+                    </View>
+                </TouchableRipple>
+                <TouchableRipple onPress={() => {logout()}}>
+                    <View style={styles.menuItem}>
+                        {/* <Icon name="setting" color={Colors.primary} size={25}/> */}
+                        <Ionicons name="drop" color={Colors.primary} size={25} />
+
+                        <Text style={styles.menuItemText}>Logout</Text>
                     </View>
                 </TouchableRipple>
             </View>

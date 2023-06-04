@@ -8,7 +8,7 @@ import calendar from '../../assets/images/commonImage/calendar.png'
 import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
-import camera from '../../assets/images/commonImage/camera.png'
+import camera from '../../assets/images/commonImage/camera-sm.png'
 import amount from '../../assets/images/commonImage/amount.png'
 import addUser from '../../assets/images/commonImage/addUser.png'
 
@@ -24,26 +24,33 @@ import { formatDate } from '../../utils/Helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddExpense } from '../../store/thunks/ExpenseDetailthunk';
 import FloatingTextInput from '../../components/textInput/FloatingTextInput';
-import CommonStyles from '../../assets/Styles/CommonStyles';
+import BottomSlider from '../../components/bottomSheet/BottomSlider';
+import airplane from '../../assets/images/commonImage/airplane.png'
+import Dropdown from '../../components/dropdown/Dropdown';
+import { SplitOptions } from '../../data/expense/Expense';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 const AddScreen = () => {
   const expenseCTX = useSelector((state) => state.expense);
   const dispatch = useDispatch()
   const [showBottom, setShowBottom] = useState(false)
+  const [showSplitBottom, setShowSplitBottom] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const navigation = useNavigation();
   const [selectedTrip, setSelectedTrip] = useState("Select Group");
   const [img, setImg] = useState(null)
   const [date, setDate] = useState(formatDate(new Date()))
+  const [splitTypedata, setSplitTypedata] = useState(SplitOptions)
 
   const [data, setData] = useState({
-    description: "",
+    description: splitTypedata[0].title,
     amount: null,
-    type: ""
+    type: "",
+    group_id:""
   })
   const handlechangeInput = (name, value) => {
-    console.log('hhhh', name, value);
+    setShowBottom(false)
     setData((prevState) => {
       let returnVal = {
         ...prevState,
@@ -51,6 +58,10 @@ const AddScreen = () => {
       };
       return returnVal;
     });
+  }
+  const handlechangeType = (value) => {
+    console.log('bbbbbb', value);
+    setData({ ...data, type: value })
   }
   const [uri, setUri] = useState(null);
   const pickPicture = () => {
@@ -92,20 +103,27 @@ const AddScreen = () => {
 
   );
   const handleClickImg = () => {
-    ImagePicker.openCamera({
-      width: 300,
-      height: 400,
-      cropping: true,
-      includeBase64: true
-    }).then(image => {
-      setImg(img)
-      console.log('imageyyyyy', image);
-      url = `data:${image?.mime};base64,${image?.data}`
-      console.log('bbbb', `data:${image?.mime};base64,${image?.data}`);
+    console.log('bbbb clicks')
+    let options ={
+      storageOptions:{
+        path:'image'
+      }
+    }
+    launchImageLibrary(options,Response)
+    // ImagePicker.openCamera({
+    //   width: 300,
+    //   height: 400,
+    //   cropping: true,
+    //   includeBase64: true
+    // }).then(image => {
+    //   setImg(img)
+    //   console.log('imageyyyyy', image);
+    //   url = `data:${image?.mime};base64,${image?.data}`
+    //   console.log('bbbb', `data:${image?.mime};base64,${image?.data}`);
 
-    }).catch((error) => {
-      console.log('error', error);
-    })
+    // }).catch((error) => {
+    //   console.log('error', error);
+    // })
   }
   const requestCameraPermission = async () => {
     try {
@@ -230,19 +248,14 @@ const AddScreen = () => {
                   : <Image source={camera} style={styles.camera} />}
 
               </TouchableOpacity>
-              {/* <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={pickPicture}>
-                <Image
-                  style={styles.avatar}
-                  source={uri ? { uri } : ''}
-                />
-              </TouchableOpacity> */}
+
             </View>
             <View style={styles.mainViewChild2}>
-              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={bill} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+                <View style={[styles.TextInputContainer]}>
                   <FloatingTextInput
                     textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
                     label={'Enter bill or item name'}
@@ -250,18 +263,12 @@ const AddScreen = () => {
                     onChangeText={text => handlechangeInput('description', text)} />
                 </View>
               </View>
-              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={amount} style={styles.footerIcon} />
                 </TouchableOpacity>
-                {/* <View style={[styles.searchOuterView, styles.pl10]}>
-                  <TextInput placeholder='0.00' placeholderTextColor={Colors.darkGrey}
-                    style={[styles.searchInput, styles.width100]}
-                    keyboardType={'numeric'}
-                    value={data?.amount}
-                    onChangeText={text => handlechangeInput('amount', text)} />
-                </View> */}
-                <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
+
+                <View style={[styles.TextInputContainer]}>
                   <FloatingTextInput
                     textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
                     label={'Enter Amount'}
@@ -270,18 +277,20 @@ const AddScreen = () => {
                 </View>
               </View>
 
-              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+              <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap10]}>
                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
                   <Image source={splitEqual} style={styles.footerIcon} />
                 </TouchableOpacity>
-                <View style={[styles.TextInputContainer, CommonStyles.mt10]}>
-                  <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
-                    style={[styles.searchInput, styles.width100]} />
+
+                <View style={[styles.TextInputContainer]}>
+                  <Dropdown
+                    startIcon={<Image source={airplane} style={[styles.icon, { marginRight: 10 }]} />}
+                    textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
+                    show={showSplitBottom} setshow={setShowSplitBottom}
+                    value={data?.type}
+                    setValue={(value) => { console.log('aaaaa', value); }}
+                    onChangeText={text => handlechangeType(text)} />
                 </View>
-                {/* <View style={[styles.searchOuterView, styles.pl10]}>
-                  <TextInput placeholder='Split by equality' placeholderTextColor={Colors.darkGrey}
-                    style={[styles.searchInput, styles.width100]} />
-                </View> */}
               </View>
 
             </View>
@@ -306,11 +315,19 @@ const AddScreen = () => {
                 value={date} />
             </View>
           </View>
-          {showBottom &&
-            <BottomSheet setSelectedTrip={setSelectedTrip} onClose={() => onCloseBottom()} />
-          }
         </View >
       </ScrollView>
+      {showBottom &&
+        <BottomSheet setSelectedTrip={setSelectedTrip} onClose={() => onCloseBottom()} />
+      }
+      {showSplitBottom &&
+        <BottomSlider
+          data={splitTypedata}
+          value={data.type}
+          setData={setData} onSelect={(data) => { handlechangeType(data) }}
+          optionIcon={<Image source={airplane} style={[styles.icon]} />}
+          onClose={() => setShowSplitBottom(false)} />
+      }
     </SafeAreaView>
   )
 }
@@ -327,16 +344,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
-  // TextInputContainer: {
-  //   height: 45,
-  //   borderRadius: 10,
-  //   marginLeft: 10,
-  //   marginRight: 10,
-  //   borderWidth: 1.2,
-  //   borderColor: Colors.white,
-  //   paddingHorizontal: 10,
-  //   width:"70%"
-  // },
   TextInputContainer: {
     height: 45,
     borderRadius: 10,
@@ -345,7 +352,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.commonAppBackground,
     paddingHorizontal: 10,
-    width: "70%"
+    width: "75%"
   },
   header: {
     padding: 15,
@@ -377,7 +384,7 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: 90,
     height: 90,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.commonAppBackground,
     borderRadius: 100
   },
   mainViewChild2: {
@@ -389,7 +396,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 100,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.commonAppBackground,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -410,7 +417,7 @@ const styles = StyleSheet.create({
   footerIcon: {
     width: 30,
     height: 30,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   checked: {
     width: 25,
@@ -418,6 +425,11 @@ const styles = StyleSheet.create({
   },
   gap15: {
     gap: 15
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
   width100: {
     width: '75%'

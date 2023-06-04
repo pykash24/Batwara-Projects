@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, Animated } from 'react-native';
 import { Colors } from '../../constants/Colors';
 import { SendOTP } from '../../constants/labels/Profile/EditProfileLabels';
 
-const FloatingTextInput = ({ label, setNumber=()=>{}, setText,textStyles, text, value, placeholder, keyboardType, secureTextEntry, maxLength, onPress, OTPButton, onChangeText }) => {
+const FloatingTextInput = ({ label, setNumber=()=>{}, setText,textStyles, text, value, placeholder, keyboardType, secureTextEntry, maxLength, onPress, OTPButton, onChangeText=()=>{} }) => {
     const animatedIsFocused = useRef(new Animated.Value(value ? 1 : 0)).current;
     const handleFocus = () => {
         Animated.timing(animatedIsFocused, {
@@ -38,6 +38,7 @@ const FloatingTextInput = ({ label, setNumber=()=>{}, setText,textStyles, text, 
 
     const setNumberFunction = (number) => {
         setNumber(number)
+        onChangeText(number)
     }
 
     return (
