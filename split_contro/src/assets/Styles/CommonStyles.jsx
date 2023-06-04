@@ -98,6 +98,9 @@ const CommonStyles = StyleSheet.create({
   },
 
   //--------Margin Top-----------------
+  mt3: {
+    marginTop: 3,
+  },
   mt5: {
     marginTop: 5,
   },
@@ -118,6 +121,9 @@ const CommonStyles = StyleSheet.create({
   },
   mt35: {
     marginTop: 35,
+  },
+  mt_2: {
+    marginTop: -2,
   },
 
   //--------Border radius-----------------
@@ -144,11 +150,30 @@ const CommonStyles = StyleSheet.create({
   w10: {
     width: 10,
   },
-  m5: {
-    margin: 5,
+  w20: {
+    width: 20,
   },
-  m10: {
-    margin: 10
+  w30: {
+    width: 30,
+  },
+
+  //--------Height----------------
+  h10: {
+    height: 10,
+  },
+  h20: {
+    height: 20,
+  },
+  h30: {
+    height: 30,
+  },
+
+  //--------Margin Right----------------
+  mr5: {
+    marginRight: 5
+  },
+  mr8: {
+    marginRight: 8
   },
   mr10: {
     marginRight: 10
@@ -156,14 +181,12 @@ const CommonStyles = StyleSheet.create({
   mr20: {
     marginRight: 20
   },
-  p20: {
-    padding: 20,
-  },
-  p10: {
-    padding: 10,
-  },
+
   pt10: {
     paddingTop: 10,
+  },
+  mb2: {
+    marginBottom: 2
   },
   mb30: {
     marginBottom: 30

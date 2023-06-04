@@ -28,6 +28,9 @@ const FlexStyles = StyleSheet.create({
   },
   alignItems: {
     alignItems: 'center',
+  },  
+  alignItemsStart: {
+    alignItems:'flex-start',
   },
   flexBetween: {
     justifyContent: 'space-between',
