@@ -67,7 +67,7 @@ const NewInputField = ({
     outputRange: [16, 12],
   });
 const setno =(number) => {
-  // console.log("setno number:", number)
+  console.log("setno number1:", number)
   setText(number)
   setNumber(number)
 } 

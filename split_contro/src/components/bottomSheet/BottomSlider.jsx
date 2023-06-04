@@ -140,7 +140,7 @@ const BottomSlider = ({ onClose, onSelect=()=>{},data,setData ,value="",optionIc
     return (
         <SafeAreaView
             style={{
-                flex: 1,
+                flex: 1,                
             }}>
             <View style={[styles.container]}>
                 <Animated.View style={[styles.bottomSheet, bottomSheetAnimation]}>
@@ -148,7 +148,7 @@ const BottomSlider = ({ onClose, onSelect=()=>{},data,setData ,value="",optionIc
                         <View style={[styles.dragHandler]} />
                     </View>
 
-                    <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.pl20, { width: "100%" }]}>
+                    <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.pl20, { width: "100%"}]}>
                         <TouchableOpacity onPress={onCross} style={{backgroundColor:Colors.gray4,padding:10,borderRadius:100}} >
                             <FontAwesomIcon name="arrow-left" color={Colors.dark} size={12} />
                         </TouchableOpacity>

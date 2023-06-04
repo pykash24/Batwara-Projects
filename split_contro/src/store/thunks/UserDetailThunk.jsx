@@ -9,9 +9,9 @@ export const getUserDetails = createAsyncThunk(
         console.log('payloadaa',payload);
         const url=''
         const state = thunkAPI.getState();
-        const token=state?.home?.accessToken
+        const token=state?.register?.loginData?.token
         try {
-            const response= await fetchApi(GetUserDetails, payload)
+            const response= await fetchApi(GetUserDetails, payload,token)
             .then(res => {
                 if (res?.data?.status == "success") {
                     // dispatch(homeActions.setIsTab(false));

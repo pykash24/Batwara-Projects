@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { expenseActions } from '../../store/slice/ExpenseDetailSlice';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FlexStyles from '../../assets/Styles/FlexStyles';
+import { GetAllUsers } from '../../store/thunks/ExpenseDetailthunk';
 const allContact = [
     {
         "phoneNumbers": [
@@ -128,12 +129,21 @@ export default function ContactGet() {
 
     useEffect(() => {
         hasAndroidPermission()
+        getAllusers()
     }, [])
 
     useEffect(() => {
         loadContacts()
     }, [hasAndroidPermission])
     
+    const getAllusers=()=>{
+        const payload={}
+        dispatch(GetAllUsers(payload)).then((res) => {
+            console.log('get all app users return', res);
+          }).finally(() => {
+            // setLoading(false)
+          })
+    }
     useEffect(() => {
         navigation.setOptions({
             headerLargeTitle: true,

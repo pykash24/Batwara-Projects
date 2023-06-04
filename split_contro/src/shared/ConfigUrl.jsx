@@ -1,5 +1,5 @@
 // export const BaseUrl = "http://127.0.0.1:80";
-export const BaseUrl = "https://9814-103-211-42-25.ngrok-free.app";
+export const BaseUrl = "https://5ce5-2409-4042-4b81-d5a7-19c3-d62-1252-f854.ngrok-free.app";
 export const SendOtp = "/authentication/send-otp/";
 export const opt_authentication = "/authentication/opt_authentication/"
 export const user_register = "/authentication/user_register/"
@@ -12,4 +12,6 @@ export const user_authenticaton = "/authentication/user_authenticaton/"  // logi
 export const create_expense="/authentication/create_expense/"
 export const create_group="/authentication/create_group/"
 export const get_user_group="/authentication/get_user_group/"
+export const get_all_users="/authentication/get_all_users/"
+
 

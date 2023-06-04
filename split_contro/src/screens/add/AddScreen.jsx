@@ -9,6 +9,8 @@ import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
 import camera from '../../assets/images/commonImage/camera-sm.png'
+import default_group from '../../assets/images/splash2.png'
+
 import amount from '../../assets/images/commonImage/amount.png'
 import addUser from '../../assets/images/commonImage/addUser.png'
 
@@ -44,9 +46,9 @@ const AddScreen = () => {
   const [splitTypedata, setSplitTypedata] = useState(SplitOptions)
 
   const [data, setData] = useState({
-    description: splitTypedata[0].title,
+    description: "",
     amount: null,
-    type: "",
+    type: splitTypedata[0].title,
     group_id:""
   })
   const handlechangeInput = (name, value) => {
@@ -229,7 +231,7 @@ const AddScreen = () => {
             </View>
             <View style={[styles.plusView]}>
               <View style={[FlexStyles.justifyContainstart]}>
-                <ScrollView style={{ marginRight: 40 }}>
+                <ScrollView horizontal={true} style={{  marginRight: 40 }} >
                   <FlatList
                     data={Friends}
                     horizontal={true}
@@ -245,7 +247,7 @@ const AddScreen = () => {
               <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => handleClickImg()}>
                 {img ? <Image style={styles.camera} source={{ uri: `data:${img?.mime};base64,${img?.data}` }} />
 
-                  : <Image source={camera} style={styles.camera} />}
+                  : <Image source={default_group} style={styles.camera} />}
 
               </TouchableOpacity>
 
@@ -273,6 +275,7 @@ const AddScreen = () => {
                     textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
                     label={'Enter Amount'}
                     value={data?.amount}
+                    keyboardType="numeric"
                     onChangeText={text => handlechangeInput('amount', text)} />
                 </View>
               </View>
@@ -401,9 +404,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   camera: {
-    width: 50,
-    height: 50,
-    marginTop: 15
+    width: 60,
+    height: 60,
+    marginTop: 15,
+    resizeMode:'contain'
   },
   circle: {
     width: 25,

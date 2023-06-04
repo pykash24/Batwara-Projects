@@ -104,8 +104,8 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
         }]
     }
     const getGroupData = () => {
-        // let user_id = registerCTX?.loginData?.user_id
-        let user_id = "be31d44f-2c0b-40ae-b082-469868a19866"
+        let user_id = registerCTX?.loginData?.user_id
+        // let user_id = "be31d44f-2c0b-40ae-b082-469868a19866"
         console.log('be31d44f-2c0b-40ae-b082-469868a19866', user_id);
         const payload = {
             user_id
@@ -127,6 +127,7 @@ const BottomSheet = ({ onClose, setSelectedTrip }) => {
                     let newdata = data?.map((list, i) => {
                         return { ...list, title: list.group_description }
                     })
+                    console.log('newdata000',newdata);
                     setTripsData(newdata)
                 }
                 else {

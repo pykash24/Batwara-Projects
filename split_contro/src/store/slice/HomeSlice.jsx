@@ -7,7 +7,6 @@ import { getTrips } from "../thunks/HomeThunks";
   
   const initialState = {
     isLoggedIn: false,
-    accessToken: null,
     isAddTab: false,
     userData:[],
     status: {

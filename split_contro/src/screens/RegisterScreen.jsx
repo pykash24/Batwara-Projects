@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -18,20 +18,20 @@ import register from '../assets/images/register.png';
 
 import CustomButton from '../components/CustomButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Colors} from '../constants/Colors';
+import { Colors } from '../constants/Colors';
 import phonecall from '../assets/images/inputBox/phonecall.png';
 import user from '../assets/images/inputBox/user.png';
 import OtpInputBox from '../components/OtpInputBox.js';
 import fetchApi from '../shared/AxiosCall';
-import {sign_up_otp_verification, sign_up_send_otp} from '../shared/ConfigUrl';
+import { sign_up_otp_verification, sign_up_send_otp } from '../shared/ConfigUrl';
 import {
   fial_signUp_otpVerification,
   signUp_send_otp,
 } from '../store/thunks/RegistrationThunk';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   // const navigation = useNavigation();
 
@@ -47,6 +47,11 @@ const RegisterScreen = ({navigation}) => {
     setnumber(number);
     console.log('number', number);
   };
+  useEffect(() => {
+    if (number?.length >= 10) {
+      varifySendOTP()
+    }
+  }, [number])
 
   const getfullName = full_name => {
     setfull_name(full_name);
@@ -95,22 +100,27 @@ const RegisterScreen = ({navigation}) => {
     console.log('sendOtp called:', data);
     if (number.length == 10) {
       dispatch(signUp_send_otp(data)).then(res => {
-        console.log("signUp_send_otp res:",res)
-        console.log("res?.data?.status == 'success':",res?.data?.status == 'success')
-        if (res?.data?.status == 'success') {
-          setLoading(true);
-          setotp_unique_id(res.data.otp_unique_id);
+        console.log("signUp_send_otp res:", res)
+        console.log("res?.data?.status == 'success':", res?.payload.data)
+        if (res?.payload?.status == 200) {
+          setLoading(false);
+          setotp_unique_id(res.payload.data.otp_unique_id);
           console.log('resfffffff', res);
+          Toast.show({
+            type: "success",
+            text1: "success",
+            text2: "check message for OTP",
+          });
         }
-        else{
+        else {
           Toast.show({
             type: "error",
             text1: "something went wrong 😞",
             text2: "try again!",
           });
         }
-      }).catch((e)=>{
-        console.log('error1',e);
+      }).catch((e) => {
+        console.log('error1', e);
       })
       // fetchApi(sign_up_send_otp, data)
       //   .then(res => {
@@ -127,7 +137,7 @@ const RegisterScreen = ({navigation}) => {
     }
   };
 
-  
+
 
   const registration = () => {
     let data = {
@@ -164,9 +174,9 @@ const RegisterScreen = ({navigation}) => {
       }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{paddingHorizontal: 25}}>
-        <View style={{alignItems: 'center', marginTop: 20}}>
-          <Image source={register} style={{width: 300, height: 200}} />
+        style={{ paddingHorizontal: 25 }}>
+        <View style={{ alignItems: 'center', marginTop: 20 }}>
+          <Image source={register} style={{ width: 300, height: 200 }} />
         </View>
         <Text
           style={{
@@ -231,11 +241,11 @@ const RegisterScreen = ({navigation}) => {
             justifyContent: 'center',
             marginBottom: 30,
           }}>
-          <Text style={{color: Colors.dark, fontWeight: '700'}}>
+          <Text style={{ color: Colors.dark, fontWeight: '700' }}>
             Already registered?
           </Text>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={{color: Colors.primary, fontWeight: '700'}}>
+            <Text style={{ color: Colors.primary, fontWeight: '700' }}>
               {' '}
               Login
             </Text>

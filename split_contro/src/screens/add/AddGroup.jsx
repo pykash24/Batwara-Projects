@@ -10,6 +10,7 @@ import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
 import camera from '../../assets/images/commonImage/camera-sm.png'
+import default_group from '../../assets/images/splash2.png'
 import tag from '../../assets/images/commonImage/tag.png'
 import airplane from '../../assets/images/commonImage/airplane.png'
 import down_arrow from '../../assets/images/commonImage/down-arrow.png'
@@ -99,7 +100,7 @@ const AddScreen = () => {
                         text2: `${data?.group_name} group is created`,
                     });
                     setTimeout(() => {
-                        navigation.navigate('Main')
+                        // navigation.navigate('Main')
                     }, 1000);
                 }
                 else {
@@ -120,6 +121,9 @@ const AddScreen = () => {
                 text2: "Something went wrong,Relogin and try please",
             });
             setLoading(false)
+            setTimeout(() => {
+                navigation.navigate('Login')
+            }, 2000);
         }
     }
     const handleClickImg = () => {
@@ -182,10 +186,11 @@ const AddScreen = () => {
                 flex: 1,
                 justifyContent: 'center',
                 backgroundColor: Colors.bgColor,
+               
             }}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                style={{ backgroundColor: Colors.commonAppBackground, height: WINDOW_HEIGHT }}>
+                style={{ backgroundColor: Colors.commonAppBackground, height: WINDOW_HEIGHT , opacity:show? 0.4:1}}>
                 <View style={styles.container}>
                     <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
                         <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
@@ -222,7 +227,7 @@ const AddScreen = () => {
                             <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => handleClickImg()}>
                                 {img ? <Image style={styles.camera} source={{ uri: `data:${img?.mime};base64,${img?.data}` }} />
 
-                                    : <Image source={camera} style={styles.camera} />}
+                                    : <Image source={default_group} style={styles.camera} />}
 
                             </TouchableOpacity>
                         </View>
@@ -251,7 +256,8 @@ const AddScreen = () => {
                                         show={show} setshow={setshow}
                                         value={data?.description}
                                         setValue={(value) => { console.log('aaaaa', value); }}
-                                        onChangeText={text => handlechangeInput(text)} />
+                                        // onChangeText={text => handlechangeInput(text)}
+                                        />
                                 </View>
 
                             </View>
@@ -303,6 +309,7 @@ const styles = StyleSheet.create({
         position: "relative",
         flexDirection: 'column',
         justifyContent: 'space-between',
+        // backgroundColor:'rgba(0, 0, 0, 0.05)'
     },
 
     TextInputContainer: {
@@ -362,9 +369,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     camera: {
-        width: 50,
-        height: 50,
-        marginTop: 15
+        width: 60,
+        height: 60,
+        marginTop: 15,
+        resizeMode:'contain'
     },
     circle: {
         width: 25,

@@ -110,6 +110,8 @@ class Splashscreen extends Component {
               style={[LoginStyles.outerSlider, CommonStyles.commonShadowCard]}>
               <Animated.View
                 style={{
+                  
+
                   transform: [
                     {translateX: this.clampedPan},
                     // {translateY: this.pan.y},

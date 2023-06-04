@@ -29,12 +29,12 @@ const Schedule = () => {
             headerLeft: () => (
                 <TouchableOpacity style={[CommonCardStyles.mr10]} onPress={() => navigation.goBack()}>
 
-                <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
+                    <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
                 </TouchableOpacity>
-              ),
+            ),
             headerSearchBarOptions: {
                 placeholder: "Search",
-                onChangeText:(event) => {handleSearch(event.nativeEvent.text)}
+                onChangeText: (event) => { handleSearch(event.nativeEvent.text) }
             }
         })
     }, [navigation])
@@ -49,7 +49,7 @@ const Schedule = () => {
                     for (let j = 0; j < 1; j++) {
                         items[strTime].push({
                             name: 'Trip on ' + strTime,
-                            date:strTime
+                            date: strTime
                             //   height: Math.max(50, Math.floor(Math.random() * 150)),
                         });
                     }
@@ -64,27 +64,32 @@ const Schedule = () => {
     };
 
     const onDateSelect = (date) => {
-        dispatch(expenseActions?.setDate({date:date}))
+        dispatch(expenseActions?.setDate({ date: date }))
         console.log('a123', date);
         setSelectedDate(new Date(date))
         navigation.navigate('AddExpense', {
-            selectedDate:date
-          });
+            selectedDate: date
+        });
     }
     useEffect(() => {
-        console.log('mmmmmmmmmm', expenseCTX?.date?.date==undefined);
-        let selected=expenseCTX?.date?.date
-        if(!!selected && selected !=undefined){    
-            console.log('mmmmmmmmmm999');
-          setSelectedDate(selected)
-        }   
-        else{
-            setSelectedDate(new Date())
+        console.log('mmmmmmmmmm', expenseCTX?.date?.date == undefined);
+        try {
+            let selected = expenseCTX?.date?.date
+            if (!!selected && selected != undefined) {
+                console.log('mmmmmmmmmm999');
+                setSelectedDate(selected)
+            }
+            else {
+                setSelectedDate(new Date())
+            }
+        } catch (error) {
+            console.log('error',error);
         }
-      }, []);
+
+    }, []);
     const renderItem = (item) => {
         return (
-            <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }} onPress={()=>onDateSelect(item?.date) }>
+            <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }} onPress={() => onDateSelect(item?.date)}>
                 <Card>
                     <Card.Content>
                         <View

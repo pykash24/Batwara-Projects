@@ -1,7 +1,7 @@
 //redux
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchApi from "../../shared/AxiosCall";
-import { create_expense, create_group, get_user_group } from "../../shared/ConfigUrl";
+import { create_expense, create_group, get_all_users, get_user_group } from "../../shared/ConfigUrl";
 
 export const AddExpense = createAsyncThunk(
     "addExpense",
@@ -33,9 +33,9 @@ export const AddExpense = createAsyncThunk(
 export const CreateGroup = createAsyncThunk(
     "createGroup",
     async (payload, thunkAPI) => {
-        console.log('createGroup',payload);
         const state = thunkAPI.getState();
-        const token=state?.home?.accessToken
+        const token=state?.register?.loginData?.token
+        console.log('createGroup',payload,token);
         try {
             const response= await fetchApi(create_group, payload,token)
             .then(res => {
@@ -61,9 +61,36 @@ export const GetUserGroupList = createAsyncThunk(
     async (payload, thunkAPI) => {
         console.log('createGroup',payload);
         const state = thunkAPI.getState();
-        const token=state?.home?.accessToken
+        const token=state?.register?.loginData?.token
         try {
             const response= await fetchApi(get_user_group, payload,token)
+            .then(res => {
+                if (res?.data?.status == "success") {
+                    // dispatch(homeActions.setIsTab(false));
+                    return res
+                }
+                console.log('create_group res:', res);
+            })
+            .catch(err => {
+                console.log('create_group err:', err);
+            });
+           
+            return response;
+        } catch (error) {
+            console.log("ERROR MESSAGE", error);
+            return thunkAPI.rejectWithValue("error");
+        }
+    }
+);
+
+export const GetAllUsers = createAsyncThunk(
+    "GetAllUsers",
+    async (payload, thunkAPI) => {
+        console.log('createGroup',payload);
+        const state = thunkAPI.getState();
+        const token=state?.register?.loginData?.token
+        try {
+            const response= await fetchApi(get_all_users, payload,token)
             .then(res => {
                 if (res?.data?.status == "success") {
                     // dispatch(homeActions.setIsTab(false));

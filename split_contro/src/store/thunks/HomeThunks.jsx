@@ -7,7 +7,7 @@ export const getTrips = createAsyncThunk(
     async (payload, thunkAPI) => {
         const url=''
         const state = thunkAPI.getState();
-        const token=state?.home?.accessToken
+        const token=state?.register?.loginData?.token
         try {
             const response= await fetchApi(url,payload,token)
            

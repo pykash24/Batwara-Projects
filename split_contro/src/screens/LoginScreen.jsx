@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -28,7 +28,7 @@ import { otploginMessage } from '../constants/StringsMessage';
 import { Colors } from '../constants/Colors';
 import TextFeild from '../components/TextFeild';
 import { sign_in_otp_verificationn, sign_in_send_otpp } from '../store/thunks/RegistrationThunk';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const LoginScreen = ({ navigation }) => {
   const [number, setnumber] = useState(false);
@@ -38,11 +38,18 @@ const LoginScreen = ({ navigation }) => {
   const [loginType, setloginType] = useState('otp');
   const [loading, setLoading] = useState(false);
 
-  const getOtp = otp => {
-    setOtp(otp);
-    console.log('otp', otp);
+  const getOtp = async (otp) => {
+    console.log('otp111', otp);
+    setOtp(otp)
   };
+  useEffect(()=>{
+    console.log("Otp",Otp,Otp?.length);
+    if(Otp?.length==4){
+      login(Otp);
+    }
+  },[Otp])
   const getNumber = number => {
+    setOtp("")
     setnumber(number);
     console.log('number', number);
   };
@@ -51,15 +58,13 @@ const LoginScreen = ({ navigation }) => {
   //   console.log('otp_unique_id', otp_unique_id);
   // };
 
-  const getid = mailId => {
-    setid(mailId);
-    console.log('mailId', mailId);
-  };
+ 
   const getpass = pass => {
     setpassword(pass);
     console.log('pass', pass);
   };
   const validatePhoneNo = () => {
+    setOtp("")
     console.log('validatePhoneNo called');
     console.log('validatePhoneNo number:', number);
     if (number == false || number.length < 10 || number.length == undefined) {
@@ -67,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
       Toast.show({
         type: 'error',
         text1: 'failed',
-        text2: 'fdsdsfsd',
+        text2: 'failed',
       });
     }
     else {
@@ -115,14 +120,14 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const login = () => {
+  const login = async ({ otp }) => {
     let data = {
       user_phone: number,
       user_otp: Otp,
       otp_unique_id: otp_unique_id,
     };
     setLoading(true)
-    console.log('login data:', data);
+    console.log('login data:', data,otp,Otp);
     dispatch(sign_in_otp_verificationn(data)).then(res => {
       console.log("login1", res)
       if (res?.payload?.data?.status == 'success' || res?.payload?.data?.status == 200 || res?.payload?.data?.status == 201) {
@@ -343,10 +348,10 @@ const LoginScreen = ({ navigation }) => {
             onPress={() => {
               login(loginType);
             }}
-            onLongPress={()=>{
+            onLongPress={() => {
               navigation.navigate('Main');   //remove in production ///////////////////////////////////////////////////////////////////////////////////////////
             }}
-            
+
           />
         </View>
       </ScrollView>
