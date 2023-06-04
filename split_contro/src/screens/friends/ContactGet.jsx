@@ -39,24 +39,8 @@ const allContact = [
                 "number": "+91 80972 52362"
             }
         ],
-        "isStarred": false,
-        "postalAddresses": [],
-        "thumbnailPath": "",
-        "department": "",
-        "jobTitle": "",
-        "emailAddresses": [],
-        "urlAddresses": [],
-        "suffix": null,
-        "company": "",
-        "imAddresses": [],
-        "note": null,
-        "middleName": "",
+       
         "displayName": "Basha Bhai",
-        "familyName": "",
-        "givenName": "Bashabhai",
-        "prefix": null,
-        "hasThumbnail": false,
-        "rawContactId": "755",
         "recordID": "754"
     },
     {
@@ -72,25 +56,28 @@ const allContact = [
                 "number": "+917208015929"
             }
         ],
-        "isStarred": false,
-        "postalAddresses": [],
-        "thumbnailPath": "",
-        "department": "",
-        "jobTitle": "",
-        "emailAddresses": [],
-        "urlAddresses": [],
-        "suffix": null,
-        "company": "",
-        "imAddresses": [],
-        "note": null,
-        "middleName": "",
-        "displayName": "Shubham",
-        "familyName": "",
-        "givenName": "Shubham",
-        "prefix": null,
-        "hasThumbnail": false,
-        "rawContactId": "735",
-        "recordID": "735"
+      
+        "recordID": "735",
+        "displayName": "Shubhangi",
+
+    },
+    {
+        "phoneNumbers": [
+            {
+                "id": "123",
+                "label": "mobile",
+                "number": "+91 72080 15929"
+            },
+            {
+                "id": "3564",
+                "label": "mobile",
+                "number": "+917208015927"
+            }
+        ],
+      
+        "recordID": "735",
+        "displayName": "rancho",
+
     }
 ]
 export default function ContactGet() {
@@ -127,7 +114,13 @@ export default function ContactGet() {
                         familyName: list?.familyName
                     })
                 })
-                setContactData(contactsaray)
+                let newdata=JSON.stringify(contactsaray)
+                let allContacts = JSON.parse(newdata);
+
+                console.log('contactsaray11',newdata);
+                console.log('contactsaray',allContacts);
+
+                setContactData(allContacts)
             })
         }
         return
@@ -140,32 +133,13 @@ export default function ContactGet() {
     useEffect(() => {
         loadContacts()
     }, [hasAndroidPermission])
-    // useEffect(() => {
-    //     // if (expenseCTX?.allContacts?.length > 0) {
-    //     //     setContactData(expenseCTX?.allContacts)
-    //     //     setFullData(expenseCTX?.allContacts)
-    //     // }
-    //     // else {
-    //     if (Platform.OS === 'android') {
-    //         PermissionsAndroid.request(
-    //             PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-    //             title: 'Access Contacts',
-    //             message: 'App Want to View your Phone Contacts.',
-    //         }).then(() => {
-    //             accessContacts();
-    //         }
-    //         );
-    //     } else {
-    //         accessContacts();
-    //     }
-    //     // }
-    // }, []);
+    
     useEffect(() => {
         navigation.setOptions({
             headerLargeTitle: true,
             headerTitle: "Contacts",
             headerLeft: () => (
-                <TouchableOpacity style={[CommonStyles.mr10]} onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={[CommonStyles.mr20]} onPress={() => navigation.goBack()}>
                     <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
                 </TouchableOpacity>
             ),

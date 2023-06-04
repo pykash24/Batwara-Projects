@@ -1,3 +1,40 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -8,17 +45,20 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import TabContainer from '../../components/TabContainer';
-import {Colors} from '../../constants/Colors';
-
 import FlexStyles from '../../assets/Styles/FlexStyles';
-import LandingStyles from './LandinStyless';
 import CommonStyles from '../../assets/Styles/CommonStyles';
 import CommonCard from '../../shared/CommonCard';
 import { homeActions } from '../../store/slice/HomeSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import LandingStyles from './LandinStyless';
+import { useNavigation } from '@react-navigation/native';
+
 const HomeScreen = () => {
+  const registerCTX = useSelector((state) => state.register);
+
   const [active, setActive] = useState('GE');
   const dispatch=useDispatch()
+  const navigation=useNavigation()
   const changeTab = TabType => {
     if (TabType === 'GE') {
       setActive('GE');
@@ -28,6 +68,12 @@ const HomeScreen = () => {
   };
   useEffect(()=>{
     dispatch(homeActions.setIsTab(false));
+    if(registerCTX?.isLoggedIn==false){
+      navigation.navigate("Splash")
+    }
+    else{
+      navigation.navigate("Main")
+    }
   },[])
   const data = [
     {title: 'Lonavala Trekking', date: 'sat-20-2022', name: 'Mahesh Shendage', totalPerson: '5', totalCost: '5000'},

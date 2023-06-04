@@ -51,6 +51,29 @@ const CommonStyles = StyleSheet.create({
     padding: 35,
   },
 
+  //--------Margin-----------------
+  m5: {
+    marginLeft: 5,
+  },
+  m10: {
+    marginLeft: 10,
+  },
+  m15: {
+    marginLeft: 15,
+  },
+  m20: {
+    marginLeft: 20,
+  },
+  m25: {
+    marginLeft: 25,
+  },
+  m30: {
+    marginLeft: 30,
+  },
+  m35: {
+    marginLeft: 35,
+  },
+
   //--------Margin Left-----------------
   ml5: {
     marginLeft: 5,
@@ -129,6 +152,9 @@ const CommonStyles = StyleSheet.create({
   },
   mr10: {
     marginRight: 10
+  },
+  mr20: {
+    marginRight: 20
   },
   p20: {
     padding: 20,

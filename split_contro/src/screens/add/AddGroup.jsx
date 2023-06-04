@@ -1,3 +1,4 @@
+
 import { FlatList, Image, KeyboardAvoidingView, PermissionsAndroid, ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import TextFeild from '../../components/TextFeild'
@@ -8,25 +9,31 @@ import calendar from '../../assets/images/commonImage/calendar.png'
 import group from '../../assets/images/commonImage/group-m.png'
 import { useNavigation } from '@react-navigation/native';
 import FlexStyles from '../../assets/Styles/FlexStyles';
-import camera from '../../assets/images/commonImage/camera.png'
+import camera from '../../assets/images/commonImage/camera-sm.png'
 import tag from '../../assets/images/commonImage/tag.png'
-import addUser from '../../assets/images/commonImage/addUser.png'
+import airplane from '../../assets/images/commonImage/airplane.png'
+import down_arrow from '../../assets/images/commonImage/down-arrow.png'
 
-import group1 from '../../assets/images/commonImage/group_name.png'
+import group_name from '../../assets/images/commonImage/group_name.png'
 import splitEqual from '../../assets/images/commonImage/splitEqual.png'
 import BottomSheet from '../../components/bottomSheet/BottomSheet';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/utils';
-import { Friends } from '../../data/friends/Friends';
-import woman from '../../assets/images/commonImage/woman.png'
-import men from '../../assets/images/commonImage/men.png'
 import ImagePicker from 'react-native-image-crop-picker';
 import { formatDate } from '../../utils/Helper';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddExpense } from '../../store/thunks/ExpenseDetailthunk';
-import CommonStyles from '../../assets/Styles/CommonStyles';
+import { CreateGroup } from '../../store/thunks/ExpenseDetailthunk';
+import FloatingTextInput from '../../components/textInput/FloatingTextInput';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Dropdown from '../../components/dropdown/Dropdown';
+import BottomSlider from '../../components/bottomSheet/BottomSlider';
+import { TripsOptionData } from '../../data/expense/Expense';
 
-const AddGroup = ({ route }) => {
+const AddScreen = () => {
     const expenseCTX = useSelector((state) => state.expense);
+    const registerCTX = useSelector((state) => state.register);
+    const [show, setshow] = useState(false)
+    const [tripData, setTripData] = useState(TripsOptionData)
+
     const dispatch = useDispatch()
     const [showBottom, setShowBottom] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -34,22 +41,20 @@ const AddGroup = ({ route }) => {
     const navigation = useNavigation();
     const [selectedTrip, setSelectedTrip] = useState("Select Group");
     const [img, setImg] = useState(null)
-    const [date, setDate] = useState(null)
+    const [date, setDate] = useState(formatDate(new Date()))
 
     const [data, setData] = useState({
-        description: "",
-        amount: null,
-        type: ""
+        description: "Trip Type",
+        group_name: "",
     })
-    const handlechangeInput = (name, value) => {
-        console.log('hhhh', name, value);
-        setData((prevState) => {
-            let returnVal = {
-                ...prevState,
-                [name]: value,
-            };
-            return returnVal;
-        });
+    const handleGroupName = (text) => {
+        console.log('teeeeee', text);
+        setshow(false)
+        setData({ ...data, group_name: text })
+    }
+    const handlechangeInput = (value) => {
+        console.log('bbbbbb', value);
+        setData({ ...data, description: value })
     }
     const [uri, setUri] = useState(null);
     const pickPicture = () => {
@@ -63,32 +68,60 @@ const AddGroup = ({ route }) => {
             // props.onChange?.(image);
         });
     };
-    const onCloseBottom = () => {
-        console.log('clicked');
-        setShowBottom(false)
-    }
-    const onClickAdd = (navigation, id) => {
-        console.log('iddd2', id)
+  
+    const createGroup = () => {
+        console.log('aaaaaaaa', registerCTX, data);
+        setLoading(true)
+        let user_id = registerCTX?.loginData?.user_id
+        // let user_id="be31d44f-2c0b-40ae-b082-469868a19866"
 
-        if (id == 0) {
-            navigation.navigate('Contacts')
+        let payload = {
+            "user_id": user_id,
+            "group_name": data?.group_name,
+            "group_description": data?.description
+        };
+
+        if (data?.group_name == "" || data?.description == "") {
+            Toast.show({
+                type: "error",
+                text1: "error",
+                text2: "Group name could not empty",
+            });
+            setLoading(false)
         }
-
+        else if (user_id) {
+            dispatch(CreateGroup(payload)).then((res) => {
+                console.log('add group return', res);
+                if (res?.meta?.arg?.user_id) {
+                    Toast.show({
+                        type: "success",
+                        text1: "success",
+                        text2: `${data?.group_name} group is created`,
+                    });
+                    setTimeout(() => {
+                        navigation.navigate('Main')
+                    }, 1000);
+                }
+                else {
+                    Toast.show({
+                        type: "error",
+                        text1: "error",
+                        text2: `${data?.group_name} group is not creating try again`,
+                    });
+                }
+            }).finally(() => {
+                setLoading(false)
+            })
+        }
+        else {
+            Toast.show({
+                type: "error",
+                text1: "error",
+                text2: "Something went wrong,Relogin and try please",
+            });
+            setLoading(false)
+        }
     }
-    const ItemFD = ({ name, gender, id }) => (
-        console.log('iddd', id),
-        <TouchableOpacity style={{ padding: 2 }}
-            onPress={() => onClickAdd(navigation, id)}
-        >
-            <View style={[FlexStyles.flexDirectioncolumn, FlexStyles.alignItems, FlexStyles.justifyContainCenter]}>
-                <View style={[styles.imgView]}>
-                    <Image source={id == 0 ? addUser : gender == "F" ? woman : men} style={styles.image} />
-                </View>
-                <Text ellipsizeMode='tail' numberOfLines={1} style={styles.imgText}>{name}</Text>
-            </View>
-        </TouchableOpacity>
-
-    );
     const handleClickImg = () => {
         ImagePicker.openCamera({
             width: 300,
@@ -142,33 +175,7 @@ const AddGroup = ({ route }) => {
             setDate(updatedDate)
         }
     }, [expenseCTX]);
-    console.log('jj000j', data);
-    const createGroup = () => {
-        setLoading(true)
-        let payload = {
-            group_name: data?.description,
-            user_id: "be31d44f-2c0b-40ae-b082-469868a19866",
-            paid_by: "34234d6d-0824-4025-b93c-7d75f6f28249",
-            group_description: data?.amount,
-        };
-        dispatch(AddExpense(payload)).then((res) => {
-            console.log('add group return', res);
-        }).finally(() => {
-            setLoading(false)
-        })
-    }
-    useEffect(() => {
-        navigation.setOptions({
-            headerLargeTitle: true,
-            headerTitle: "Add New Group",
-            headerLeft: () => (
-                <TouchableOpacity style={[CommonStyles.mr10]} onPress={() => navigation.goBack()}>
 
-                    <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
-                </TouchableOpacity>
-            )
-        })
-    }, [navigation])
     return (
         <SafeAreaView
             style={{
@@ -178,7 +185,7 @@ const AddGroup = ({ route }) => {
             }}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                style={{}}>
+                style={{ backgroundColor: Colors.commonAppBackground, height: WINDOW_HEIGHT }}>
                 <View style={styles.container}>
                     <View style={[styles.header, FlexStyles.flexDirectioncolumn]}>
                         <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, FlexStyles.flexBetween]}>
@@ -186,9 +193,9 @@ const AddGroup = ({ route }) => {
                                 <FontAwesomIcon name="arrow-left" color={Colors.white} size={20} />
                                 <TextFeild
                                     type={"heading"} color={Colors.white}
-                                    value={"Add New Group"} />
+                                    value={"Create a group"} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => createGroup()} >
+                            <TouchableOpacity onPress={() => createGroup()} activeOpacity={0.2}>
                                 {loading ?
                                     <ActivityIndicator size="small" color="#ffff" animating={loading} /> :
                                     <Image source={checked} style={styles.checked} />
@@ -211,20 +218,6 @@ const AddGroup = ({ route }) => {
                         <View style={[styles.round4]}>
                             <View style={[styles.whiteRound]} />
                         </View>
-                        <View style={[styles.plusView]}>
-                            <View style={[FlexStyles.justifyContainstart]}>
-                                <ScrollView style={{ marginRight: 40 }}>
-                                    <FlatList
-                                        data={Friends}
-                                        horizontal={true}
-                                        style={{ width: '100%' }}
-                                        renderItem={({ item }) => <ItemFD id={item.id} name={item.name} gender={item.gender} />}
-                                        keyExtractor={item => item.id}
-                                    />
-                                </ScrollView>
-                            </View>
-                        </View>
-
                         <View style={styles.mainViewChild1}>
                             <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={() => handleClickImg()}>
                                 {img ? <Image style={styles.camera} source={{ uri: `data:${img?.mime};base64,${img?.data}` }} />
@@ -232,35 +225,35 @@ const AddGroup = ({ route }) => {
                                     : <Image source={camera} style={styles.camera} />}
 
                             </TouchableOpacity>
-                            {/* <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems]} onPress={pickPicture}>
-                <Image
-                  style={styles.avatar}
-                  source={uri ? { uri } : ''}
-                />
-              </TouchableOpacity> */}
                         </View>
                         <View style={styles.mainViewChild2}>
-                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
                                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                                    <Image source={group1} style={styles.footerIcon} />
+                                    <Image source={group_name} style={styles.icon} />
                                 </TouchableOpacity>
-                                <View style={[styles.searchOuterView, styles.pl10]}>
-                                    <TextInput placeholder='Enter Group name' placeholderTextColor={Colors.darkGrey}
-                                        style={[styles.searchInput, styles.width100]}
-                                        value={data?.description}
-                                        onChangeText={text => handlechangeInput('description', text)} />
+                                <View style={[styles.TextInputContainer]}>
+                                    <FloatingTextInput
+                                        textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
+                                        label={'Enter group name'}
+                                        value={data?.group_name}
+                                        onChangeText={text => handleGroupName(text)} />
                                 </View>
                             </View>
-                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems, styles.gap15]}>
+
+                            <View style={[FlexStyles.flexDirectionrow, FlexStyles.alignItems]}>
                                 <TouchableOpacity style={[FlexStyles.justifyContainCenter, FlexStyles.alignItems, styles.whiteCircle]}>
-                                    <Image source={tag} style={styles.footerIcon} />
+                                    <Image source={tag} style={styles.icon} />
                                 </TouchableOpacity>
-                                <View style={[styles.searchOuterView, styles.pl10]}>
-                                    <TextInput placeholder='Trip' placeholderTextColor={Colors.darkGrey}
-                                        style={[styles.searchInput, styles.width100]}
-                                        value={data?.amount}
-                                        onChangeText={text => handlechangeInput('amount', text)} />
+                                <View style={[styles.TextInputContainer]}>
+                                    <Dropdown
+                                        startIcon={<Image source={airplane} style={[styles.icon, { marginRight: 10 }]} />}
+                                        textStyles={{ backgroundColor: "transparent", color: Colors.gray, fontSize: 12 }}
+                                        show={show} setshow={setshow}
+                                        value={data?.description}
+                                        setValue={(value) => { console.log('aaaaa', value); }}
+                                        onChangeText={text => handlechangeInput(text)} />
                                 </View>
+
                             </View>
 
                         </View>
@@ -285,16 +278,21 @@ const AddGroup = ({ route }) => {
                                 value={date ? date : "Select Date"} />
                         </View>
                     </View>
-                    {showBottom &&
-                        <BottomSheet setSelectedTrip={setSelectedTrip} onClose={() => onCloseBottom()} />
-                    }
                 </View >
             </ScrollView>
+            {show &&
+                <BottomSlider
+                    data={tripData}
+                    value={data.description}
+                    setData={setData} onSelect={(data) => { handlechangeInput(data) }}
+                    optionIcon={<Image source={airplane} style={[styles.icon]} />}
+                    onClose={() => setshow(false)} />
+            }
         </SafeAreaView>
     )
 }
 
-export default AddGroup
+export default AddScreen
 
 const styles = StyleSheet.create({
     container: {
@@ -305,7 +303,17 @@ const styles = StyleSheet.create({
         position: "relative",
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: Colors.white
+    },
+
+    TextInputContainer: {
+        height: 45,
+        borderRadius: 10,
+        marginLeft: 10,
+        marginRight: 10,
+        borderWidth: 2,
+        borderColor: Colors.commonAppBackground,
+        paddingHorizontal: 10,
+        width: "75%"
     },
     header: {
         padding: 15,
@@ -325,23 +333,19 @@ const styles = StyleSheet.create({
         width: WINDOW_WIDTH
     },
     mainView: {
-        backgroundColor: Colors.gray3,
-        // height: '70%',
+        backgroundColor: Colors.white,
         height: '60%',
         width: WINDOW_WIDTH * 0.9,
-        // flex: 1,
-        // margin: 15,
         position: 'absolute',
         top: '11%',
         left: 17,
-        // right:10,
         alignItems: 'center'
     },
     mainViewChild1: {
         marginTop: '10%',
         width: 90,
         height: 90,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.commonAppBackground,
         borderRadius: 100
     },
     mainViewChild2: {
@@ -353,7 +357,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 100,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.commonAppBackground,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -374,7 +378,12 @@ const styles = StyleSheet.create({
     footerIcon: {
         width: 30,
         height: 30,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+    },
+    icon: {
+        width: 20,
+        height: 20,
+        resizeMode: 'contain',
     },
     checked: {
         width: 25,
@@ -407,7 +416,7 @@ const styles = StyleSheet.create({
         left: 20
     },
     searchInput: {
-        fontSize: 15,
+        fontSize: 12,
         color: Colors.black,
         paddingHorizontal: 10
     },
@@ -416,7 +425,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 100,
         zIndex: -90,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.commonAppBackground,
     },
     round1: {
         position: 'absolute',

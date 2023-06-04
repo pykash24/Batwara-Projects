@@ -41,7 +41,7 @@ export const TabNavigator = () => {
                 }
             }}>
             <Tab.Screen
-                name="Overview"
+                name="Main1"
                 component={HomeStacks}
 
                 onPress={() => console.log('Overview tab pressed')} // added onPress event handler

@@ -1,26 +1,61 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Animated } from 'react-native';
-import CommonHeaderImage from '../../assets/images/CommonHeaderImage.png';
-import { Title, SubTitle, FullName, Address, EnterOTP, EmailId, Gender } from '../../constants/labels/Profile/EditProfileLabels';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import DefaultUser from '../../assets/images/DefaultUser.png';
+import RadioBtnActive from '../../assets/images/RadioBtnActive.png';
+import RadioBtnInactive from '../../assets/images/RadioBtnInactive.png';
+import { Title, SubTitle, FullName, Address, EnterOTP, EmailId, Gender, MobileNo, InputTypeMobile, InputTypeEmail } from '../../constants/labels/Profile/EditProfileLabels';
 import { Colors } from '../../constants/Colors';
 import FloatingTextInput from '../../components/textInput/FloatingTextInput';
 import CommonStyles from '../../assets/Styles/CommonStyles';
-import CommonRadioButton from '../../components/radioButton/CommonRadioButton';
+import FlexStyles from '../../assets/Styles/FlexStyles';
+import CustomButton from '../../components/CustomButton';
 
-const EditProfile = () => {
+const EditProfile = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
-  const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+
+  const GenderData = [
+    { label: 'Male', value: '0' },
+    { label: 'Female', value: '1' },
+    { label: 'Other', value: '2' },
+  ];
+  const [selectedGender, setSelectedGender] = useState('0');
+
+  const fullNameFunction = (text) => {
+    setFullName(text);
+    console.log('Full name text----->', text);
+  };
+
+  const setAddressFunction = (text) => {
+    setAddress(text);
+    console.log('Address text----->', text);
+  };
+  const setEmailFunction = (text) => {
+    setEmail(text);
+    console.log('Email text----->', text);
+  };
+  const setMobileFunction = (number) => {
+    setMobile(number);
+    console.log('Mobile number----->', number);
+  };
+
+  const handlePress = (option) => {
+    setSelectedGender(option);
+  };
+
+  const sendOTPFunction = (data) => {
+    console.log('sendOtp called:', data);
+  };
 
   return (
     <View style={styles.Container}>
       <View style={styles.FirstSection}>
-        <Image source={CommonHeaderImage} style={styles.ImageSize} />
+        <Image source={DefaultUser} style={styles.ImageSize} />
       </View>
 
       <View style={styles.SecondSection}>
-
         <View style={CommonStyles.p10}>
           <View>
             <Text style={styles.TitleText}>{Title}</Text>
@@ -34,35 +69,72 @@ const EditProfile = () => {
               <FloatingTextInput
                 label={FullName}
                 value={fullName}
+                keyboardType="default"
+                maxLength={50}
+                setNumber={fullNameFunction}
                 onChangeText={setFullName} />
             </View>
 
-            <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
-              <FloatingTextInput
-                label={"Address"}
-                value={address}
-                onChangeText={setAddress} />
+            <View style={[CommonStyles.mt15, FlexStyles.flexDirectionrow, FlexStyles.flexarround]}>
+              {GenderData.map((option) => (
+                <View key={option.value} style={[CommonStyles.m5,]}>
+                  <TouchableOpacity onPress={() => handlePress(option.value)}>
+                    <View style={[FlexStyles.flexDirectionrow]}>
+                      <Image
+                        source={selectedGender === option.value ? RadioBtnActive : RadioBtnInactive}
+                        style={styles.RadioBtnSize}
+                      />
+                      <Text style={selectedGender === option.value ? [styles.RadioLabelActive, CommonStyles.ml5] : [styles.RadioLabelInactive, CommonStyles.ml5]}>{option.label}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
             </View>
 
             <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
               <FloatingTextInput
-                label="Mobile Id"
+                label={MobileNo}
                 value={mobile}
-                onChangeText={setMobile} />
+                OTPButton={true}
+                keyboardType="numeric"
+                maxLength={10}
+                onPress={sendOTPFunction}
+                setNumber={setMobileFunction}
+              />
             </View>
 
             <View style={[styles.TextInputContainer, CommonStyles.mt15]}>
               <FloatingTextInput
-                label={'Email Id'}
+                label={EmailId}
                 value={email}
-                onChangeText={setEmail} />
+                OTPButton={true}
+                keyboardType="default"
+                maxLength={25}
+                onPress={sendOTPFunction}
+                setNumber={setEmailFunction}
+              />
+            </View>
+
+            <View style={[styles.TextAreaInput, CommonStyles.mt15]}>
+              <FloatingTextInput
+                label={Address}
+                value={address}
+                keyboardType="default"
+                maxLength={250}
+                setNumber={setAddressFunction}
+              />
             </View>
 
           </View>
         </View>
-
-      </View>
-    </View>
+        <View style={styles.UpdateButtonStyles}>
+          <CustomButton
+            label={'UPDATE'}
+            loading={true}
+            onPress={() => { navigation.navigate('Main') }}
+          /></View>
+      </View >
+    </View >
   )
 }
 
@@ -75,21 +147,31 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   FirstSection: {
-    flex: 1,
+    flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
   SecondSection: {
-    flex: 2.2,
+    flex: 2.5,
     backgroundColor: '#FBFCFD',
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     elevation: 7,
   },
   ImageSize: {
-    height: '100%',
-    width: '100%',
+    padding: 45,
+    borderColor: 'orange',
+    borderWidth: 2,
+    resizeMode: 'contain',
+    borderRadius: 100,
+    height: 90,
+    width: 90,
+  },
+  RadioBtnSize: {
+    height: 20,
+    width: 20,
+    resizeMode: 'contain',
   },
   TitleText: {
     fontFamily: 'Roboto-Medium',
@@ -115,13 +197,36 @@ const styles = StyleSheet.create({
     borderColor: Colors.commonAppBackground,
     paddingHorizontal: 10,
   },
-  label: {
+  TextAreaInput: {
+    height: 55,
+    borderRadius: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderWidth: 1.2,
+    borderColor: Colors.commonAppBackground,
+    paddingHorizontal: 10,
+  },
+  RadioLabelActive: {
     fontFamily: 'Roboto-Medium',
+    color: Colors.commonTextBlack,
     fontSize: 16,
     fontWeight: '400',
     lineHeight: 17,
-    color: 'red',
     borderRadius: 5,
     padding: 1.8,
   },
+  RadioLabelInactive: {
+    fontFamily: 'Roboto-Medium',
+    color: Colors.CommonTextGrey,
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 17,
+    borderRadius: 5,
+    padding: 1.8,
+  },
+  UpdateButtonStyles: {
+    position: 'absolute',
+    left: "26.5%", 
+    bottom: 5,
+  }
 });

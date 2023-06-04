@@ -9,10 +9,11 @@ import React from 'react';
 import {Colors} from '../constants/Colors';
 import FlexStyles from '../assets/Styles/FlexStyles.jsx';
 
-export default function CustomButton({label, onPress, loading}) {
+export default function CustomButton({label, onPress,onLongPress=()=>{}, loading}) {
   return (
     <TouchableOpacity
       onPress={onPress}
+      onLongPress={onLongPress}
       style={[
         FlexStyles.dflex,
         FlexStyles.flexDirectionrow,
