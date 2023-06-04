@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../constants/Colors';
 
 const TextStyles = StyleSheet.create({
     //------Font Bold 700------------
@@ -95,6 +96,18 @@ const TextStyles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '400',
         lineHeight: 17,
+    },
+    successText: {
+        fontSize: 12,
+        color: Colors.green,
+        fontWeight: '400',
+        marginLeft: 10,
+    },
+    pendingText: {
+        fontSize: 12,
+        color: Colors.red,
+        fontWeight: '400',
+        marginLeft: 10,
     },
 })
 
