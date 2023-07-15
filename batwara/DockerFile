@@ -1,20 +1,28 @@
 # Use an official Python runtime as the base image
-FROM python:3.9-alpine
+FROM python:3.9
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file to the container
-COPY requirements.txt ./
+# Copy the requirements file into the container
+COPY requirements.txt .
 
-# Install the dependencies
+# Install the required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the code to the container
+# Copy the application code into the container
 COPY . .
 
-# Expose the port for the service to listen on
-EXPOSE 6000
+# Expose port 5000
+EXPOSE 5000
 
-# Set the command to run the service when the container starts
-CMD ["python", "app.py"]
+# Set the environment variables
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Run the Django development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:5000"]
+
+
+# docker build -t batwara_img .
+# docker run -d -p 5000:5000 batwara_img

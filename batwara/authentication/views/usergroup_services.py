@@ -7,7 +7,7 @@ from ..models import *
 from django.views.decorators.csrf import csrf_exempt
 from configuration import constants,message
 from datetime import datetime
-
+from common_functions import *
 # To create the group
 @csrf_exempt
 def create_group(request):
@@ -133,7 +133,7 @@ def get_user_group(request):
         if 'user_id' not in user_request:
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
-        user_id = user_request['user_id']
+        user_id,result= user_request['user_id'],[]
         get_group_id = list(UserGroup.objects.filter(user_id=user_id,is_delete=False).values_list('group_id',flat=True))
         print(get_group_id)
 
@@ -141,6 +141,11 @@ def get_user_group(request):
             get_user_group_data = []
 
         get_user_group_data = Group.objects.filter(group_id__in=get_group_id).values()
+    
+        for data in list(get_user_group_data):
+            data['group_creator'] = get_group_creator(data['group_created_by'])
+            data['total_member'] = get_group_member_count(data['group_id'])
+
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(get_user_group_data)},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
@@ -213,7 +218,7 @@ def get_user_group_members(request):
         if not get_user_id_of_group:
             get_user_id_of_group = []
 
-        get_user_id_data = UsersID.objects.filter(user_id__in=get_user_id_of_group).values()
+        get_user_id_data = UsersID.objects.filter(user_id__in=get_user_id_of_group).values('user_id','full_name')
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,message.DATA_MESSAGE:list(get_user_id_data)},safe=False,status=constants.HTTP_200_OK)
 
     except Exception as error:
@@ -368,9 +373,9 @@ def set_up_profile(request):
 
         user_id,gender,mail,address= user_request['user_id'],user_request['gender'],user_request['mail'],user_request['address']
         user_details = UsersID.objects.filter(user_id=user_id).first()
-
+        print("user_details",user_details)
         if not user_details:
-            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY,'message':'User not exist'},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
         if is_user_profile_set := UserDetails.objects.filter(
             user_id=user_id
@@ -410,3 +415,73 @@ def get_all_users(request):
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+""" To set the user profile"""
+@csrf_exempt
+def get_user_group_expenses(request):
+    try:
+        user_request = json.loads(request.body)
+        if (
+            'group_id' not in user_request
+            and 'user_id' not in user_request
+            ):
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        
+        group_id,user_id= user_request['group_id'],user_request['user_id']
+        expenses_query = Expenses.objects.filter(group_id=group_id).values('expenses_id','description','date','group_id','paid_by','amount')
+
+        for data in list(expenses_query):
+            expenses_id = data['expenses_id']
+            expenses_amount = data['amount']
+
+            """ To check the user paid and requestor are same and get the requstor name"""
+            if user_id == data['paid_by']:
+                data['paid_by'] = constants.YOU
+            else:
+                data['paid_by'] = get_group_creator(data['paid_by'])
+            
+            expenses_shared_list= ExpensesShares.objects.filter(expenses_id=expenses_id,user_id=user_id).values('user_id','amount')
+            if expenses_shared_list:
+                data['is_user_involved'] = constants.BOOLEAN_TRUE
+                # expenses_amount_list= ExpensesShares.objects.filter(expenses_id=expenses_id).exclude(user_id=user_id).values('amount')
+                amount_diff = expenses_amount - expenses_shared_list[0]['amount']
+                if data['paid_by'] == constants.YOU:
+                    data['expenses_description'] = "you lent " + str(amount_diff)
+                else:
+                    data['expenses_description'] = "you borrowed " + str(amount_diff)
+            else:
+                data['is_user_involved'] = constants.BOOLEAN_FALSE
+                data['expenses_description'] = constants.EMPTY
+
+         
+
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data retrieved successfully','data':list(expenses_query)},safe=False,status=constants.HTTP_200_OK)
+
+    except Exception as error:
+        print("get_user_group_expenses",error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+""" To set the user profile"""
+@csrf_exempt
+def get_user_expense_details(request):
+    try:
+        user_request = json.loads(request.body)
+        if (
+            'expenses_id' not in user_request
+            and 'user_id' not in user_request
+            ):
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        result = []
+        expenses_id, user_id = user_request['expenses_id'],user_request['user_id']
+        expenses_shared_list= ExpensesShares.objects.filter(expenses_id=expenses_id).values('user_id','amount')
+        if expenses_shared_list:
+            for data in expenses_shared_list:
+                data['full_name'] = get_group_creator(data['user_id'])
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data retrieved successfully','data':list(expenses_shared_list)},safe=False,status=constants.HTTP_200_OK)
+
+    except Exception as error:
+        print("get_user_group_expenses",error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+    

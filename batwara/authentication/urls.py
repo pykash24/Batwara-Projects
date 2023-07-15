@@ -21,5 +21,7 @@ urlpatterns = [
     path('mail_sent/', views.mail_sent, name='mail_sent'),#not working
     path('get_user_details/', views.get_user_details, name='get_user_details'),
     path('get_all_users/', views.get_all_users, name='get_all_users'),
+    path('get_user_group_expenses/', views.get_user_group_expenses, name='get_user_group_expenses'),
+    path('get_user_expense_details/', views.get_user_expense_details, name='get_user_expense_details'),
 
 ]

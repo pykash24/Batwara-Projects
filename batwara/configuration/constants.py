@@ -30,5 +30,7 @@ EMPTY = ""
 FAIL = "fail"
 BOOLEAN_FALSE = False
 BOOLEAN_TRUE = True
+YOU = "You"
 TOKEN_TYPE = "bearer"
 MAIL_SENDER = "batwaraapp@gmail.com"
+ZERO_COUNT = 0
