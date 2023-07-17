@@ -427,7 +427,7 @@ def get_user_group_expenses(request):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         
         group_id,user_id= user_request['group_id'],user_request['user_id']
-        expenses_query = Expenses.objects.filter(group_id=group_id).values('expenses_id','description','date','group_id','paid_by','amount')
+        expenses_query = Expenses.objects.filter(group_id=group_id,is_delete=constants.BOOLEAN_FALSE).values('expenses_id','description','date','group_id','paid_by','amount')
 
         for data in list(expenses_query):
             expenses_id = data['expenses_id']
@@ -473,7 +473,7 @@ def get_user_expense_details(request):
             return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
         result = []
         expenses_id, user_id = user_request['expenses_id'],user_request['user_id']
-        expenses_shared_list= ExpensesShares.objects.filter(expenses_id=expenses_id).values('user_id','amount')
+        expenses_shared_list= ExpensesShares.objects.filter(expenses_id=expenses_id,is_delete=constants.BOOLEAN_FALSE).values('user_id','amount')
         if expenses_shared_list:
             for data in expenses_shared_list:
                 data['full_name'] = get_group_creator(data['user_id'])
