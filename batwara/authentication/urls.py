@@ -23,5 +23,6 @@ urlpatterns = [
     path('get_all_users/', views.get_all_users, name='get_all_users'),
     path('get_user_group_expenses/', views.get_user_group_expenses, name='get_user_group_expenses'),
     path('get_user_expense_details/', views.get_user_expense_details, name='get_user_expense_details'),
+    path('delete_user_expense_details/', views.delete_user_expense_details, name='delete_user_expense_details'),
 
 ]

@@ -484,4 +484,27 @@ def get_user_expense_details(request):
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
-    
+@csrf_exempt
+def delete_user_expense_details(request):
+    try:
+        user_request = json.loads(request.body)
+        if not user_request:\
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        expenses_id = user_request['expenses_id']
+        
+        delete_user_expenses = Expenses.objects.filter(expenses_id=expenses_id).first()
+        if not delete_user_expenses:
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+            
+        delete_user_expenses.is_delete = constants.BOOLEAN_TRUE
+        delete_user_expenses.save()
+        """Update the status of expenses share"""
+        expenses_share_query = ExpensesShares.objects.filter(expenses_id=expenses_id).exists()
+        if expenses_share_query:
+            expenses_share_query = ExpensesShares.objects.filter(expenses_id=expenses_id).update(is_delete=constants.BOOLEAN_TRUE)
+        else:
+            print("No matching objects found.")
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data delete successfully'},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print("delete_user_expense_details",error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)

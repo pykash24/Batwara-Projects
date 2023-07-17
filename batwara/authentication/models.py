@@ -65,6 +65,7 @@ class Expenses(models.Model):
     paid_by = models.ForeignKey(UsersID,on_delete=models.CASCADE,to_field='user_id')
     group_id = models.ForeignKey(Group,on_delete=models.CASCADE,to_field='group_id')
     date = models.DateField(null=True)
+    is_delete = models.BooleanField(default=False,null=True)
 
     class Meta:
         db_table = "expenses"
@@ -75,7 +76,8 @@ class ExpensesShares(models.Model):
     user_id = models.ForeignKey(UsersID,on_delete=models.CASCADE,to_field='user_id')
     amount = models.FloatField()
     user_created_on =  models.DateTimeField(auto_now_add=True)
-
+    is_delete = models.BooleanField(default=False,null=True)
+    
     class Meta:
         db_table = "expenses_shares"
 
