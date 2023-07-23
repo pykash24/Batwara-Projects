@@ -75,11 +75,11 @@ def add_user_in_group(request):
             user_request = json.loads(request.body)
         if (
             'group_id' not in user_request
-            or 'usergroup_id' not in user_request
         ):
             return JsonResponse({message.STATUS_KEY: constants.FAIL,'message':message.INVALID_REQUEST_BODY_MESSAGE},status=constants.HTTP_400_BAD_REQUEST,safe=False)
 
-        group_id, usergroup_id,user_add_on= user_request['group_id'], user_request['usergroup_id'],user_request['user_add_on']
+        group_id,user_add_on= user_request['group_id'], user_request['user_add_on']
+        usergroup_id = uuid.uuid4()
 
         for user_data in user_add_on:
             phone,nation,full_name = user_data['phone'],user_data['nation'],user_data['full_name'],
