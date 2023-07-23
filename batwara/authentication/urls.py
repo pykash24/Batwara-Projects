@@ -24,5 +24,7 @@ urlpatterns = [
     path('get_user_group_expenses/', views.get_user_group_expenses, name='get_user_group_expenses'),
     path('get_user_expense_details/', views.get_user_expense_details, name='get_user_expense_details'),
     path('delete_user_expense_details/', views.delete_user_expense_details, name='delete_user_expense_details'),
+    path('get_spend_amount_on_user_by_user_id/', views.get_spend_amount_on_user_by_user_id, name='get_spend_amount_on_user_by_user_id'),
+    path('get_user_member_expenses_in_group/', views.get_user_member_expenses_in_group, name='get_user_member_expenses_in_group')
 
 ]

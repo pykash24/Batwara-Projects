@@ -508,3 +508,48 @@ def delete_user_expense_details(request):
     except Exception as error:
         print("delete_user_expense_details",error)
         return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+""" This is refer to amount that spend by user in specified member of groups(exculding you) """
+@csrf_exempt
+def get_spend_amount_on_user_by_user_id(request):
+    try:
+        user_request = request if type(request) is dict else json.loads(request.body)
+        if not user_request:
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        group_id,spend_by,spend_on= user_request['group_id'], user_request['spend_by'],user_request['spend_on']
+        user_expenses_id = Expenses.objects.filter(group_id=group_id,paid_by=spend_by).values_list('expenses_id',flat=True)
+        list_of_expenses_amount = ExpensesShares.objects.filter(expenses_id__in=user_expenses_id,user_id=spend_on).values_list('amount',flat=True)
+        sum_of_expenses_amount = sum(list(list_of_expenses_amount))
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data delete successfully',"amount":sum_of_expenses_amount},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print_error("error",error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+       
+
+@csrf_exempt
+def get_user_member_expenses_in_group(request):
+    try:
+        user_request = request if type(request) is dict else json.loads(request.body)
+        if not user_request:
+            return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},status=constants.HTTP_400_BAD_REQUEST,safe=False)
+        group_id,user_id = user_request['group_id'],user_request['user_id']
+
+        """ To get the user member of the group"""
+        get_user_group_members_response = get_user_group_members(request)
+        group_member_expenses_with_user = json.loads(get_user_group_members_response.content)['data']
+
+        for data in group_member_expenses_with_user:
+            spend_on = data['user_id']
+            request_body = {
+                "group_id":group_id,
+                "spend_by":user_id,
+                "spend_on":spend_on
+                }
+            money_lent_response = json.loads(get_spend_amount_on_user_by_user_id(request_body).content)
+            data['money_own'] = money_lent_response['amount']
+        return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data delete successfully',"group_member_expenses_with_user":group_member_expenses_with_user},safe=False,status=constants.HTTP_200_OK)
+    except Exception as error:
+        print_error("error",error)
+        return JsonResponse({message.STATUS_KEY: message.ERROR_KEY},safe=False,status=constants.HTTP_500_INTERNAL_SERVER_ERROR)
+
