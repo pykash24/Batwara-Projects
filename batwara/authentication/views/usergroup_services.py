@@ -541,13 +541,25 @@ def get_user_member_expenses_in_group(request):
 
         for data in group_member_expenses_with_user:
             spend_on = data['user_id']
-            request_body = {
+
+            """ To get amount spend by request/login user on group of member"""
+            money_own_request_body = {
                 "group_id":group_id,
                 "spend_by":user_id,
                 "spend_on":spend_on
                 }
-            money_lent_response = json.loads(get_spend_amount_on_user_by_user_id(request_body).content)
-            data['money_own'] = money_lent_response['amount']
+            money_own_response = json.loads(get_spend_amount_on_user_by_user_id(money_own_request_body).content)
+            data['money_own'] = money_own_response['amount']
+
+            """ To get amount spend by gruop member on request/login user """
+            money_lent_request_body = {
+                "group_id":group_id,
+                "spend_by":spend_on,
+                "spend_on":user_id
+                }
+            money_lent_response = json.loads(get_spend_amount_on_user_by_user_id(money_lent_request_body).content)
+            data['money_lent'] = money_lent_response['amount']
+            data['remaining_money']= data['money_own'] - data['money_lent']
         return JsonResponse({message.STATUS_KEY:message.SUCCESS_MESSAGE,'message':'Data delete successfully',"group_member_expenses_with_user":group_member_expenses_with_user},safe=False,status=constants.HTTP_200_OK)
     except Exception as error:
         print_error("error",error)
