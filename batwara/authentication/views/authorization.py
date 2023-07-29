@@ -29,11 +29,11 @@ import secrets
 def send_otp_via_sms(otp, to_number):
     try:
         # Your Account SID and Auth Token from twilio.com/console
-        account_sid = 'AC194fd430e17ea74954f9a5470b863f84'
-        auth_token = '662dff7228369615b9da1df0d1a603c4'
+        account_sid = 'AC331034ee4541fc6981b46ab6250434b5'
+        auth_token = 'cc15ec490cfc8483aee03ec0240b6e2a'
         client = Client(account_sid, auth_token)
         message = client.messages.create(
-            to=to_number, from_='+13203810355', body=f'Your OTP is: {otp}'
+            to=to_number, from_='+17624225042', body=f'Your OTP is: {otp}'
         )
         # print(message.sid)
         return JsonResponse({'status': 'success'},safe=False,status=constants.HTTP_200_OK)
