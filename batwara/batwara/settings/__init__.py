@@ -1,8 +1,8 @@
 # settings file for local
-from .local import *
+# from .local import *
 
 # settings file for development
-#from .development import *
+from .development import *
 
 #settings file for staging -- comment above and uncomment below line
 #from .staging import *
